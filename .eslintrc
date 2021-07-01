@@ -1,0 +1,74 @@
+{
+  "env": {
+    "commonjs": true,
+    "es2020": true,
+    "node": false
+  },
+  "parser": "@typescript-eslint/parser",
+  "extends": [
+    "airbnb-typescript",
+    "prettier",
+    "plugin:@typescript-eslint/eslint-recommended",
+    "plugin:@typescript-eslint/recommended"
+  ],
+  "parserOptions": {
+    "ecmaVersion": 11,
+    "ecmaFeatures": {
+      "jsx": true
+    },
+    "project": "./tsconfig.json"
+  },
+  "plugins": [
+    "prettier",
+    "react",
+    "react-hooks",
+    "jsx-a11y",
+    "import",
+    "@typescript-eslint"
+  ],
+  "rules": {
+    "import/extensions": [
+      "error",
+      "ignorePackages",
+      {
+        "js": "never",
+        "jsx": "never",
+        "ts": "never",
+        "tsx": "never"
+      }
+    ],
+    "react/jsx-filename-extension": [
+      2,
+      { "extensions": [".js", ".jsx", ".ts", ".tsx"] }
+    ],
+    "no-use-before-define": "off",
+    "@typescript-eslint/no-use-before-define": ["error"],
+    "quotes": ["error", "single"],
+    "class-methods-use-this": "off",
+    "no-param-reassign": "off",
+    "no-console": "warn",
+    "camelcase": "error",
+    "no-unused-vars": "warn",
+    "sort-imports": "off",
+    "import/prefer-default-export": "off",
+    "react/state-in-constructor": 0,
+    "react/jsx-props-no-spreading": "off",
+    "react/require-default-props": 0,
+    "react/forbid-prop-types": [1, { "forbid": ["any", "array"] }],
+    "react/destructuring-assignment": [
+      0,
+      "always",
+      { "ignoreClassFields": true }
+    ]
+  },
+  "settings": {
+    "import/resolver": {
+      "node": {
+        "paths": ["src"]
+      }
+    },
+    "react": {
+      "version": "detect"
+    }
+  }
+}
