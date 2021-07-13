@@ -3,6 +3,7 @@ import { Formik } from 'formik';
 import React from 'react';
 import * as yup from 'yup';
 import { LoginDto } from '../../dto/login.dto';
+import { RegisterDto } from '../../dto/register.dto';
 import { AuthState, useAuth } from '../../store/auth';
 import { validatePassword } from '../../utils/helper';
 import LogInForm from './components/LogInForm';
@@ -89,8 +90,23 @@ const SignUp = (): JSX.Element => {
           workspaceName: '',
         }}
         validationSchema={RegisterSchema}
-        onSubmit={values => {
-          console.log(values);
+        onSubmit={async (values, { resetForm, setSubmitting }) => {
+          if (auth && auth.register) {
+            setSubmitting(true);
+            const dto: RegisterDto = {
+              ...values,
+            };
+
+            const result: boolean = await (
+              auth.register as (dto: RegisterDto) => Promise<boolean>
+            )(dto);
+
+            if (result) {
+              resetForm();
+            }
+
+            setSubmitting(false);
+          }
         }}>
         {({
           values,
@@ -99,6 +115,7 @@ const SignUp = (): JSX.Element => {
           handleChange,
           handleBlur,
           handleSubmit,
+          isSubmitting,
         }) => (
           <form
             id="register"
@@ -112,6 +129,7 @@ const SignUp = (): JSX.Element => {
               touched={touched}
               handleChange={handleChange}
               handleBlur={handleBlur}
+              isSubmitting={isSubmitting}
             />
           </form>
         )}

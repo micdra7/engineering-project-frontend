@@ -3,8 +3,10 @@ import axios, { AxiosError } from 'axios';
 import React, { useCallback, useEffect, useState, useContext } from 'react';
 import { useHistory } from 'react-router-dom';
 import { LoginDto } from '../dto/login.dto';
+import { RegisterDto } from '../dto/register.dto';
 import { REQUEST_STATUS } from '../resources/endpoints';
 import { Roles } from '../resources/roles';
+import { ErrorResponse } from '../response/error.response';
 import { LoginResponse } from '../response/login.response';
 import { UserWorkspacesResponse } from '../response/userWorkspaces.response';
 import AuthService from '../services/auth';
@@ -79,7 +81,7 @@ const AuthContextProvider = ({
     const error: AxiosError = result.error as AxiosError;
 
     toast({
-      title: 'Login unsuccessful',
+      title: 'Login failed',
       description:
         error.response?.status === 401 ? 'Invalid credentials' : undefined,
       status: 'error',
@@ -89,8 +91,39 @@ const AuthContextProvider = ({
     return false;
   }, []);
 
+  const register = useCallback(async (dto: RegisterDto) => {
+    const result = await AuthService.register(dto);
+
+    if (result.status === REQUEST_STATUS.SUCCESS) {
+      toast({
+        title: 'Registration successful',
+        description: 'You can now log in',
+        status: 'success',
+        duration: 5000,
+        isClosable: true,
+      });
+
+      return true;
+    }
+
+    const error: AxiosError = result.error as AxiosError;
+
+    toast({
+      title: 'Registration failed',
+      description:
+        error.response?.status === 400
+          ? (error.response.data as ErrorResponse).message ??
+            'Something went wrong. Please try again later'
+          : undefined,
+      status: 'error',
+      duration: 5000,
+      isClosable: true,
+    });
+    return false;
+  }, []);
+
   return (
-    <AuthContext.Provider value={{ ...state, logIn }}>
+    <AuthContext.Provider value={{ ...state, logIn, register }}>
       {children}
     </AuthContext.Provider>
   );

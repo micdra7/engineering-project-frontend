@@ -17,6 +17,7 @@ interface RegisterFormProps {
   touched: Record<string, boolean>;
   handleChange: (event: unknown) => void;
   handleBlur: (event: unknown) => void;
+  isSubmitting: boolean;
 }
 
 const RegisterForm = ({
@@ -25,6 +26,7 @@ const RegisterForm = ({
   touched,
   handleChange,
   handleBlur,
+  isSubmitting,
 }: RegisterFormProps): JSX.Element => {
   const [showPassword, setShowPassword] = useState<boolean>(false);
 
