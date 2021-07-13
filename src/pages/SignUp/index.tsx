@@ -1,9 +1,11 @@
 import { Grid } from '@chakra-ui/react';
 import { Formik } from 'formik';
 import React from 'react';
+import { useHistory } from 'react-router-dom';
 import * as yup from 'yup';
 import { LoginDto } from '../../dto/login.dto';
 import { RegisterDto } from '../../dto/register.dto';
+import { userRoutes } from '../../resources/routes';
 import { AuthState, useAuth } from '../../store/auth';
 import { validatePassword } from '../../utils/helper';
 import LogInForm from './components/LogInForm';
@@ -37,6 +39,7 @@ const RegisterSchema = yup.object().shape({
 
 const SignUp = (): JSX.Element => {
   const auth: AuthState = useAuth();
+  const history = useHistory();
 
   return (
     <Grid
@@ -54,7 +57,13 @@ const SignUp = (): JSX.Element => {
               ...values,
             };
 
-            await (auth.logIn as (dto: LoginDto) => Promise<boolean>)(dto);
+            const result: boolean = await (
+              auth.logIn as (dto: LoginDto) => Promise<boolean>
+            )(dto);
+
+            if (result) {
+              history.push(userRoutes.DASHBOARD);
+            }
           }
         }}>
         {({
@@ -64,6 +73,7 @@ const SignUp = (): JSX.Element => {
           handleChange,
           handleBlur,
           handleSubmit,
+          isSubmitting,
         }) => (
           <form
             id="log-in"
@@ -77,6 +87,7 @@ const SignUp = (): JSX.Element => {
               touched={touched}
               handleChange={handleChange}
               handleBlur={handleBlur}
+              isSubmitting={isSubmitting}
             />
           </form>
         )}

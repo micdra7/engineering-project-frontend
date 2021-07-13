@@ -155,6 +155,7 @@ const RegisterForm = ({
         </FormErrorMessage>
       </FormControl>
       <Button
+        isLoading={isSubmitting}
         type="submit"
         colorScheme="green"
         mt={6}

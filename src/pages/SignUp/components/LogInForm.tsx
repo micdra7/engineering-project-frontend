@@ -17,6 +17,7 @@ interface LogInFormProps {
   touched: Record<string, boolean>;
   handleChange: (event: unknown) => void;
   handleBlur: (event: unknown) => void;
+  isSubmitting: boolean;
 }
 
 const LogInForm = ({
@@ -25,6 +26,7 @@ const LogInForm = ({
   touched,
   handleChange,
   handleBlur,
+  isSubmitting,
 }: LogInFormProps): JSX.Element => {
   const [showPassword, setShowPassword] = useState<boolean>(false);
 
@@ -85,6 +87,7 @@ const LogInForm = ({
         </FormErrorMessage>
       </FormControl>
       <Button
+        isLoading={isSubmitting}
         type="submit"
         colorScheme="green"
         mt={6}
