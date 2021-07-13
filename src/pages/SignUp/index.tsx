@@ -4,6 +4,7 @@ import React from 'react';
 import * as yup from 'yup';
 import { validatePassword } from '../../utils/helper';
 import LogInForm from './components/LogInForm';
+import RegisterForm from './components/RegisterForm';
 
 const LogInSchema = yup.object().shape({
   email: yup
@@ -34,7 +35,11 @@ const RegisterSchema = yup.object().shape({
 const SignUp = (): JSX.Element => {
   const placeholder = '';
   return (
-    <Grid gridTemplateColumns={['1fr', '1fr', '0.75fr 1fr']}>
+    <Grid
+      flexBasis="100%"
+      maxW="1440px"
+      gridTemplateColumns={['1fr', '1fr', '0.75fr 1fr']}
+      columnGap={16}>
       <Formik
         initialValues={{ email: '', password: '' }}
         validationSchema={LogInSchema}
@@ -56,6 +61,42 @@ const SignUp = (): JSX.Element => {
               handleSubmit();
             }}>
             <LogInForm
+              values={values}
+              errors={errors}
+              touched={touched}
+              handleChange={handleChange}
+              handleBlur={handleBlur}
+            />
+          </form>
+        )}
+      </Formik>
+      <Formik
+        initialValues={{
+          email: '',
+          firstName: '',
+          lastName: '',
+          password: '',
+          workspaceName: '',
+        }}
+        validationSchema={RegisterSchema}
+        onSubmit={values => {
+          console.log(values);
+        }}>
+        {({
+          values,
+          errors,
+          touched,
+          handleChange,
+          handleBlur,
+          handleSubmit,
+        }) => (
+          <form
+            id="register"
+            onSubmit={event => {
+              event.preventDefault();
+              handleSubmit();
+            }}>
+            <RegisterForm
               values={values}
               errors={errors}
               touched={touched}

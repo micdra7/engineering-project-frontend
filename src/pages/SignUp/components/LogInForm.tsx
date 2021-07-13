@@ -29,8 +29,12 @@ const LogInForm = ({
   const [showPassword, setShowPassword] = useState<boolean>(false);
 
   return (
-    <Grid gridTemplateColumns="1fr" justifyItems="center">
-      <Heading color="green.500" mb={4}>
+    <Grid gridTemplateColumns="1fr" justifyItems="center" rowGap="0.5rem">
+      <Heading
+        color="green.500"
+        mb={4}
+        w="100%"
+        textAlign={['center', 'center', 'left']}>
         Log In
       </Heading>
       <FormControl
