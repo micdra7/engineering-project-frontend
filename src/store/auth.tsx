@@ -6,6 +6,7 @@ import { LoginDto } from '../dto/login.dto';
 import { RegisterDto } from '../dto/register.dto';
 import { REQUEST_STATUS } from '../resources/endpoints';
 import { Roles } from '../resources/roles';
+import { publicRoutes } from '../resources/routes';
 import { ErrorResponse } from '../response/error.response';
 import { LoginResponse } from '../response/login.response';
 import { UserWorkspacesResponse } from '../response/userWorkspaces.response';
@@ -96,6 +97,18 @@ const AuthContextProvider = ({
     return false;
   }, []);
 
+  const logout = useCallback(() => {
+    saveCurrentState(defaultAuthState);
+    setState(defaultAuthState);
+    toast({
+      title: 'Logout successful',
+      status: 'success',
+      duration: 5000,
+      isClosable: true,
+    });
+    history.push(publicRoutes.HOME);
+  }, []);
+
   const register = useCallback(async (dto: RegisterDto) => {
     const result = await AuthService.register(dto);
 
@@ -128,7 +141,7 @@ const AuthContextProvider = ({
   }, []);
 
   return (
-    <AuthContext.Provider value={{ ...state, logIn, register }}>
+    <AuthContext.Provider value={{ ...state, logIn, register, logout }}>
       {children}
     </AuthContext.Provider>
   );

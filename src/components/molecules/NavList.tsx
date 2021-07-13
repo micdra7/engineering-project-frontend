@@ -1,4 +1,4 @@
-import { Grid } from '@chakra-ui/react';
+import { Button, Flex, Grid } from '@chakra-ui/react';
 import React from 'react';
 import NavLink from '../atoms/NavLink';
 import {
@@ -42,22 +42,36 @@ const NavList = ({ display = 'grid' }: NavListProps): JSX.Element => {
   const auth = useAuth();
 
   return (
-    <Grid
-      gridTemplateColumns={[
-        '1fr',
-        '1fr',
-        `repeat(${getColumns(auth.isAuthenticated, auth.role)}, 1fr)`,
-        `repeat(${getColumns(auth.isAuthenticated, auth.role)}, 1fr)`,
-        `repeat(${getColumns(auth.isAuthenticated, auth.role, false)}, 1fr)`,
-      ]}
-      rowGap={['1rem', '1rem', '0']}
-      columnGap={['0', '0', '1rem']}
-      display={display}>
-      {/* eslint-disable-next-line no-nested-ternary */}
-      {getLinks(auth.isAuthenticated, auth.role).map(link => (
-        <NavLink {...link} />
-      ))}
-    </Grid>
+    <Flex flexFlow={['column', 'column', 'row']} alignItems="center">
+      <Grid
+        flexBasis="100%"
+        w="100%"
+        gridTemplateColumns={[
+          '1fr',
+          '1fr',
+          `repeat(${getColumns(auth.isAuthenticated, auth.role)}, 1fr)`,
+          `repeat(${getColumns(auth.isAuthenticated, auth.role)}, 1fr)`,
+          `repeat(${getColumns(auth.isAuthenticated, auth.role, false)}, 1fr)`,
+        ]}
+        rowGap={['1rem', '1rem', '0']}
+        columnGap={['0', '0', '1rem']}
+        display={display}>
+        {/* eslint-disable-next-line no-nested-ternary */}
+        {getLinks(auth.isAuthenticated, auth.role).map(link => (
+          <NavLink {...link} />
+        ))}
+      </Grid>
+      {auth.isAuthenticated ? (
+        <NavLink
+          display={display}
+          text="Log Out"
+          to=""
+          onClick={() => {
+            (auth.logout as () => void)();
+          }}
+        />
+      ) : null}
+    </Flex>
   );
 };
 

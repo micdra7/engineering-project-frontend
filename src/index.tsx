@@ -6,14 +6,11 @@ import '@fontsource/lato/700.css';
 import '@fontsource/questrial/400.css';
 import theme from './resources/theme';
 import 'focus-visible/dist/focus-visible';
-import { AuthContextProvider } from './store/auth';
 
 ReactDOM.render(
   <React.StrictMode>
     <ChakraProvider theme={theme}>
-      <AuthContextProvider>
-        <App />
-      </AuthContextProvider>
+      <App />
     </ChakraProvider>
   </React.StrictMode>,
   document.getElementById('root'),
