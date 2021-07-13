@@ -35,6 +35,10 @@ const getCurrentState = (): AuthState =>
     ? JSON.parse(localStorage.getItem(AuthKey) || '')
     : defaultAuthState;
 
+const saveCurrentState = (state: AuthState) => {
+  localStorage.setItem(AuthKey, JSON.stringify(state));
+};
+
 const AuthContext = React.createContext(getCurrentState());
 
 const AuthContextProvider = ({
@@ -68,6 +72,7 @@ const AuthContextProvider = ({
       };
 
       setState(newState);
+      saveCurrentState(newState);
       toast({
         title: 'Login successful',
         status: 'success',
