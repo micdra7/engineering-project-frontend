@@ -1,23 +1,24 @@
+import { Box, Flex } from '@chakra-ui/react';
 import React from 'react';
-import logo from '../../logo.svg';
-import './App.css';
+import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
+import { publicRoutes } from '../../resources/routes';
+import Navbar from '../organisms/Navbar';
 
 const App = (): JSX.Element => (
-  <div className="App">
-    <header className="App-header">
-      <img src={logo} className="App-logo" alt="logo" />
-      <p>
-        Edit <code>src/App.tsx</code> and save to reload.
-      </p>
-      <a
-        className="App-link"
-        href="https://reactjs.org"
-        target="_blank"
-        rel="noopener noreferrer">
-        Learn React
-      </a>
-    </header>
-  </div>
+  <Flex direction="row" wrap="wrap" justify="center">
+    <Router>
+      <Navbar />
+      <Box flexBasis="100%">
+        <Switch>
+          <Route exact path={publicRoutes.HOME}>
+            HOME
+          </Route>
+          <Route path={publicRoutes.LOGIN}>LOGIN</Route>
+          <Route path={publicRoutes.REGISTER}>REGISTER</Route>
+        </Switch>
+      </Box>
+    </Router>
+  </Flex>
 );
 
 export default App;
