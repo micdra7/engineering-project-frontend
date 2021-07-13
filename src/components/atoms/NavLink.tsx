@@ -12,7 +12,8 @@ const NavLink = ({ text, to }: NavLinkProps): JSX.Element => (
     as={RouterLink}
     to={to}
     fontSize={['1.5rem', '1.5rem', 'xl']}
-    color={['black', 'black', 'white']}>
+    color={['black', 'black', 'white']}
+    textAlign={['left', 'left', 'center']}>
     {text}
   </Link>
 );
