@@ -118,6 +118,7 @@ const RegisterForm = ({
           />
           <InputRightElement width="4.5rem">
             <Button
+              colorScheme="green"
               h="1.75rem"
               size="sm"
               onClick={() => {

@@ -39,7 +39,8 @@ const SignUp = (): JSX.Element => {
       flexBasis="100%"
       maxW="1440px"
       gridTemplateColumns={['1fr', '1fr', '0.75fr 1fr']}
-      columnGap={16}>
+      columnGap={16}
+      mb={4}>
       <Formik
         initialValues={{ email: '', password: '' }}
         validationSchema={LogInSchema}
