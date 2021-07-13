@@ -35,14 +35,26 @@ const SignUp = (): JSX.Element => {
   const placeholder = '';
   return (
     <Grid gridTemplateColumns={['1fr', '1fr', '0.75fr 1fr']}>
-      <form id="log-in">
-        <Formik
-          initialValues={{ email: '', password: '' }}
-          validationSchema={LogInSchema}
-          onSubmit={values => {
-            console.log(values);
-          }}>
-          {({ values, errors, touched, handleChange, handleBlur }) => (
+      <Formik
+        initialValues={{ email: '', password: '' }}
+        validationSchema={LogInSchema}
+        onSubmit={values => {
+          console.log(values);
+        }}>
+        {({
+          values,
+          errors,
+          touched,
+          handleChange,
+          handleBlur,
+          handleSubmit,
+        }) => (
+          <form
+            id="log-in"
+            onSubmit={event => {
+              event.preventDefault();
+              handleSubmit();
+            }}>
             <LogInForm
               values={values}
               errors={errors}
@@ -50,9 +62,9 @@ const SignUp = (): JSX.Element => {
               handleChange={handleChange}
               handleBlur={handleBlur}
             />
-          )}
-        </Formik>
-      </form>
+          </form>
+        )}
+      </Formik>
     </Grid>
   );
 };
