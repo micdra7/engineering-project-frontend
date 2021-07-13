@@ -10,6 +10,7 @@ interface NavListProps {
 const NavList = ({ display = 'grid' }: NavListProps): JSX.Element => (
   <Grid
     gridTemplateColumns={['1fr', '1fr', 'repeat(2, 1fr)']}
+    rowGap={['1rem', '1rem', '0']}
     display={display}>
     {publicLinks.map(link => (
       <NavLink {...link} />

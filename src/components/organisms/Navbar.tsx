@@ -10,6 +10,7 @@ import {
   DrawerCloseButton,
   DrawerBody,
   DrawerHeader,
+  useMediaQuery,
 } from '@chakra-ui/react';
 import React, { useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
@@ -17,6 +18,8 @@ import logo from '../../logo.svg';
 import NavList from '../molecules/NavList';
 
 const Navbar = (): JSX.Element => {
+  const [isLargerThanLg] = useMediaQuery('(min-width: 48em)');
+
   const { isOpen, onOpen, onClose } = useDisclosure();
   const location = useLocation();
 
@@ -24,13 +27,23 @@ const Navbar = (): JSX.Element => {
     onClose();
   }, [location.pathname]);
 
+  useEffect(() => {
+    if (isLargerThanLg) {
+      onClose();
+    }
+  }, [isLargerThanLg]);
+
   return (
     <Grid
       flexBasis="100%"
       templateColumns={['1fr auto', '1fr auto']}
       alignItems="center"
       bg="green.500"
-      p={[5, 5, 3]}>
+      p={[5, 5, 3]}
+      position="sticky"
+      top="0"
+      zIndex="sticky"
+      boxShadow="base">
       <Image src={logo} alt="Logo" boxSize={['45px', '45px', '65px']} />
       <IconButton
         onClick={onOpen}
@@ -38,7 +51,7 @@ const Navbar = (): JSX.Element => {
         borderRadius="md"
         colorScheme="green"
         size="lg"
-        aria-label="Open navigation"
+        aria-label="Open navigation drawer"
         icon={<HamburgerIcon />}
       />
       <NavList display={['none', 'none', 'grid']} />
@@ -52,7 +65,11 @@ const Navbar = (): JSX.Element => {
         <DrawerOverlay />
         <DrawerContent>
           <DrawerCloseButton />
-          <DrawerHeader borderBottomWidth="1px">Game Call</DrawerHeader>
+          <DrawerHeader
+            fontSize={['2rem', '2rem', 'unset']}
+            borderBottomWidth="1px">
+            Game Call
+          </DrawerHeader>
           <DrawerBody>
             <NavList />
           </DrawerBody>
