@@ -2,6 +2,8 @@ import { Grid } from '@chakra-ui/react';
 import { Formik } from 'formik';
 import React from 'react';
 import * as yup from 'yup';
+import { LoginDto } from '../../dto/login.dto';
+import { AuthState, useAuth } from '../../store/auth';
 import { validatePassword } from '../../utils/helper';
 import LogInForm from './components/LogInForm';
 import RegisterForm from './components/RegisterForm';
@@ -33,7 +35,8 @@ const RegisterSchema = yup.object().shape({
 });
 
 const SignUp = (): JSX.Element => {
-  const placeholder = '';
+  const auth: AuthState = useAuth();
+
   return (
     <Grid
       flexBasis="100%"
@@ -44,8 +47,14 @@ const SignUp = (): JSX.Element => {
       <Formik
         initialValues={{ email: '', password: '' }}
         validationSchema={LogInSchema}
-        onSubmit={values => {
-          console.log(values);
+        onSubmit={async values => {
+          if (auth && auth.logIn) {
+            const dto: LoginDto = {
+              ...values,
+            };
+
+            await (auth.logIn as (dto: LoginDto) => Promise<boolean>)(dto);
+          }
         }}>
         {({
           values,
