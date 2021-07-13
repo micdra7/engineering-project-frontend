@@ -5,6 +5,7 @@ import App from './components/App/App';
 import '@fontsource/lato/700.css';
 import '@fontsource/questrial/400.css';
 import theme from './resources/theme';
+import 'focus-visible/dist/focus-visible';
 
 ReactDOM.render(
   <React.StrictMode>

@@ -1,7 +1,6 @@
 export const publicLinks = [
   { to: '/', text: 'Home', key: 'publicHomeKey' },
-  { to: '/login', text: 'Log In', key: 'publicLoginKey' },
-  { to: '/register', text: 'Register', key: 'publicRegisterKey' },
+  { to: '/sign-up', text: 'Log In / Register', key: 'publicLoginKey' },
 ];
 
 export const userLinks = [

@@ -13,8 +13,7 @@ const App = (): JSX.Element => (
           <Route exact path={publicRoutes.HOME}>
             HOME
           </Route>
-          <Route path={publicRoutes.LOGIN}>LOGIN</Route>
-          <Route path={publicRoutes.REGISTER}>REGISTER</Route>
+          <Route path={publicRoutes.SIGN_UP}>LOGIN</Route>
         </Switch>
       </Box>
     </Router>

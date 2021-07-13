@@ -27,10 +27,10 @@ const Navbar = (): JSX.Element => {
   return (
     <Grid
       flexBasis="100%"
-      templateColumns={['1fr auto', '1fr auto', '2fr 1fr repeat(5, 1fr)']}
-      alignItems={['center', 'center', 'start']}
+      templateColumns={['1fr auto', '1fr auto']}
+      alignItems="center"
       bg="green.500"
-      p={[5, 5, 2]}>
+      p={[5, 5, 3]}>
       <Image src={logo} alt="Logo" boxSize={['45px', '45px', '65px']} />
       <IconButton
         onClick={onOpen}
@@ -41,6 +41,7 @@ const Navbar = (): JSX.Element => {
         aria-label="Open navigation"
         icon={<HamburgerIcon />}
       />
+      <NavList display={['none', 'none', 'grid']} />
       <Drawer
         isOpen={isOpen}
         placement="right"

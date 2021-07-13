@@ -1,7 +1,6 @@
 export const publicRoutes = {
   HOME: '/',
-  LOGIN: '/login',
-  REGISTER: '/register',
+  SIGN_UP: '/sign-up',
 };
 
 export const userRoutes = {
