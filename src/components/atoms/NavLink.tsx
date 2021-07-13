@@ -8,7 +8,11 @@ interface NavLinkProps {
 }
 
 const NavLink = ({ text, to }: NavLinkProps): JSX.Element => (
-  <Link as={RouterLink} to={to} fontSize={['1.5rem', '1.5rem', 'xl']}>
+  <Link
+    as={RouterLink}
+    to={to}
+    fontSize={['1.5rem', '1.5rem', 'xl']}
+    color={['black', 'black', 'white']}>
     {text}
   </Link>
 );
