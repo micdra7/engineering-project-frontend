@@ -1,9 +1,10 @@
 import { Flex } from '@chakra-ui/react';
 import React from 'react';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
-import { SignUp } from '../../pages';
-import { publicRoutes } from '../../resources/routes';
+import { Profile, SignUp } from '../../pages';
+import { publicRoutes, userRoutes } from '../../resources/routes';
 import { AuthContextProvider } from '../../store/auth';
+import PrivateRoute from '../atoms/PrivateRoute';
 import Navbar from '../organisms/Navbar';
 
 const App = (): JSX.Element => (
@@ -24,6 +25,9 @@ const App = (): JSX.Element => (
             <Route path={publicRoutes.SIGN_UP}>
               <SignUp />
             </Route>
+            <PrivateRoute path={userRoutes.PROFILE}>
+              <Profile />
+            </PrivateRoute>
           </Switch>
         </Flex>
       </AuthContextProvider>
