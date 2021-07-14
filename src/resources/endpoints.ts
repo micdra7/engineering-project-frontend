@@ -26,5 +26,6 @@ export const ENDPOINT = {
   auth: {
     register: createUrl(AUTH_CONTROLLER, 'register'),
     login: createUrl(AUTH_CONTROLLER, 'login'),
+    refresh: createUrl(AUTH_CONTROLLER, 'refresh'),
   },
 };

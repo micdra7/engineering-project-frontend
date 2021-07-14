@@ -1,6 +1,12 @@
 import { useToast } from '@chakra-ui/react';
 import axios, { AxiosError } from 'axios';
-import React, { useCallback, useEffect, useState, useContext } from 'react';
+import React, {
+  useCallback,
+  useEffect,
+  useState,
+  useContext,
+  useMemo,
+} from 'react';
 import { useHistory } from 'react-router-dom';
 import { LoginDto } from '../dto/login.dto';
 import { RegisterDto } from '../dto/register.dto';
@@ -9,6 +15,7 @@ import { Roles } from '../resources/roles';
 import { publicRoutes } from '../resources/routes';
 import { ErrorResponse } from '../response/error.response';
 import { LoginResponse } from '../response/login.response';
+import { RefreshResponse } from '../response/refresh.response';
 import { UserWorkspacesResponse } from '../response/userWorkspaces.response';
 import AuthService from '../services/auth';
 
@@ -16,6 +23,7 @@ const AuthKey = 'game-call-auth';
 
 export interface AuthState {
   isAuthenticated: boolean;
+  email: string;
   accessToken: string;
   refreshToken: string;
   role: Roles;
@@ -29,6 +37,7 @@ const defaultAuthState: AuthState = {
   role: Roles.User,
   workspaces: [],
   isAuthenticated: false,
+  email: '',
 };
 
 const getCurrentState = (): AuthState =>
@@ -70,6 +79,7 @@ const AuthContextProvider = ({
         isAuthenticated: true,
         role: data.workspaces?.filter(w => w.isDefault)[0].role ?? Roles.User,
         workspaces: data.workspaces || [],
+        email: dto.email,
       };
 
       setState(newState);
@@ -109,6 +119,31 @@ const AuthContextProvider = ({
     history.push(publicRoutes.HOME);
   }, []);
 
+  const refresh = useCallback(async () => {
+    const currentState = getCurrentState();
+    const result = await AuthService.refresh({
+      email: currentState.email,
+      accessToken: currentState.accessToken,
+      refreshToken: currentState.refreshToken,
+    });
+
+    if (result.status === REQUEST_STATUS.SUCCESS) {
+      const data = result.data as RefreshResponse;
+      const newState = {
+        ...currentState,
+        accessToken: data.accessToken,
+        refreshToken: data.refreshToken,
+      };
+
+      setState(newState);
+      saveCurrentState(newState);
+
+      return true;
+    }
+
+    return false;
+  }, []);
+
   const register = useCallback(async (dto: RegisterDto) => {
     const result = await AuthService.register(dto);
 
@@ -138,6 +173,35 @@ const AuthContextProvider = ({
       isClosable: true,
     });
     return false;
+  }, []);
+
+  useMemo(() => {
+    axios.interceptors.response.use(
+      response => response,
+      async error => {
+        const originalRequest = error.config;
+        console.log('originalRequest: ', originalRequest);
+
+        if (
+          error.response.status === 401 &&
+          originalRequest?.url?.includes('auth')
+        ) {
+          logout();
+          return;
+        }
+
+        if (error.response.status === 401) {
+          const result = await refresh();
+
+          if (result) {
+            // eslint-disable-next-line consistent-return
+            return axios(originalRequest);
+          }
+
+          throw error;
+        }
+      },
+    );
   }, []);
 
   return (
