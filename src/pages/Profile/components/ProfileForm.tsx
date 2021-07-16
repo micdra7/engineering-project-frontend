@@ -86,7 +86,6 @@ const ProfileForm = ({
       </FormControl>
       <FormControl
         id="password"
-        isRequired
         isInvalid={
           touched.password &&
           errors.password !== undefined &&

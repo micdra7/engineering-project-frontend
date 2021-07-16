@@ -49,6 +49,12 @@ const saveCurrentState = (state: AuthState) => {
   localStorage.setItem(AuthKey, JSON.stringify(state));
 };
 
+if (getCurrentState().isAuthenticated) {
+  axios.defaults.headers.Authorization = `Bearer ${
+    getCurrentState().accessToken
+  }`;
+}
+
 const AuthContext = React.createContext(getCurrentState());
 
 const AuthContextProvider = ({
@@ -61,11 +67,11 @@ const AuthContextProvider = ({
   const toast = useToast();
 
   useEffect(() => {
-    axios.interceptors.request.use(config => {
-      config.headers.Authorization = `Bearer ${state.accessToken}`;
+    delete axios.defaults.headers.Authorization;
 
-      return config;
-    });
+    if (state.isAuthenticated) {
+      axios.defaults.headers.Authorization = `Bearer ${state.accessToken}`;
+    }
   }, [state.accessToken]);
 
   const logIn = useCallback(async (dto: LoginDto) => {
