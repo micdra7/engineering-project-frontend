@@ -32,6 +32,7 @@ const Profile = (): JSX.Element => {
   const toast = useToast();
   const history = useHistory();
 
+  const [isLoading, setLoading] = useState(true);
   const [user, setUser] = useState({
     email: '',
     firstName: '',
@@ -41,6 +42,7 @@ const Profile = (): JSX.Element => {
 
   useEffect(() => {
     const fetchUser = async () => {
+      setLoading(true);
       const result = await UsersService.getCurrentUserProfile();
 
       if (result.status === REQUEST_STATUS.SUCCESS) {
@@ -56,6 +58,7 @@ const Profile = (): JSX.Element => {
         });
         history.push(userRoutes.DASHBOARD);
       }
+      setLoading(false);
     };
 
     fetchUser();
@@ -130,6 +133,7 @@ const Profile = (): JSX.Element => {
               handleChange={handleChange}
               handleBlur={handleBlur}
               isSubmitting={isSubmitting}
+              isLoading={isLoading}
             />
           </form>
         )}

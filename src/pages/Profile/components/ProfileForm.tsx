@@ -7,6 +7,7 @@ import {
   Input,
   InputGroup,
   InputRightElement,
+  Skeleton,
 } from '@chakra-ui/react';
 import React, { useState } from 'react';
 
@@ -17,6 +18,7 @@ interface ProfileFormProps {
   handleChange: (event: unknown) => void;
   handleBlur: (event: unknown) => void;
   isSubmitting: boolean;
+  isLoading: boolean;
 }
 
 const ProfileForm = ({
@@ -26,6 +28,7 @@ const ProfileForm = ({
   handleChange,
   handleBlur,
   isSubmitting,
+  isLoading,
 }: ProfileFormProps): JSX.Element => {
   const [showPassword, setShowPassword] = useState<boolean>(false);
 
@@ -38,12 +41,14 @@ const ProfileForm = ({
           touched.email && errors.email !== undefined && errors.email !== ''
         }>
         <FormLabel>Email address</FormLabel>
-        <Input
-          type="email"
-          value={values.email}
-          onChange={handleChange}
-          onBlur={handleBlur}
-        />
+        <Skeleton isLoaded={!isLoading}>
+          <Input
+            type="email"
+            value={values.email}
+            onChange={handleChange}
+            onBlur={handleBlur}
+          />
+        </Skeleton>
         <FormErrorMessage>{touched.email ? errors.email : ''}</FormErrorMessage>
       </FormControl>
       <FormControl
@@ -55,12 +60,14 @@ const ProfileForm = ({
           errors.firstName !== ''
         }>
         <FormLabel>First name</FormLabel>
-        <Input
-          type="firstName"
-          value={values.firstName}
-          onChange={handleChange}
-          onBlur={handleBlur}
-        />
+        <Skeleton isLoaded={!isLoading}>
+          <Input
+            type="firstName"
+            value={values.firstName}
+            onChange={handleChange}
+            onBlur={handleBlur}
+          />
+        </Skeleton>
         <FormErrorMessage>
           {touched.firstName ? errors.firstName : ''}
         </FormErrorMessage>
@@ -74,12 +81,14 @@ const ProfileForm = ({
           errors.lastName !== ''
         }>
         <FormLabel>Last name</FormLabel>
-        <Input
-          type="lastName"
-          value={values.lastName}
-          onChange={handleChange}
-          onBlur={handleBlur}
-        />
+        <Skeleton isLoaded={!isLoading}>
+          <Input
+            type="lastName"
+            value={values.lastName}
+            onChange={handleChange}
+            onBlur={handleBlur}
+          />
+        </Skeleton>
         <FormErrorMessage>
           {touched.lastName ? errors.lastName : ''}
         </FormErrorMessage>
@@ -92,25 +101,27 @@ const ProfileForm = ({
           errors.password !== ''
         }>
         <FormLabel>New password</FormLabel>
-        <InputGroup size="md">
-          <Input
-            type={showPassword ? 'text' : 'password'}
-            value={values.password}
-            onChange={handleChange}
-            onBlur={handleBlur}
-          />
-          <InputRightElement width="4.5rem">
-            <Button
-              colorScheme="green"
-              h="1.75rem"
-              size="sm"
-              onClick={() => {
-                setShowPassword(!showPassword);
-              }}>
-              {showPassword ? 'Hide' : 'Show'}
-            </Button>
-          </InputRightElement>
-        </InputGroup>
+        <Skeleton isLoaded={!isLoading}>
+          <InputGroup size="md">
+            <Input
+              type={showPassword ? 'text' : 'password'}
+              value={values.password}
+              onChange={handleChange}
+              onBlur={handleBlur}
+            />
+            <InputRightElement width="4.5rem">
+              <Button
+                colorScheme="green"
+                h="1.75rem"
+                size="sm"
+                onClick={() => {
+                  setShowPassword(!showPassword);
+                }}>
+                {showPassword ? 'Hide' : 'Show'}
+              </Button>
+            </InputRightElement>
+          </InputGroup>
+        </Skeleton>
         <FormErrorMessage>
           {touched.password && errors.password}
         </FormErrorMessage>
