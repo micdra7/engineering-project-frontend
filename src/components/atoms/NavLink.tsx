@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link as RouterLink } from 'react-router-dom';
+import { Link as RouterLink, useLocation } from 'react-router-dom';
 import { Button, Link } from '@chakra-ui/react';
 
 interface NavLinkProps {
@@ -10,6 +10,8 @@ interface NavLinkProps {
 }
 
 const NavLink = ({ text, to, onClick, display }: NavLinkProps): JSX.Element => {
+  const location = useLocation();
+
   if (onClick) {
     return (
       <Button
@@ -32,6 +34,7 @@ const NavLink = ({ text, to, onClick, display }: NavLinkProps): JSX.Element => {
       as={RouterLink}
       to={to}
       onClick={onClick}
+      textDecoration={location.pathname === to ? 'underline' : undefined}
       fontSize={['1.5rem', '1.5rem', 'xl']}
       color={['black', 'black', 'white']}
       textAlign={['left', 'left', 'center']}>
