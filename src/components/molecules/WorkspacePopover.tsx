@@ -19,7 +19,7 @@ const WorkspacePopover = (): JSX.Element => {
   const auth = useAuth();
 
   return (
-    <Popover offset={[120, 5]}>
+    <Popover offset={[115, 5]}>
       <PopoverTrigger>
         <IconButton
           pos="fixed"
@@ -54,6 +54,11 @@ const WorkspacePopover = (): JSX.Element => {
                 placement="top-end"
                 label={wsp.workspaceName}>
                 <Avatar
+                  border={
+                    wsp.workspaceName === auth.currentWorkspaceName
+                      ? '3px solid white'
+                      : undefined
+                  }
                   size="sm"
                   name={wsp.workspaceName}
                   cursor="pointer"

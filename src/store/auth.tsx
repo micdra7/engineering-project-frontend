@@ -28,6 +28,8 @@ export interface AuthState {
   refreshToken: string;
   role: Roles;
   workspaces: UserWorkspacesResponse[];
+  currentWorkspaceName: string;
+  currentWorkspaceId: number;
   [others: string]: unknown;
 }
 
@@ -38,6 +40,8 @@ const defaultAuthState: AuthState = {
   workspaces: [],
   isAuthenticated: false,
   email: '',
+  currentWorkspaceId: 0,
+  currentWorkspaceName: '',
 };
 
 const getCurrentState = (): AuthState =>
@@ -79,12 +83,15 @@ const AuthContextProvider = ({
 
     if (result.status === REQUEST_STATUS.SUCCESS) {
       const data: LoginResponse = result.data as LoginResponse;
+      const defaultWorkspace = data.workspaces?.filter(w => w.isDefault)[0];
       const newState: AuthState = {
         accessToken: data.accessToken,
         refreshToken: data.refreshToken,
         isAuthenticated: true,
-        role: data.workspaces?.filter(w => w.isDefault)[0].role ?? Roles.User,
+        role: defaultWorkspace?.role ?? Roles.User,
         workspaces: data.workspaces || [],
+        currentWorkspaceName: defaultWorkspace?.workspaceName ?? '',
+        currentWorkspaceId: defaultWorkspace?.id ?? 0,
         email: dto.email,
       };
 
