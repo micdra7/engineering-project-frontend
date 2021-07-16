@@ -5,7 +5,7 @@ import { Profile, SignUp } from '../../pages';
 import { publicRoutes, userRoutes } from '../../resources/routes';
 import { AuthContextProvider } from '../../store/auth';
 import PrivateRoute from '../atoms/PrivateRoute';
-import WorkspaceButton from '../atoms/WorkspaceButton';
+import { WorkspacePopover } from '..';
 import Navbar from '../organisms/Navbar';
 
 const App = (): JSX.Element => (
@@ -13,7 +13,7 @@ const App = (): JSX.Element => (
     <Router>
       <AuthContextProvider>
         <Navbar />
-        <WorkspaceButton onClick={() => {}} />
+        <WorkspacePopover />
         <Flex
           flexBasis="100%"
           justifyContent="center"
