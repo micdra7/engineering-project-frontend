@@ -206,6 +206,9 @@ const AuthContextProvider = ({
           const result = await refresh();
 
           if (result) {
+            axios.defaults.headers.Authorization = `Bearer ${
+              getCurrentState().accessToken
+            }`;
             // eslint-disable-next-line consistent-return
             return axios(originalRequest);
           }
