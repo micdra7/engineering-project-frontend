@@ -56,6 +56,15 @@ const fonts = {
   body: 'Questrial',
 };
 
-const theme = extendTheme({ colors, fonts });
+const styles = {
+  global: {
+    '.js-focus-visible :focus:not([data-focus-visible-added])': {
+      outline: 'none',
+      boxShadow: 'none',
+    },
+  },
+};
+
+const theme = extendTheme({ colors, fonts, styles });
 
 export default theme;
