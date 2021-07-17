@@ -2,6 +2,7 @@ import axios from 'axios';
 import { LoginDto } from '../dto/login.dto';
 import { RefreshDto } from '../dto/refresh.dto';
 import { RegisterDto } from '../dto/register.dto';
+import { SwitchWorkspaceDto } from '../dto/switch-workspace.dto';
 import {
   ENDPOINT,
   REQUEST_STATUS,
@@ -40,6 +41,20 @@ class AuthService {
     try {
       const { data }: { data: RefreshResponse } = await axios.post(
         ENDPOINT.auth.refresh,
+        dto,
+      );
+      return { status: REQUEST_STATUS.SUCCESS, data };
+    } catch (error) {
+      return { status: REQUEST_STATUS.ERROR, error };
+    }
+  }
+
+  static async switchWorkspace(
+    dto: SwitchWorkspaceDto,
+  ): Promise<ServiceResponse> {
+    try {
+      const { data }: { data: RefreshResponse } = await axios.post(
+        ENDPOINT.auth.switchWorkspace,
         dto,
       );
       return { status: REQUEST_STATUS.SUCCESS, data };

@@ -10,6 +10,7 @@ import React, {
 import { useHistory } from 'react-router-dom';
 import { LoginDto } from '../dto/login.dto';
 import { RegisterDto } from '../dto/register.dto';
+import { SwitchWorkspaceDto } from '../dto/switch-workspace.dto';
 import { REQUEST_STATUS } from '../resources/endpoints';
 import { Roles } from '../resources/roles';
 import { publicRoutes } from '../resources/routes';
@@ -188,6 +189,50 @@ const AuthContextProvider = ({
     return false;
   }, []);
 
+  const switchWorkspace = useCallback(async (id: number, name: string) => {
+    const currentState = getCurrentState();
+
+    const dto: SwitchWorkspaceDto = {
+      accessToken: currentState.accessToken,
+      refreshToken: currentState.refreshToken,
+      workspaceId: id,
+      workspaceName: name,
+    };
+    const result = await AuthService.switchWorkspace(dto);
+
+    if (result.status === REQUEST_STATUS.SUCCESS) {
+      const data = result.data as RefreshResponse;
+
+      currentState.accessToken = data.accessToken;
+      currentState.refreshToken = data.refreshToken;
+      currentState.currentWorkspaceId = id;
+      currentState.currentWorkspaceName = name;
+      currentState.role = currentState.workspaces.filter(
+        w => w.id === id,
+      )[0].role;
+
+      saveCurrentState(currentState);
+      setState(currentState);
+
+      return true;
+    }
+
+    const error: AxiosError = result.error as AxiosError;
+
+    toast({
+      title: 'Switching to another workspace failed',
+      description:
+        error.response?.status === 400
+          ? (error.response.data as ErrorResponse).message ??
+            'Something went wrong. Please try again later'
+          : undefined,
+      status: 'error',
+      duration: 5000,
+      isClosable: true,
+    });
+    return false;
+  }, []);
+
   useMemo(() => {
     axios.interceptors.response.use(
       response => response,
@@ -220,7 +265,8 @@ const AuthContextProvider = ({
   }, []);
 
   return (
-    <AuthContext.Provider value={{ ...state, logIn, register, logout }}>
+    <AuthContext.Provider
+      value={{ ...state, logIn, register, logout, switchWorkspace }}>
       {children}
     </AuthContext.Provider>
   );

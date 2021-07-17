@@ -28,6 +28,7 @@ export const ENDPOINT = {
     register: createUrl(AUTH_CONTROLLER, 'register'),
     login: createUrl(AUTH_CONTROLLER, 'login'),
     refresh: createUrl(AUTH_CONTROLLER, 'refresh'),
+    switchWorkspace: createUrl(AUTH_CONTROLLER, 'switch'),
   },
   user: {
     current: createUrl(USERS_CONTROLLER, 'current/profile'),

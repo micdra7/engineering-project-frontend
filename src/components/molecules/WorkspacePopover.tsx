@@ -13,13 +13,20 @@ import {
   Tooltip,
 } from '@chakra-ui/react';
 import React from 'react';
+import { useHistory } from 'react-router-dom';
+import { userRoutes } from '../../resources/routes';
 import { useAuth } from '../../store/auth';
 
 const WorkspacePopover = (): JSX.Element => {
   const auth = useAuth();
+  const history = useHistory();
+
+  if (!auth.isAuthenticated || auth.workspaces.length <= 1) {
+    return <></>;
+  }
 
   return (
-    <Popover offset={[115, 5]}>
+    <Popover offset={[115, 5]} strategy="fixed">
       <PopoverTrigger>
         <IconButton
           pos="fixed"
@@ -61,8 +68,28 @@ const WorkspacePopover = (): JSX.Element => {
                   }
                   size="sm"
                   name={wsp.workspaceName}
-                  cursor="pointer"
-                  onClick={() => console.log('xd')}
+                  cursor={
+                    wsp.workspaceName === auth.currentWorkspaceName
+                      ? 'not-allowed'
+                      : 'pointer'
+                  }
+                  pointerEvents={
+                    wsp.workspaceName === auth.currentWorkspaceName
+                      ? 'none'
+                      : 'unset'
+                  }
+                  onClick={async () => {
+                    const result = await (
+                      auth.switchWorkspace as (
+                        id: number,
+                        name: string,
+                      ) => Promise<boolean>
+                    )(wsp.id || 0, wsp.workspaceName);
+
+                    if (result) {
+                      history.push(userRoutes.DASHBOARD);
+                    }
+                  }}
                 />
               </Tooltip>
             ))}
