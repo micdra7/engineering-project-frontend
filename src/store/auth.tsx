@@ -130,7 +130,7 @@ const AuthContextProvider = ({
       duration: 5000,
       isClosable: true,
     });
-    history.push(publicRoutes.HOME);
+    history.push(publicRoutes.SIGN_UP);
   }, []);
 
   const refresh = useCallback(async () => {
@@ -241,13 +241,16 @@ const AuthContextProvider = ({
 
         if (
           error.response.status === 401 &&
-          originalRequest?.url?.includes('auth')
+          originalRequest?.url?.includes('auth/refresh')
         ) {
           logout();
           return;
         }
 
-        if (error.response.status === 401) {
+        if (
+          error.response.status === 401 &&
+          !originalRequest?.url?.includes('auth/login')
+        ) {
           const result = await refresh();
 
           if (result) {
