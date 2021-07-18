@@ -32,5 +32,7 @@ export const ENDPOINT = {
   },
   user: {
     current: createUrl(USERS_CONTROLLER, 'current/profile'),
+    list: (page: number, limit: number): string =>
+      createUrl(USERS_CONTROLLER, '', `page=${page}&limit=${limit}`),
   },
 };
