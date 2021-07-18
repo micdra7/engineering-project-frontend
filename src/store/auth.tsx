@@ -261,9 +261,9 @@ const AuthContextProvider = ({
             // eslint-disable-next-line consistent-return
             return axios(originalRequest);
           }
-
-          throw error;
         }
+
+        throw error;
       },
     );
   }, []);
