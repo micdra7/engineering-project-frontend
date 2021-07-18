@@ -59,8 +59,7 @@ const UsersTable = (): JSX.Element => {
       paginationState.itemCount,
       data => {
         setEntries(data.data);
-
-        if (entries.length === 0) setPaginationState(data.meta);
+        setPaginationState(data.meta);
       },
       error => {
         toast({
@@ -77,7 +76,7 @@ const UsersTable = (): JSX.Element => {
       },
     );
     setLoading(false);
-  }, [paginationState]);
+  }, [paginationState.currentPage, paginationState.itemCount]);
 
   if (isLoading) {
     return (
@@ -137,7 +136,7 @@ const UsersTable = (): JSX.Element => {
           setPaginationState({ ...paginationState, currentPage: page });
         }}
         onItemCountChange={(itemCount: number) => {
-          setPaginationState({ ...paginationState, itemCount });
+          setPaginationState({ ...paginationState, itemCount, currentPage: 1 });
         }}
       />
     </Box>
