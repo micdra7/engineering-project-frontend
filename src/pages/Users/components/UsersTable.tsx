@@ -116,9 +116,7 @@ const UsersTable = (): JSX.Element => {
                     colorScheme="green"
                     rounded="md"
                     onClick={() =>
-                      history.push(
-                        `${adminRoutes.USERS_MANAGEMENT}/${entry.id}`,
-                      )
+                      history.push(`${adminRoutes.USERS_EDIT}/${entry.id}`)
                     }
                     icon={<EditIcon />}
                   />

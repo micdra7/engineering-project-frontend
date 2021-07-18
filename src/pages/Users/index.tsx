@@ -4,6 +4,7 @@ import { Switch } from 'react-router-dom';
 import { AdminRoute } from '../../components';
 import { adminRoutes } from '../../resources/routes';
 import { useAuth } from '../../store/auth';
+import UsersForm from './components/UsersForm';
 import UsersTable from './components/UsersTable';
 
 const Users = (): JSX.Element => {
@@ -26,6 +27,12 @@ const Users = (): JSX.Element => {
       <Switch>
         <AdminRoute exact path={adminRoutes.USERS_MANAGEMENT}>
           <UsersTable />
+        </AdminRoute>
+        <AdminRoute path={`${adminRoutes.USERS_MANAGEMENT}/add`}>
+          <UsersForm />
+        </AdminRoute>
+        <AdminRoute path={`${adminRoutes.USERS_MANAGEMENT}/edit/:id`}>
+          <UsersForm />
         </AdminRoute>
       </Switch>
     </Grid>
