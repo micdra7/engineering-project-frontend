@@ -45,6 +45,18 @@ class UsersService {
       return { status: REQUEST_STATUS.ERROR, error };
     }
   }
+
+  static async findByEmail(email: string): Promise<ServiceResponse> {
+    try {
+      const { data }: { data: ProfileResponse } = await axios.post(
+        ENDPOINT.user.findByEmail,
+        { email },
+      );
+      return { status: REQUEST_STATUS.SUCCESS, data };
+    } catch (error) {
+      return { status: REQUEST_STATUS.ERROR, error };
+    }
+  }
 }
 
 export default UsersService;
