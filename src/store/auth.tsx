@@ -11,7 +11,7 @@ import { useHistory } from 'react-router-dom';
 import { LoginDto } from '../dto/login.dto';
 import { RegisterDto } from '../dto/register.dto';
 import { SwitchWorkspaceDto } from '../dto/switch-workspace.dto';
-import { REQUEST_STATUS } from '../resources/endpoints';
+import { ENDPOINT, REQUEST_STATUS } from '../resources/endpoints';
 import { Roles } from '../resources/roles';
 import { publicRoutes } from '../resources/routes';
 import { ErrorResponse } from '../response/error.response';
@@ -241,7 +241,7 @@ const AuthContextProvider = ({
 
         if (
           error.response.status === 401 &&
-          originalRequest?.url?.includes('auth/refresh')
+          originalRequest?.url?.includes(ENDPOINT.auth.refresh)
         ) {
           logout();
           return;
@@ -249,7 +249,7 @@ const AuthContextProvider = ({
 
         if (
           error.response.status === 401 &&
-          !originalRequest?.url?.includes('auth/login')
+          !originalRequest?.url?.includes(ENDPOINT.auth.login)
         ) {
           const result = await refresh();
 
