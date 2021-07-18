@@ -11,6 +11,7 @@ import {
   Slide,
   Spinner,
   useToast,
+  Grid,
 } from '@chakra-ui/react';
 import React, { useState, useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
@@ -91,7 +92,7 @@ const UsersTable = (): JSX.Element => {
   }
 
   return (
-    <Box flexBasis="100%" w="100%">
+    <Grid flexBasis="100%" w="100%">
       <Box w="100%" overflowY="unset" overflowX="auto">
         <Table variant="striped" colorScheme="green" minW="900px">
           <Thead>
@@ -137,7 +138,7 @@ const UsersTable = (): JSX.Element => {
           setPaginationState({ ...paginationState, itemCount, currentPage: 1 });
         }}
       />
-    </Box>
+    </Grid>
   );
 };
 
