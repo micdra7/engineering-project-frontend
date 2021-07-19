@@ -1,4 +1,4 @@
-import { EditIcon } from '@chakra-ui/icons';
+import { AddIcon, EditIcon } from '@chakra-ui/icons';
 import {
   Box,
   IconButton,
@@ -12,6 +12,8 @@ import {
   Spinner,
   useToast,
   Grid,
+  Flex,
+  Tooltip,
 } from '@chakra-ui/react';
 import React, { useState, useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
@@ -93,6 +95,18 @@ const UsersTable = (): JSX.Element => {
 
   return (
     <Grid flexBasis="100%" w="100%">
+      <Flex w="100%" alignItems="center" justifyContent="flex-end">
+        {/* search input should be added here */}
+        <Tooltip hasArrow placement="left" label="Add user" bg="green.500">
+          <IconButton
+            aria-label="Add user"
+            onClick={() => history.push(adminRoutes.USERS_ADD)}
+            icon={<AddIcon />}
+            colorScheme="green"
+            rounded="md"
+          />
+        </Tooltip>
+      </Flex>
       <Box w="100%" overflowY="unset" overflowX="auto">
         <Table variant="striped" colorScheme="green" minW="900px">
           <Thead>

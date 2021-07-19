@@ -35,5 +35,6 @@ export const ENDPOINT = {
     list: (page: number, limit: number): string =>
       createUrl(USERS_CONTROLLER, '', `page=${page}&limit=${limit}`),
     findByEmail: createUrl(USERS_CONTROLLER, 'find-by-email'),
+    getOne: (id: number): string => createUrl(USERS_CONTROLLER, `${id}`),
   },
 };
