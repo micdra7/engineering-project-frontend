@@ -75,27 +75,30 @@ const UsersForm = (): JSX.Element => {
   const [hasChecked, setHasChecked] = useState(!!+params.id);
 
   useEffect(() => {
-    setLoading(true);
-    fetchUser(
-      +params.id,
-      data => {
-        setUser(data as ProfileResponse);
-      },
-      error => {
-        toast({
-          title: 'Could not load users list',
-          description:
-            error.response?.status === 400
-              ? (error.response.data as ErrorResponse).message ??
-                'Something went wrong. Please try again later'
-              : undefined,
-          status: 'error',
-          duration: 5000,
-          isClosable: true,
-        });
-      },
-    );
-    setLoading(false);
+    if (params.id) {
+      setLoading(true);
+      fetchUser(
+        +params.id,
+        data => {
+          setUser(data as ProfileResponse);
+          setLoading(false);
+        },
+        error => {
+          toast({
+            title: 'Could not load users list',
+            description:
+              error.response?.status === 400
+                ? (error.response.data as ErrorResponse).message ??
+                  'Something went wrong. Please try again later'
+                : undefined,
+            status: 'error',
+            duration: 5000,
+            isClosable: true,
+          });
+          setLoading(false);
+        },
+      );
+    }
   }, [params.id]);
 
   return (
@@ -189,6 +192,7 @@ const UsersForm = (): JSX.Element => {
                 handleChange={handleChange}
                 handleBlur={handleBlur}
                 isSubmitting={isSubmitting}
+                isLoading={isLoading}
               />
             </form>
           )}

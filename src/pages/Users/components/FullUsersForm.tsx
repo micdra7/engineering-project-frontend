@@ -8,6 +8,7 @@ import {
   InputRightElement,
   Grid,
   Select,
+  Skeleton,
 } from '@chakra-ui/react';
 import React, { useState } from 'react';
 import { Roles } from '../../../resources/roles';
@@ -19,6 +20,7 @@ interface FullUsersFormProps {
   handleChange: (event: unknown) => void;
   handleBlur: (event: unknown) => void;
   isSubmitting: boolean;
+  isLoading: boolean;
 }
 
 const FullUsersForm = ({
@@ -28,6 +30,7 @@ const FullUsersForm = ({
   handleChange,
   handleBlur,
   isSubmitting,
+  isLoading,
 }: FullUsersFormProps): JSX.Element => {
   const [showPassword, setShowPassword] = useState<boolean>(false);
 
@@ -44,12 +47,14 @@ const FullUsersForm = ({
           touched.email && errors.email !== undefined && errors.email !== ''
         }>
         <FormLabel>Email address</FormLabel>
-        <Input
-          type="email"
-          value={values.email}
-          onChange={handleChange}
-          onBlur={handleBlur}
-        />
+        <Skeleton isLoaded={!isLoading}>
+          <Input
+            type="email"
+            value={values.email}
+            onChange={handleChange}
+            onBlur={handleBlur}
+          />
+        </Skeleton>
         <FormErrorMessage>{touched.email ? errors.email : ''}</FormErrorMessage>
       </FormControl>
       <FormControl
@@ -61,12 +66,14 @@ const FullUsersForm = ({
           errors.firstName !== ''
         }>
         <FormLabel>First Name</FormLabel>
-        <Input
-          type="text"
-          value={values.firstName}
-          onChange={handleChange}
-          onBlur={handleBlur}
-        />
+        <Skeleton isLoaded={!isLoading}>
+          <Input
+            type="text"
+            value={values.firstName}
+            onChange={handleChange}
+            onBlur={handleBlur}
+          />
+        </Skeleton>
         <FormErrorMessage>
           {touched.firstName ? errors.firstName : ''}
         </FormErrorMessage>
@@ -80,12 +87,14 @@ const FullUsersForm = ({
           errors.lastName !== ''
         }>
         <FormLabel>Last Name</FormLabel>
-        <Input
-          type="text"
-          value={values.lastName}
-          onChange={handleChange}
-          onBlur={handleBlur}
-        />
+        <Skeleton isLoaded={!isLoading}>
+          <Input
+            type="text"
+            value={values.lastName}
+            onChange={handleChange}
+            onBlur={handleBlur}
+          />
+        </Skeleton>
         <FormErrorMessage>
           {touched.lastName ? errors.lastName : ''}
         </FormErrorMessage>
@@ -97,10 +106,12 @@ const FullUsersForm = ({
           touched.role && errors.role !== undefined && errors.role !== ''
         }>
         <FormLabel>Role</FormLabel>
-        <Select value={values.role} onChange={handleChange}>
-          <option value={Roles.User}>User</option>
-          <option value={Roles.Admin}>Admin</option>
-        </Select>
+        <Skeleton isLoaded={!isLoading}>
+          <Select value={values.role} onChange={handleChange}>
+            <option value={Roles.User}>User</option>
+            <option value={Roles.Admin}>Admin</option>
+          </Select>
+        </Skeleton>
         <FormErrorMessage>{touched.role ? errors.role : ''}</FormErrorMessage>
       </FormControl>
       <FormControl
@@ -111,25 +122,27 @@ const FullUsersForm = ({
           errors.password !== ''
         }>
         <FormLabel>New password</FormLabel>
-        <InputGroup size="md">
-          <Input
-            type={showPassword ? 'text' : 'password'}
-            value={values.password}
-            onChange={handleChange}
-            onBlur={handleBlur}
-          />
-          <InputRightElement width="4.5rem">
-            <Button
-              colorScheme="green"
-              h="1.75rem"
-              size="sm"
-              onClick={() => {
-                setShowPassword(!showPassword);
-              }}>
-              {showPassword ? 'Hide' : 'Show'}
-            </Button>
-          </InputRightElement>
-        </InputGroup>
+        <Skeleton isLoaded={!isLoading}>
+          <InputGroup size="md">
+            <Input
+              type={showPassword ? 'text' : 'password'}
+              value={values.password}
+              onChange={handleChange}
+              onBlur={handleBlur}
+            />
+            <InputRightElement width="4.5rem">
+              <Button
+                colorScheme="green"
+                h="1.75rem"
+                size="sm"
+                onClick={() => {
+                  setShowPassword(!showPassword);
+                }}>
+                {showPassword ? 'Hide' : 'Show'}
+              </Button>
+            </InputRightElement>
+          </InputGroup>
+        </Skeleton>
         <FormErrorMessage>
           {touched.password && errors.password}
         </FormErrorMessage>
