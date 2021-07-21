@@ -3,4 +3,5 @@ export class UpdateDto {
   firstName = '';
   lastName = '';
   password? = '';
+  role?: number;
 }

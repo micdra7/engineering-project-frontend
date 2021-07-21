@@ -5,9 +5,11 @@ import React, { useState, useEffect } from 'react';
 import { useHistory, useParams } from 'react-router-dom';
 import * as yup from 'yup';
 import { REQUEST_STATUS } from '../../../resources/endpoints';
+import { adminRoutes } from '../../../resources/routes';
 import { ErrorResponse } from '../../../response/error.response';
 import { ProfileResponse } from '../../../response/profile.response';
 import UsersService from '../../../services/users';
+import WorkspacesService from '../../../services/workspaces';
 import { useAuth } from '../../../store/auth';
 import { validatePassword } from '../../../utils/helper';
 import FullUsersForm from './FullUsersForm';
@@ -30,11 +32,10 @@ const FullUsersSchema = yup.object({
   lastName: yup.string().required('Last name is required'),
   password: yup
     .string()
-    .required('Password is required')
     .test(
       'len',
       'Must be at least 8 characters and have at least one lowercase, one uppercase and one special character',
-      value => validatePassword(value || ''),
+      value => (value && value.length > 0 ? validatePassword(value) : true),
     ),
   role: yup.number().is([0, 1]),
 });
@@ -117,6 +118,30 @@ const UsersForm = (): JSX.Element => {
                 setEmailTaken(!!result.data);
                 setHasChecked(true);
               }
+            } else {
+              const result = await WorkspacesService.addUserToWorkspace({
+                ...values,
+              });
+
+              if (result.status === REQUEST_STATUS.SUCCESS) {
+                toast({
+                  title: 'User successfully added to workspace',
+                  status: 'success',
+                  duration: 5000,
+                  isClosable: true,
+                });
+                history.push(adminRoutes.USERS_MANAGEMENT);
+              } else {
+                toast({
+                  title: 'Could not add user to workspace',
+                  description:
+                    (result.error as ErrorResponse).message ??
+                    'Something went wrong. Please try again later',
+                  status: 'error',
+                  duration: 5000,
+                  isClosable: true,
+                });
+              }
             }
 
             setSubmitting(false);
@@ -165,6 +190,31 @@ const UsersForm = (): JSX.Element => {
               if (result.status === REQUEST_STATUS.SUCCESS) {
                 setEmailTaken(!!result.data);
                 setHasChecked(true);
+              }
+            } else {
+              const result = await UsersService.updateOne(+params.id, {
+                ...values,
+                role: +(values.role || 0),
+              });
+
+              if (result.status === REQUEST_STATUS.SUCCESS) {
+                toast({
+                  title: 'User updated successfully',
+                  status: 'success',
+                  duration: 5000,
+                  isClosable: true,
+                });
+                history.push(adminRoutes.USERS_MANAGEMENT);
+              } else {
+                toast({
+                  title: 'Could not update user',
+                  description:
+                    (result.error as ErrorResponse).message ??
+                    'Something went wrong. Please try again later',
+                  status: 'error',
+                  duration: 5000,
+                  isClosable: true,
+                });
               }
             }
 

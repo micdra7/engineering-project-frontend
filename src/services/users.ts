@@ -61,7 +61,19 @@ class UsersService {
   static async findOne(id: number): Promise<ServiceResponse> {
     try {
       const { data }: { data: ProfileResponse } = await axios.get(
-        ENDPOINT.user.getOne(id),
+        ENDPOINT.user.single(id),
+      );
+      return { status: REQUEST_STATUS.SUCCESS, data };
+    } catch (error) {
+      return { status: REQUEST_STATUS.ERROR, error };
+    }
+  }
+
+  static async updateOne(id: number, dto: UpdateDto): Promise<ServiceResponse> {
+    try {
+      const { data }: { data: ProfileResponse } = await axios.patch(
+        ENDPOINT.user.single(id),
+        dto,
       );
       return { status: REQUEST_STATUS.SUCCESS, data };
     } catch (error) {
