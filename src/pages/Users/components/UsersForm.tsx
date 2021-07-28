@@ -135,7 +135,8 @@ const UsersForm = (): JSX.Element => {
                 toast({
                   title: 'Could not add user to workspace',
                   description:
-                    (result.error as ErrorResponse).message ??
+                    (result.error as AxiosError<ErrorResponse>).response?.data
+                      .message ??
                     'Something went wrong. Please try again later',
                   status: 'error',
                   duration: 5000,

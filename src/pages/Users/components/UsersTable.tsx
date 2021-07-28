@@ -8,7 +8,6 @@ import {
   Th,
   Thead,
   Tr,
-  Slide,
   Spinner,
   useToast,
   Grid,
@@ -26,6 +25,7 @@ import { ErrorResponse } from '../../../response/error.response';
 import { PaginationResponse } from '../../../response/pagination.response';
 import UsersService from '../../../services/users';
 import { REQUEST_STATUS } from '../../../resources/endpoints';
+import { useAuth } from '../../../store/auth';
 
 const fetchUsers = async (
   page: number,
@@ -45,6 +45,7 @@ const fetchUsers = async (
 const UsersTable = (): JSX.Element => {
   const history = useHistory();
   const toast = useToast();
+  const auth = useAuth();
 
   const [entries, setEntries] = useState<UserListResponse[]>([]);
   const [paginationState, setPaginationState] = useState({
@@ -127,6 +128,7 @@ const UsersTable = (): JSX.Element => {
                 <Td>{entry.role === Roles.Admin ? 'Admin' : 'User'}</Td>
                 <Td>
                   <IconButton
+                    disabled={entry.email === auth.email}
                     aria-label="Edit user"
                     colorScheme="green"
                     rounded="md"
