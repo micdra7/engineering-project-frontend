@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { ChangeStatusDto } from '../dto/change-status.dto';
 import { UpdateDto } from '../dto/update.dto';
 import {
   ENDPOINT,
@@ -73,6 +74,21 @@ class UsersService {
     try {
       const { data }: { data: ProfileResponse } = await axios.patch(
         ENDPOINT.user.single(id),
+        dto,
+      );
+      return { status: REQUEST_STATUS.SUCCESS, data };
+    } catch (error) {
+      return { status: REQUEST_STATUS.ERROR, error };
+    }
+  }
+
+  static async changeStatus(
+    id: number,
+    dto: ChangeStatusDto,
+  ): Promise<ServiceResponse> {
+    try {
+      const { data }: { data: ProfileResponse } = await axios.patch(
+        ENDPOINT.user.changeStatus(id),
         dto,
       );
       return { status: REQUEST_STATUS.SUCCESS, data };

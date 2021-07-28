@@ -1,4 +1,9 @@
-import { AddIcon, EditIcon } from '@chakra-ui/icons';
+import {
+  AddIcon,
+  CheckCircleIcon,
+  EditIcon,
+  NotAllowedIcon,
+} from '@chakra-ui/icons';
 import {
   Box,
   IconButton,
@@ -13,6 +18,7 @@ import {
   Grid,
   Flex,
   Tooltip,
+  Switch,
 } from '@chakra-ui/react';
 import React, { useState, useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
@@ -55,6 +61,7 @@ const UsersTable = (): JSX.Element => {
     itemCount: 10,
   });
   const [isLoading, setLoading] = useState(false);
+  const [refreshCounter, setRefreshCounter] = useState(0);
 
   useEffect(() => {
     setLoading(true);
@@ -80,7 +87,7 @@ const UsersTable = (): JSX.Element => {
       },
     );
     setLoading(false);
-  }, [paginationState.currentPage, paginationState.itemCount]);
+  }, [paginationState.currentPage, paginationState.itemCount, refreshCounter]);
 
   if (isLoading) {
     return (
@@ -127,15 +134,32 @@ const UsersTable = (): JSX.Element => {
                 <Td>{entry.lastName}</Td>
                 <Td>{entry.role === Roles.Admin ? 'Admin' : 'User'}</Td>
                 <Td>
-                  <IconButton
-                    disabled={entry.email === auth.email}
-                    aria-label="Edit user"
+                  <Tooltip label="Edit">
+                    <IconButton
+                      disabled={entry.email === auth.email}
+                      aria-label="Edit user"
+                      colorScheme="green"
+                      rounded="md"
+                      onClick={() =>
+                        history.push(`${adminRoutes.USERS_EDIT}/${entry.id}`)
+                      }
+                      icon={<EditIcon />}
+                    />
+                  </Tooltip>
+                  <Switch
+                    ml={3}
+                    isDisabled={entry.email === auth.email}
+                    isChecked={entry.isActive}
                     colorScheme="green"
-                    rounded="md"
-                    onClick={() =>
-                      history.push(`${adminRoutes.USERS_EDIT}/${entry.id}`)
-                    }
-                    icon={<EditIcon />}
+                    onChange={async () => {
+                      await UsersService.changeStatus(entry.id, {
+                        email: entry.email,
+                        role: entry.role,
+                        status: !entry.isActive,
+                      });
+
+                      setRefreshCounter(old => old + 1);
+                    }}
                   />
                 </Td>
               </Tr>

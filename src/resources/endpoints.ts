@@ -37,6 +37,8 @@ export const ENDPOINT = {
       createUrl(USERS_CONTROLLER, '', `page=${page}&limit=${limit}`),
     findByEmail: createUrl(USERS_CONTROLLER, 'find-by-email'),
     single: (id: number): string => createUrl(USERS_CONTROLLER, `${id}`),
+    changeStatus: (id: number): string =>
+      createUrl(USERS_CONTROLLER, `${id}/change-status`),
   },
   workspaces: {
     addUser: createUrl(WORKSPACE_CONTROLLER, 'add-user'),
