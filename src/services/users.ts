@@ -1,5 +1,6 @@
 import axios from 'axios';
 import { ChangeStatusDto } from '../dto/change-status.dto';
+import { CreateUserDto } from '../dto/create-user.dto';
 import { UpdateDto } from '../dto/update.dto';
 import {
   ENDPOINT,
@@ -89,6 +90,18 @@ class UsersService {
     try {
       const { data }: { data: ProfileResponse } = await axios.patch(
         ENDPOINT.user.changeStatus(id),
+        dto,
+      );
+      return { status: REQUEST_STATUS.SUCCESS, data };
+    } catch (error) {
+      return { status: REQUEST_STATUS.ERROR, error };
+    }
+  }
+
+  static async create(dto: CreateUserDto): Promise<ServiceResponse> {
+    try {
+      const { data }: { data: ProfileResponse } = await axios.post(
+        ENDPOINT.user.create,
         dto,
       );
       return { status: REQUEST_STATUS.SUCCESS, data };

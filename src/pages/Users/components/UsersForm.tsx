@@ -193,14 +193,21 @@ const UsersForm = (): JSX.Element => {
                 setHasChecked(true);
               }
             } else {
-              const result = await UsersService.updateOne(+params.id, {
-                ...values,
-                role: +(values.role || 0),
-              });
+              const result = params.id
+                ? await UsersService.updateOne(+params.id, {
+                    ...values,
+                    role: +(values.role || 0),
+                  })
+                : await UsersService.create({
+                    ...values,
+                    role: +(values.role || 0),
+                  });
 
               if (result.status === REQUEST_STATUS.SUCCESS) {
                 toast({
-                  title: 'User updated successfully',
+                  title: `User ${
+                    params.id ? 'updated' : 'created'
+                  } successfully`,
                   status: 'success',
                   duration: 5000,
                   isClosable: true,
@@ -208,7 +215,7 @@ const UsersForm = (): JSX.Element => {
                 history.push(adminRoutes.USERS_MANAGEMENT);
               } else {
                 toast({
-                  title: 'Could not update user',
+                  title: `Could not ${params.id ? 'update' : 'create'} user`,
                   description:
                     (result.error as ErrorResponse).message ??
                     'Something went wrong. Please try again later',

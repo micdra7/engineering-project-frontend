@@ -39,6 +39,7 @@ export const ENDPOINT = {
     single: (id: number): string => createUrl(USERS_CONTROLLER, `${id}`),
     changeStatus: (id: number): string =>
       createUrl(USERS_CONTROLLER, `${id}/change-status`),
+    create: createUrl(USERS_CONTROLLER, ''),
   },
   workspaces: {
     addUser: createUrl(WORKSPACE_CONTROLLER, 'add-user'),
