@@ -1,7 +1,7 @@
-export class UpdateDto {
+export class CreateUserDto {
   email = '';
   firstName = '';
   lastName = '';
   password? = '';
-  role?: number;
+  role = 0;
 }

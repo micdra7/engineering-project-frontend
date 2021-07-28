@@ -78,6 +78,7 @@ const WorkspacePopover = (): JSX.Element => {
                       ? 'none'
                       : 'unset'
                   }
+                  transition="border 0.05s ease-in-out"
                   onClick={async () => {
                     const result = await (
                       auth.switchWorkspace as (

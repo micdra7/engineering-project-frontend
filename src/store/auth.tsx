@@ -11,7 +11,7 @@ import { useHistory } from 'react-router-dom';
 import { LoginDto } from '../dto/login.dto';
 import { RegisterDto } from '../dto/register.dto';
 import { SwitchWorkspaceDto } from '../dto/switch-workspace.dto';
-import { REQUEST_STATUS } from '../resources/endpoints';
+import { ENDPOINT, REQUEST_STATUS } from '../resources/endpoints';
 import { Roles } from '../resources/roles';
 import { publicRoutes } from '../resources/routes';
 import { ErrorResponse } from '../response/error.response';
@@ -130,7 +130,7 @@ const AuthContextProvider = ({
       duration: 5000,
       isClosable: true,
     });
-    history.push(publicRoutes.HOME);
+    history.push(publicRoutes.SIGN_UP);
   }, []);
 
   const refresh = useCallback(async () => {
@@ -241,25 +241,29 @@ const AuthContextProvider = ({
 
         if (
           error.response.status === 401 &&
-          originalRequest?.url?.includes('auth')
+          originalRequest?.url?.includes(ENDPOINT.auth.refresh)
         ) {
           logout();
           return;
         }
 
-        if (error.response.status === 401) {
+        if (
+          error.response.status === 401 &&
+          !originalRequest?.url?.includes(ENDPOINT.auth.login)
+        ) {
           const result = await refresh();
 
           if (result) {
-            axios.defaults.headers.Authorization = `Bearer ${
+            originalRequest.headers.Authorization = `Bearer ${
               getCurrentState().accessToken
             }`;
+
             // eslint-disable-next-line consistent-return
             return axios(originalRequest);
           }
-
-          throw error;
         }
+
+        throw error;
       },
     );
   }, []);

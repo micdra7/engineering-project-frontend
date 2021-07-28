@@ -2,6 +2,7 @@ export const BASE_API_URL = process.env.REACT_APP_API_URL;
 
 const AUTH_CONTROLLER = 'auth';
 const USERS_CONTROLLER = 'users';
+const WORKSPACE_CONTROLLER = 'workspaces';
 
 export const REQUEST_STATUS = {
   ERROR: 'ERROR',
@@ -32,5 +33,15 @@ export const ENDPOINT = {
   },
   user: {
     current: createUrl(USERS_CONTROLLER, 'current/profile'),
+    list: (page: number, limit: number): string =>
+      createUrl(USERS_CONTROLLER, '', `page=${page}&limit=${limit}`),
+    findByEmail: createUrl(USERS_CONTROLLER, 'find-by-email'),
+    single: (id: number): string => createUrl(USERS_CONTROLLER, `${id}`),
+    changeStatus: (id: number): string =>
+      createUrl(USERS_CONTROLLER, `${id}/change-status`),
+    create: createUrl(USERS_CONTROLLER, ''),
+  },
+  workspaces: {
+    addUser: createUrl(WORKSPACE_CONTROLLER, 'add-user'),
   },
 };

@@ -14,5 +14,7 @@ export const userRoutes = {
 
 export const adminRoutes = {
   USERS_MANAGEMENT: '/users',
+  USERS_EDIT: '/users/edit',
+  USERS_ADD: '/users/add',
   GAMES_MANAGEMENT: '/games',
 };
