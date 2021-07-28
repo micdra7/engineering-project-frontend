@@ -108,12 +108,11 @@ const AuthContextProvider = ({
       return true;
     }
 
-    const error: AxiosError = result.error as AxiosError;
+    const error: AxiosError<ErrorResponse> = result.error as AxiosError;
 
     toast({
       title: 'Login failed',
-      description:
-        error.response?.status === 401 ? 'Invalid credentials' : undefined,
+      description: error?.response?.data.message ?? 'Something went wrong',
       status: 'error',
       duration: 5000,
       isClosable: true,
