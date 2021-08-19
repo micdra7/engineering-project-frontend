@@ -3,7 +3,7 @@ import { ChakraProvider } from '@chakra-ui/react';
 import theme from 'resources/theme';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import { BrowserRouter, Route, Switch } from 'react-router-dom';
-import { LandingPage } from 'components/Layout';
+import { LandingPage } from 'pages/public';
 import ErrorBoundary from 'components/ErrorBoundary';
 
 const queryClient = new QueryClient();
