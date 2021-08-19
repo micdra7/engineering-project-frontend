@@ -5,6 +5,7 @@ import { QueryClient, QueryClientProvider } from 'react-query';
 import { BrowserRouter, Route, Switch } from 'react-router-dom';
 import { LandingPage } from 'pages/public';
 import ErrorBoundary from 'components/ErrorBoundary';
+import { AuthContextProvider } from 'services/Auth/Auth';
 
 const queryClient = new QueryClient();
 
@@ -21,7 +22,9 @@ export const App = (): JSX.Element => (
     <ChakraProvider theme={theme}>
       <ErrorBoundary>
         <BrowserRouter>
-          <GlobalRoutes />
+          <AuthContextProvider>
+            <GlobalRoutes />
+          </AuthContextProvider>
         </BrowserRouter>
       </ErrorBoundary>
     </ChakraProvider>
