@@ -5,7 +5,14 @@ type TLoggerParams = {
   title?: string;
 };
 
-export const useLogger = () => {
+type TLoggerReturnValue = {
+  success: (data: TLoggerParams) => void;
+  info: (data: TLoggerParams) => void;
+  warning: (data: TLoggerParams) => void;
+  error: (data: TLoggerParams) => void;
+};
+
+export const useLogger = (): TLoggerReturnValue => {
   const toast = useToast();
 
   const toastProps = {

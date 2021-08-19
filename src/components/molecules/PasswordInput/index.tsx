@@ -7,7 +7,7 @@ import {
   InputGroup,
   InputRightElement,
 } from '@chakra-ui/react';
-import React, { useState } from 'react';
+import React, { useState, ChangeEvent } from 'react';
 
 type TPasswordInputProps = {
   id: string;
@@ -15,8 +15,8 @@ type TPasswordInputProps = {
   isInvalid?: boolean;
   label: string;
   value: string;
-  onChange: () => void;
-  onBlur: () => void;
+  onChange: (e: ChangeEvent) => void;
+  onBlur: (e: ChangeEvent) => void;
   errorMessage?: string;
 };
 
@@ -48,7 +48,7 @@ const PasswordInput = ({
             colorScheme="cyan"
             h="1.75rem"
             size="sm"
-            onClick={() => setShowPassword(true)}>
+            onClick={() => setShowPassword(!showPassword)}>
             {showPassword ? 'Hide' : 'Show'}
           </Button>
         </InputRightElement>
