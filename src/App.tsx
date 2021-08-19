@@ -4,7 +4,7 @@ import theme from 'resources/theme';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import { BrowserRouter, Route, Switch } from 'react-router-dom';
 import { LandingPage } from 'pages/public';
-import ErrorBoundary from 'components/ErrorBoundary';
+import { ErrorBoundary } from 'components';
 import { AuthContextProvider } from 'services/Auth/Auth';
 
 const queryClient = new QueryClient();
