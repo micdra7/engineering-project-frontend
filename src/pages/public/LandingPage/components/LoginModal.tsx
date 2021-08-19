@@ -11,6 +11,7 @@ import {
 import { PasswordInput, TextInput } from 'components';
 import { Formik } from 'formik';
 import React from 'react';
+import { useHistory } from 'react-router-dom';
 import { TAuthProviderState, useAuth } from 'services/Auth/Auth';
 import * as yup from 'yup';
 
@@ -34,15 +35,18 @@ type TLoginModalProps = {
 
 const LoginModal = ({ isOpen, onClose }: TLoginModalProps): JSX.Element => {
   const auth: TAuthProviderState = useAuth();
+  const history = useHistory();
 
   const onSubmit = async (values, { setSubmitting }) => {
     setSubmitting(true);
 
     if (await auth.login(values)) {
+      setSubmitting(false);
       onClose();
+      history.push('/client');
+    } else {
+      setSubmitting(false);
     }
-
-    setSubmitting(false);
   };
 
   return (

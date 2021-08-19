@@ -6,6 +6,7 @@ import { BrowserRouter, Route, Switch } from 'react-router-dom';
 import { LandingPage } from 'pages/public';
 import { ErrorBoundary } from 'components';
 import { AuthContextProvider } from 'services/Auth/Auth';
+import ClientRoute from 'pages/client/client.route';
 
 const queryClient = new QueryClient();
 
@@ -13,6 +14,9 @@ const GlobalRoutes = () => (
   <Switch>
     <Route exact path="/">
       <LandingPage />
+    </Route>
+    <Route path="/client">
+      <ClientRoute />
     </Route>
   </Switch>
 );
