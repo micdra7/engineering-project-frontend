@@ -7,8 +7,8 @@ import {
   VStack,
   Code,
   Grid,
-  theme,
 } from '@chakra-ui/react';
+import theme from 'resources/theme';
 import { ColorModeSwitcher } from './ColorModeSwitcher';
 import { Logo } from './Logo';
 
@@ -27,8 +27,7 @@ export const App = () => (
             href="https://chakra-ui.com"
             fontSize="2xl"
             target="_blank"
-            rel="noopener noreferrer"
-          >
+            rel="noopener noreferrer">
             Learn Chakra
           </Link>
         </VStack>

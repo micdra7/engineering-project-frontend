@@ -3,13 +3,16 @@ import * as React from 'react';
 import ReactDOM from 'react-dom';
 import { App } from './App';
 import reportWebVitals from './reportWebVitals';
+import '@fontsource/lato/700.css';
+import '@fontsource/questrial/400.css';
+import 'focus-visible/dist/focus-visible';
 
 ReactDOM.render(
   <React.StrictMode>
     <ColorModeScript />
     <App />
   </React.StrictMode>,
-  document.getElementById('root')
+  document.getElementById('root'),
 );
 
 // If you want to start measuring performance in your app, pass a function
