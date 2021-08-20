@@ -1,5 +1,6 @@
 import React from 'react';
 import { Route, useRouteMatch, Switch } from 'react-router-dom';
+import UsersTable from './components/UsersTable';
 
 const UsersRoute = (): JSX.Element => {
   const { path } = useRouteMatch();
@@ -7,7 +8,7 @@ const UsersRoute = (): JSX.Element => {
   return (
     <Switch>
       <Route exact path={`${path}`}>
-        list
+        <UsersTable />
       </Route>
       <Route path={`${path}/add`}>add</Route>
       <Route path={`${path}/edit/:id`}>edit</Route>
