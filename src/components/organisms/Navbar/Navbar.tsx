@@ -31,12 +31,20 @@ const Navbar = () => {
       pos="relative"
       as="nav"
       p={4}
+      minH={['unset', 'unset', '100vh']}
       bg="cyan.900"
+      flexFlow={['row', 'row', 'column']}
       wrap="wrap"
-      justifyContent="space-between"
+      justifyContent={['space-between', 'space-between', 'flex-start']}
       alignItems="center">
-      <Icon as={FaHeadset} boxSize="2em" color="cyan.300" />
+      <Icon
+        as={FaHeadset}
+        boxSize={['2em', '2em', '3em']}
+        color="cyan.300"
+        mb={[0, 0, '2']}
+      />
       <IconButton
+        d={['inline-flex', 'inline-flex', 'none']}
         aria-label="Open navbar"
         icon={
           <Icon
@@ -51,17 +59,21 @@ const Navbar = () => {
         onClick={isOpen ? onClose : onOpen}
       />
       <Grid
-        pos="absolute"
+        pos={['absolute', 'absolute', 'static']}
         top="100%"
         left="0"
-        w={['100%', '100%', '20%']}
+        w="100%"
         p={4}
         pt={0}
         color="white"
         bg="cyan.900"
         overflow="hidden"
         transformOrigin="top center"
-        transform={isOpen ? 'scaleY(1)' : 'scaleY(0)'}
+        transform={[
+          isOpen ? 'scaleY(1)' : 'scaleY(0)',
+          isOpen ? 'scaleY(1)' : 'scaleY(0)',
+          'scaleY(1)',
+        ]}
         transition="transform 0.3s ease-in-out">
         <NavLink
           icon={<Icon as={FaColumns} />}
