@@ -7,6 +7,7 @@ type TNavLinkProps = {
   text: string;
   isNavbarOpen: boolean;
   icon: JSX.Element;
+  onClick?: () => void;
 };
 
 const NavLink = ({
@@ -14,6 +15,7 @@ const NavLink = ({
   text,
   isNavbarOpen,
   icon,
+  onClick,
 }: TNavLinkProps): JSX.Element => {
   const location = useLocation();
 
@@ -32,7 +34,8 @@ const NavLink = ({
           ]}
           transition="opacity 0.15s ease-in-out"
           flex="1 1 auto"
-          as={RouterLink}
+          as={!onClick ? RouterLink : undefined}
+          onClick={onClick}
           to={to}
           textAlign={['left', 'left', 'center', 'left']}
           textDecor={location.pathname.includes(to) ? 'underline' : ''}

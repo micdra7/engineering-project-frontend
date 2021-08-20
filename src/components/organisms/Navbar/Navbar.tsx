@@ -8,6 +8,7 @@ import {
   FaHeadset,
   FaIdCard,
   FaPoll,
+  FaSignOutAlt,
   FaTasks,
   FaUsers,
 } from 'react-icons/fa';
@@ -129,6 +130,13 @@ const Navbar = (): JSX.Element => {
             />
           </>
         )}
+        <NavLink
+          icon={<Icon as={FaSignOutAlt} />}
+          isNavbarOpen={isOpen}
+          to="/logout"
+          text="Log Out"
+          onClick={() => auth.logout()}
+        />
       </Grid>
     </Flex>
   );
