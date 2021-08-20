@@ -1,6 +1,16 @@
 import { Flex, Grid, Icon, IconButton, useDisclosure } from '@chakra-ui/react';
 import React from 'react';
-import { FaChevronDown, FaHeadset } from 'react-icons/fa';
+import {
+  FaChevronDown,
+  FaColumns,
+  FaComments,
+  FaGamepad,
+  FaHeadset,
+  FaIdCard,
+  FaPoll,
+  FaTasks,
+  FaUsers,
+} from 'react-icons/fa';
 import { TAuthProviderState, TAuthState, useAuth } from 'services/Auth/Auth';
 import NavLink from './NavLink';
 
@@ -17,7 +27,8 @@ const Navbar = () => {
       p={4}
       bg="cyan.900"
       wrap="wrap"
-      justifyContent="space-between">
+      justifyContent="space-between"
+      alignItems="center">
       <Icon as={FaHeadset} boxSize="2em" color="cyan.300" />
       <IconButton
         aria-label="Open navbar"
@@ -46,20 +57,56 @@ const Navbar = () => {
         transformOrigin="top center"
         transform={isOpen ? 'scaleY(1)' : 'scaleY(0)'}
         transition="transform 0.3s ease-in-out">
-        <NavLink isNavbarOpen={isOpen} to="/client" text="Dashboard" />
-        <NavLink isNavbarOpen={isOpen} to="/client/calls" text="Calls" />
-        <NavLink isNavbarOpen={isOpen} to="/client/chats" text="Chats" />
-        <NavLink isNavbarOpen={isOpen} to="/client/tasks" text="Tasks" />
         <NavLink
+          icon={<Icon as={FaColumns} />}
+          isNavbarOpen={isOpen}
+          to="/client"
+          text="Dashboard"
+        />
+        <NavLink
+          icon={<Icon as={FaHeadset} />}
+          isNavbarOpen={isOpen}
+          to="/client/calls"
+          text="Calls"
+        />
+        <NavLink
+          icon={<Icon as={FaComments} />}
+          isNavbarOpen={isOpen}
+          to="/client/chats"
+          text="Chats"
+        />
+        <NavLink
+          icon={<Icon as={FaTasks} />}
+          isNavbarOpen={isOpen}
+          to="/client/tasks"
+          text="Tasks"
+        />
+        <NavLink
+          icon={<Icon as={FaPoll} />}
           isNavbarOpen={isOpen}
           to="/client/game-results"
           text="Game Results"
         />
-        <NavLink isNavbarOpen={isOpen} to="/client/profile" text="Profile" />
+        <NavLink
+          icon={<Icon as={FaIdCard} />}
+          isNavbarOpen={isOpen}
+          to="/client/profile"
+          text="Profile"
+        />
         {authState.role === 1 && (
           <>
-            <NavLink isNavbarOpen={isOpen} to="/admin/users" text="Users" />
-            <NavLink isNavbarOpen={isOpen} to="/admin/games" text="Games" />
+            <NavLink
+              icon={<Icon as={FaUsers} />}
+              isNavbarOpen={isOpen}
+              to="/admin/users"
+              text="Users"
+            />
+            <NavLink
+              icon={<Icon as={FaGamepad} />}
+              isNavbarOpen={isOpen}
+              to="/admin/games"
+              text="Games"
+            />
           </>
         )}
       </Grid>
