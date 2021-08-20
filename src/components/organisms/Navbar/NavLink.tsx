@@ -22,11 +22,6 @@ const NavLink = ({
       justifyContent="flex-start"
       alignItems="center"
       fontSize={['1.25em', '1.25em', '1.15em']}>
-      <Box
-        opacity={isNavbarOpen ? '100%' : '0%'}
-        transition="opacity 0.15s ease-in-out">
-        {icon}
-      </Box>
       <Link
         opacity={isNavbarOpen ? '100%' : '0%'}
         transition="opacity 0.15s ease-in-out"
@@ -34,8 +29,18 @@ const NavLink = ({
         ml="4"
         as={RouterLink}
         to={to}
-        textDecor={location.pathname.includes(to) ? 'underline' : ''}>
-        {text}
+        textDecor={location.pathname.includes(to) ? 'underline' : ''}
+        color={location.pathname.includes(to) ? 'cyan.300' : 'white'}>
+        <Box
+          d="inline-block"
+          mr="2"
+          opacity={isNavbarOpen ? '100%' : '0%'}
+          transition="opacity 0.15s ease-in-out">
+          {icon}
+        </Box>
+        <Box d="inline-block" _hover={{ textDecor: 'underline' }}>
+          {text}
+        </Box>
       </Link>
     </Flex>
   );

@@ -1,5 +1,5 @@
 import { Flex, Grid, Icon, IconButton, useDisclosure } from '@chakra-ui/react';
-import React from 'react';
+import React, { useEffect } from 'react';
 import {
   FaChevronDown,
   FaColumns,
@@ -11,14 +11,20 @@ import {
   FaTasks,
   FaUsers,
 } from 'react-icons/fa';
+import { useLocation } from 'react-router-dom';
 import { TAuthProviderState, TAuthState, useAuth } from 'services/Auth/Auth';
 import NavLink from './NavLink';
 
 const Navbar = () => {
   const auth: TAuthProviderState = useAuth();
   const authState: TAuthState = auth.getCurrentState();
+  const location = useLocation();
 
   const { isOpen, onOpen, onClose } = useDisclosure();
+
+  useEffect(() => {
+    onClose();
+  }, [location.pathname]);
 
   return (
     <Flex
