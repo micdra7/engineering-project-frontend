@@ -7,6 +7,7 @@ import { LandingPage } from 'pages/public';
 import { ErrorBoundary } from 'components';
 import { AuthContextProvider } from 'services/Auth/Auth';
 import ClientRoute from 'pages/client/client.route';
+import AdminRoute from 'pages/admin/admin.route';
 
 const queryClient = new QueryClient();
 
@@ -17,6 +18,9 @@ const GlobalRoutes = () => (
     </Route>
     <Route path="/client">
       <ClientRoute />
+    </Route>
+    <Route path="/admin">
+      <AdminRoute />
     </Route>
   </Switch>
 );

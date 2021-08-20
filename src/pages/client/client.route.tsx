@@ -18,6 +18,11 @@ const ClientRoute = (): JSX.Element => {
       <Route exact path={`${path}`}>
         <Dashboard />
       </Route>
+      <Route path={`${path}/calls`}>Calls</Route>
+      <Route path={`${path}/chats`}>Chats</Route>
+      <Route path={`${path}/tasks`}>Tasks</Route>
+      <Route path={`${path}/game-results`}>Game results</Route>
+      <Route path={`${path}/profile`}>Profile</Route>
     </Switch>
   );
 };
