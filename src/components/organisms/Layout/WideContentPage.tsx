@@ -1,4 +1,5 @@
-import { Grid, GridItem, Heading } from '@chakra-ui/react';
+import { Divider, Grid, GridItem, Heading } from '@chakra-ui/react';
+import WorkspaceSwitcher from 'components/molecules/WorkspaceSwitcher';
 import React from 'react';
 import Navbar from '../Navbar/Navbar';
 
@@ -20,8 +21,12 @@ const WideContentPage = ({
         {title}
       </Heading>
 
+      <Divider />
+
       {children}
     </GridItem>
+
+    <WorkspaceSwitcher />
   </Grid>
 );
 

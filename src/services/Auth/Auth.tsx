@@ -131,6 +131,7 @@ const AuthContextProvider = ({
         refreshToken: data.refreshToken,
       };
 
+      API.defaults.headers.Authorization = `Bearer ${newState.accessToken}`;
       saveCurrentState(newState);
       return true;
     } catch (error) {
@@ -175,6 +176,7 @@ const AuthContextProvider = ({
         role: currentState.workspaces.filter(w => w.id === id)[0].role,
       };
 
+      API.defaults.headers.Authorization = `Bearer ${newState.accessToken}`;
       saveCurrentState(newState);
       return true;
     } catch (error) {
