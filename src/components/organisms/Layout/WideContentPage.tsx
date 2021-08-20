@@ -15,8 +15,10 @@ const WideContentPage = ({
     <GridItem>
       <Navbar />
     </GridItem>
-    <GridItem w="100%" maxW="1440px" mx="auto">
-      <Heading>{title}</Heading>
+    <GridItem w="100%" maxW="1440px" mx="auto" p={4}>
+      <Heading size="2xl" color="cyan.900">
+        {title}
+      </Heading>
 
       {children}
     </GridItem>

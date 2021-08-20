@@ -88,6 +88,7 @@ const RegistrationForm = (): JSX.Element => {
             />
 
             <TextInput
+              width="50%"
               id="firstName"
               isRequired
               isInvalid={
@@ -103,6 +104,7 @@ const RegistrationForm = (): JSX.Element => {
             />
 
             <TextInput
+              width="50%"
               id="lastName"
               isRequired
               isInvalid={
