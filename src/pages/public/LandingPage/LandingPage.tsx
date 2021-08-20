@@ -7,12 +7,21 @@ import {
   Text,
   useDisclosure,
 } from '@chakra-ui/react';
+import { TAuthProviderState, TAuthState, useAuth } from 'services/Auth/Auth';
+import { Redirect } from 'react-router-dom';
 import WelcomeSection from './components/WelcomeSection';
 import RegistrationForm from './components/RegistrationForm';
 import LoginModal from './components/LoginModal';
 
 const LandingPage = (): JSX.Element => {
+  const auth: TAuthProviderState = useAuth();
+  const authState: TAuthState = auth.getCurrentState();
+
   const { isOpen, onOpen, onClose } = useDisclosure();
+
+  if (authState.isAuthenticated) {
+    return <Redirect to="/client" />;
+  }
 
   return (
     <Box w="100%">
