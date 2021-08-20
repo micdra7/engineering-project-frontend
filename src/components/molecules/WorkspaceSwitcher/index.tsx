@@ -28,6 +28,10 @@ const WorkspaceSwitcher = (): JSX.Element => {
     try {
       await auth.switchWorkspace(id, name);
 
+      logger.success({
+        title: 'Success',
+        description: `Workspace switched to ${name}`,
+      });
       history.push('/client');
     } catch (error) {
       logger.error({
@@ -42,7 +46,7 @@ const WorkspaceSwitcher = (): JSX.Element => {
   }
 
   return (
-    <Popover offset={[115, 5]} strategy="fixed">
+    <Popover offset={[100, 5]} strategy="fixed">
       <PopoverTrigger>
         <IconButton
           pos="fixed"
@@ -51,16 +55,7 @@ const WorkspaceSwitcher = (): JSX.Element => {
           rounded="full"
           size="lg"
           colorScheme="cyan"
-          icon={
-            <Tooltip
-              hasArrow
-              placement="right"
-              label="Switch workspace"
-              bg="cyan.500"
-              gutter={24}>
-              <Icon as={FaEllipsisH} />
-            </Tooltip>
-          }
+          icon={<Icon as={FaEllipsisH} />}
           aria-label="Switch workspace"
         />
       </PopoverTrigger>
@@ -100,7 +95,7 @@ const WorkspaceSwitcher = (): JSX.Element => {
                   }
                   transition="border 0.05s ease-in-out"
                   onClick={() =>
-                    handleSwitch(workspace.id, workspace.workspaceName)
+                    handleSwitch(workspace.id || 0, workspace.workspaceName)
                   }
                 />
               </Tooltip>

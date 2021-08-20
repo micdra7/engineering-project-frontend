@@ -65,6 +65,7 @@ const Navbar = (): JSX.Element => {
         pos={['absolute', 'absolute', 'static']}
         top="100%"
         left="0"
+        zIndex="1"
         w="100%"
         p={4}
         pt={0}
