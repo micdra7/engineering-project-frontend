@@ -32,14 +32,14 @@ const NavLink = ({
             isNavbarOpen ? '100%' : '0%',
             '100%',
           ]}
-          transition="opacity 0.15s ease-in-out"
+          transition="opacity 0.15s ease-in-out, color 0.15s ease-in-out, text-decoration 0.15s ease-in-out"
           flex="1 1 auto"
           as={!onClick ? RouterLink : undefined}
           onClick={onClick}
           to={to}
           textAlign={['left', 'left', 'center', 'left']}
-          textDecor={location.pathname.includes(to) ? 'underline' : ''}
-          color={location.pathname.includes(to) ? 'cyan.300' : 'white'}>
+          textDecor={location.pathname === to ? 'underline' : ''}
+          color={location.pathname === to ? 'cyan.300' : 'white'}>
           <Box
             d="inline-block"
             mr={['2', '2', '0', '2']}
