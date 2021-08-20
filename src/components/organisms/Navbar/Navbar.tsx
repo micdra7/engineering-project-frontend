@@ -15,7 +15,7 @@ import { useLocation } from 'react-router-dom';
 import { TAuthProviderState, TAuthState, useAuth } from 'services/Auth/Auth';
 import NavLink from './NavLink';
 
-const Navbar = () => {
+const Navbar = (): JSX.Element => {
   const auth: TAuthProviderState = useAuth();
   const authState: TAuthState = auth.getCurrentState();
   const location = useLocation();
@@ -33,15 +33,17 @@ const Navbar = () => {
       p={4}
       minH={['unset', 'unset', '100vh']}
       bg="cyan.900"
-      flexFlow={['row', 'row', 'column']}
+      flexFlow={['row', 'row', 'column', 'row wrap']}
       wrap="wrap"
       justifyContent={['space-between', 'space-between', 'flex-start']}
-      alignItems="center">
+      alignItems={['center', 'center', 'center', 'flex-start']}
+      alignContent={['initial', 'initial', 'initial', 'flex-start']}>
       <Icon
         as={FaHeadset}
         boxSize={['2em', '2em', '3em']}
         color="cyan.300"
-        mb={[0, 0, '2']}
+        mb={[0, 0, '2', '8']}
+        w={['auto', 'auto', 'auto', '100%']}
       />
       <IconButton
         d={['inline-flex', 'inline-flex', 'none']}
