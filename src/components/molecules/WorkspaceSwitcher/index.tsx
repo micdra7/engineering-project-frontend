@@ -55,7 +55,7 @@ const WorkspaceSwitcher = (): JSX.Element => {
           rounded="full"
           size="lg"
           colorScheme="cyan"
-          icon={<Icon as={FaEllipsisH} />}
+          icon={<Icon as={FaEllipsisH} color="white" />}
           aria-label="Switch workspace"
         />
       </PopoverTrigger>
