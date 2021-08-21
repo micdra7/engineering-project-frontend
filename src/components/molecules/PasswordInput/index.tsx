@@ -17,7 +17,7 @@ type TPasswordInputProps = {
   value: string;
   onChange: (e: ChangeEvent) => void;
   onBlur: (e: ChangeEvent) => void;
-  errorMessage?: string;
+  errorMessage?: string | FormikErrors<unknown> | FormikErrors<unknown>[];
 };
 
 const PasswordInput = ({

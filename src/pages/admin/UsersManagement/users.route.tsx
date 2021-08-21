@@ -1,5 +1,6 @@
 import React from 'react';
 import { Route, useRouteMatch, Switch } from 'react-router-dom';
+import EditUserForm from './components/EditUserForm';
 import UsersTable from './components/UsersTable';
 
 const UsersRoute = (): JSX.Element => {
@@ -11,7 +12,9 @@ const UsersRoute = (): JSX.Element => {
         <UsersTable />
       </Route>
       <Route path={`${path}/add`}>add</Route>
-      <Route path={`${path}/edit/:id`}>edit</Route>
+      <Route path={`${path}/edit/:userId`}>
+        <EditUserForm />
+      </Route>
     </Switch>
   );
 };

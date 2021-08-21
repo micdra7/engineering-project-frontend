@@ -4,6 +4,7 @@ import {
   FormLabel,
   Input,
 } from '@chakra-ui/react';
+import { FormikErrors } from 'formik';
 import React, { ChangeEvent } from 'react';
 
 type TTextInputProps = {
@@ -14,7 +15,7 @@ type TTextInputProps = {
   value: string;
   onChange: (e: ChangeEvent) => void;
   onBlur: (e: ChangeEvent) => void;
-  errorMessage?: string;
+  errorMessage?: string | FormikErrors<unknown> | FormikErrors<unknown>[];
   width?: string;
 };
 
