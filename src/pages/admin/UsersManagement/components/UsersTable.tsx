@@ -101,7 +101,7 @@ const UsersTable = (): JSX.Element => {
         {usersLoading ? (
           <Loader />
         ) : (
-          <Box w="100%" overflowY="unset" overflowX="auto">
+          <Box w="100%" overflowY="unset" overflowX="auto" maxW="100%">
             <Table variant="striped" colorScheme="cyan" minW="900px">
               <Thead>
                 <Tr>

@@ -33,6 +33,7 @@ const Navbar = (): JSX.Element => {
       as="nav"
       p={4}
       minH={['unset', 'unset', '100vh']}
+      h="100%"
       bg="cyan.900"
       flexFlow={['row', 'row', 'column', 'row wrap']}
       wrap="wrap"
