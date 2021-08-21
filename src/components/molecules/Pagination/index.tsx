@@ -27,7 +27,7 @@ const Pagination = ({
       rounded="md"
       disabled={currentPage === 1}
       onClick={() => onPageChange(currentPage - 1)}
-      icon={<Icon as={FaChevronLeft} />}
+      icon={<Icon as={FaChevronLeft} color="white" />}
     />
     <Select
       value={itemCount}
@@ -44,7 +44,7 @@ const Pagination = ({
       rounded="md"
       disabled={currentPage === totalPages}
       onClick={() => onPageChange(currentPage + 1)}
-      icon={<Icon as={FaChevronRight} />}
+      icon={<Icon as={FaChevronRight} color="white" />}
     />
   </HStack>
 );
