@@ -129,7 +129,7 @@ const UsersTable = (): JSX.Element => {
                           onClick={() =>
                             history.push(`/admin/users/edit/${item.id}`)
                           }
-                          icon={<Icon as={FaEdit} />}
+                          icon={<Icon as={FaEdit} color="white" />}
                         />
                       </Tooltip>
                       <Switch
