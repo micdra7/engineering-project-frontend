@@ -15,8 +15,9 @@ import {
   Tr,
 } from '@chakra-ui/react';
 import { Loader, WideContentPage } from 'components';
+import Pagination from 'components/molecules/Pagination';
 
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { FaEdit, FaPlus } from 'react-icons/fa';
 import { useMutation, useQuery } from 'react-query';
 import { useHistory } from 'react-router-dom';
@@ -30,14 +31,34 @@ const UsersTable = (): JSX.Element => {
   const history = useHistory();
   const logger = useLogger();
 
+  const [paginationState, setPaginationState] = useState({
+    currentPage: 1,
+    totalPages: 1,
+    totalItems: 10,
+    itemCount: 10,
+  });
+
   const {
     isLoading: usersLoading,
+    isSuccess: usersLoaded,
     data: users,
     refetch: refetchUsers,
-  } = useQuery('/users', () => API.get('/users'));
+  } = useQuery(
+    ['/users', paginationState.currentPage, paginationState.itemCount],
+    () =>
+      API.get(
+        `/users?page=${paginationState.currentPage}&limit=${paginationState.itemCount}`,
+      ),
+  );
   const statusMutation = useMutation((data: Record<string, unknown>) =>
     API.patch(`/users/${data.id}/change-status`, data),
   );
+
+  useEffect(() => {
+    if (usersLoaded && users) {
+      setPaginationState(users.data.meta);
+    }
+  }, [usersLoaded, users]);
 
   const handleStatusChange = async (
     id: number,
@@ -132,6 +153,21 @@ const UsersTable = (): JSX.Element => {
             </Table>
           </Box>
         )}
+        <Pagination
+          currentPage={paginationState.currentPage}
+          totalPages={paginationState.totalPages}
+          itemCount={paginationState.itemCount}
+          onPageChange={page => {
+            setPaginationState({ ...paginationState, currentPage: page });
+          }}
+          onItemCountChange={itemCount => {
+            setPaginationState({
+              ...paginationState,
+              itemCount,
+              currentPage: 1,
+            });
+          }}
+        />
       </Grid>
     </WideContentPage>
   );
