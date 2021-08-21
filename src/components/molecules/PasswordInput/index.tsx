@@ -7,6 +7,7 @@ import {
   InputGroup,
   InputRightElement,
 } from '@chakra-ui/react';
+import { FormikErrors } from 'formik';
 import React, { useState, ChangeEvent } from 'react';
 
 type TPasswordInputProps = {
