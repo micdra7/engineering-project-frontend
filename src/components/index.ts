@@ -1,8 +1,7 @@
-export { default as AdminRoute } from './atoms/AdminRoute';
-export { default as NavbarLink } from './atoms/NavLink';
-export { default as PrivateRoute } from './atoms/PrivateRoute';
+export { default as Loader } from './atoms/Loader';
 
-export { default as NavList } from './molecules/NavList';
-export { default as WorkspacePopover } from './molecules/WorkspacePopover';
+export { default as ErrorBoundary } from './molecules/ErrorBoundary';
+export { default as PasswordInput } from './molecules/PasswordInput';
+export { default as TextInput } from './molecules/TextInput';
 
-export { default as Navbar } from './organisms/Navbar';
+export { default as WideContentPage } from './organisms/Layout/WideContentPage';

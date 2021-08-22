@@ -62,6 +62,10 @@ const styles = {
       outline: 'none',
       boxShadow: 'none',
     },
+    'html, body': {
+      width: '100%',
+      overflowX: 'hidden',
+    },
   },
 };
 
