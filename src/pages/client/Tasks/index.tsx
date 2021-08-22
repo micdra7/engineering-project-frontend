@@ -13,6 +13,7 @@ import { useQuery } from 'react-query';
 import { API } from 'services/api';
 import { TAuthProviderState, TAuthState, useAuth } from 'services/Auth/Auth';
 import AddListModal from './components/AddListModal';
+import TaskListEntry from './components/TaskListEntry';
 
 const Tasks = (): JSX.Element => {
   const auth: TAuthProviderState = useAuth();
@@ -30,7 +31,7 @@ const Tasks = (): JSX.Element => {
     <WideContentPage title="Tasks">
       <Text mb={6}>View and manage your tasks</Text>
       {authState.role === 1 ? (
-        <Flex w="100%" alignItems="center" justifyContent="flex-end">
+        <Flex w="100%" alignItems="center" justifyContent="flex-end" mb={4}>
           <Tooltip
             hasArrow
             placement="left"
@@ -59,6 +60,9 @@ const Tasks = (): JSX.Element => {
               order to have one created.
             </Text>
           )}
+          {taskLists?.data?.data?.map(item => (
+            <TaskListEntry key={item.id} name={item.name} />
+          ))}
         </>
       )}
 
