@@ -11,9 +11,13 @@ import React from 'react';
 import { FaPlus } from 'react-icons/fa';
 import { useQuery } from 'react-query';
 import { API } from 'services/api';
+import { TAuthProviderState, TAuthState, useAuth } from 'services/Auth/Auth';
 import AddListModal from './components/AddListModal';
 
 const Tasks = (): JSX.Element => {
+  const auth: TAuthProviderState = useAuth();
+  const authState: TAuthState = auth.getCurrentState();
+
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   const {
@@ -25,18 +29,26 @@ const Tasks = (): JSX.Element => {
   return (
     <WideContentPage title="Tasks">
       <Text mb={6}>View and manage your tasks</Text>
-      <Flex w="100%" alignItems="center" justifyContent="flex-end">
-        <Tooltip hasArrow placement="left" label="Add task list" bg="cyan.500">
-          <IconButton
-            aria-label="Add task list"
-            onClick={onOpen}
-            icon={<Icon as={FaPlus} />}
-            colorScheme="cyan"
-            rounded="md"
-            color="white"
-          />
-        </Tooltip>
-      </Flex>
+      {authState.role === 1 ? (
+        <Flex w="100%" alignItems="center" justifyContent="flex-end">
+          <Tooltip
+            hasArrow
+            placement="left"
+            label="Add task list"
+            bg="cyan.500">
+            <IconButton
+              aria-label="Add task list"
+              onClick={onOpen}
+              icon={<Icon as={FaPlus} />}
+              colorScheme="cyan"
+              rounded="md"
+              color="white"
+            />
+          </Tooltip>
+        </Flex>
+      ) : (
+        <></>
+      )}
       {taskListsLoading ? (
         <Loader />
       ) : (
