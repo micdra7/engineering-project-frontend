@@ -147,7 +147,11 @@ const RegistrationForm = (): JSX.Element => {
               errorMessage={touched.workspaceName ? errors.workspaceName : ''}
             />
 
-            <Button isLoading={isSubmitting} type="submit" colorScheme="cyan">
+            <Button
+              isLoading={isSubmitting}
+              type="submit"
+              colorScheme="cyan"
+              color="white">
               Register
             </Button>
           </Grid>

@@ -113,6 +113,7 @@ const ProfileForm = ({
             isLoading={isSubmitting}
             type="submit"
             colorScheme="cyan"
+            color="white"
             mt="32px">
             Save
           </Button>

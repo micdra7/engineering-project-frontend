@@ -87,7 +87,7 @@ const UsersTable = (): JSX.Element => {
       <Text mb={6}>Manage users in your workspace</Text>
       <Grid w="100%">
         <Flex w="100%" alignItems="center" justifyContent="flex-end">
-          <Tooltip hasArrow placement="left" label="Add user" bg="green.500">
+          <Tooltip hasArrow placement="left" label="Add user" bg="cyan.500">
             <IconButton
               aria-label="Add user"
               onClick={() => history.push('/admin/users/add')}

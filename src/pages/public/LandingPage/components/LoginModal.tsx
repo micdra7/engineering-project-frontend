@@ -106,7 +106,8 @@ const LoginModal = ({ isOpen, onClose }: TLoginModalProps): JSX.Element => {
                 <Button
                   isLoading={isSubmitting}
                   type="submit"
-                  colorScheme="cyan">
+                  colorScheme="cyan"
+                  color="white">
                   Log in
                 </Button>
               </ModalFooter>
