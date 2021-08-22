@@ -1,6 +1,14 @@
+import {
+  Button,
+  FormControl,
+  FormErrorMessage,
+  FormLabel,
+  Select,
+  Text,
+} from '@chakra-ui/react';
+import { PasswordInput, TextInput, WideContentPage } from 'components';
 import { Formik } from 'formik';
-import React from 'react';
-import { useState } from 'react-dom/node_modules/@types/react';
+import React, { useState } from 'react';
 import { useMutation } from 'react-query';
 import { useHistory } from 'react-router-dom';
 import { API } from 'services/api';
@@ -56,7 +64,7 @@ const AddUserForm = (): JSX.Element => {
     try {
       const { data } = await emailMutation.mutateAsync({ email: values.email });
 
-      setEmailTaken(!!data);
+      setEmailTaken(!!data.id);
       setHasChecked(true);
     } catch (error) {
       logger.error({
@@ -109,8 +117,126 @@ const AddUserForm = (): JSX.Element => {
     setSubmitting(false);
   };
 
-  if (isEmailTaken) {
+  if (hasChecked && !isEmailTaken) {
     return (
+      <WideContentPage title="Edit user">
+        <Text mb={6}>Update user&apos;s information</Text>
+        <Formik
+          initialValues={{
+            email: '',
+            firstName: '',
+            lastName: '',
+            password: '',
+            role: 0,
+          }}
+          validationSchema={FullUsersSchema}
+          onSubmit={handleCreate}>
+          {({
+            values,
+            errors,
+            touched,
+            handleChange,
+            handleBlur,
+            handleSubmit,
+            isSubmitting,
+          }) => (
+            <form id="full-users-form" onSubmit={handleSubmit}>
+              <TextInput
+                id="email"
+                isRequired
+                isInvalid={
+                  touched.email &&
+                  errors.email !== undefined &&
+                  errors.email !== ''
+                }
+                label="Email address"
+                value={values.email}
+                onChange={handleChange}
+                onBlur={handleBlur}
+                errorMessage={touched.email ? errors.email : ''}
+              />
+
+              <TextInput
+                id="firstName"
+                isRequired
+                isInvalid={
+                  touched.firstName &&
+                  errors.firstName !== undefined &&
+                  errors.firstName !== ''
+                }
+                label="First Name"
+                value={values.firstName}
+                onChange={handleChange}
+                onBlur={handleBlur}
+                errorMessage={touched.firstName ? errors.firstName : ''}
+              />
+
+              <TextInput
+                id="lastName"
+                isRequired
+                isInvalid={
+                  touched.lastName &&
+                  errors.lastName !== undefined &&
+                  errors.lastName !== ''
+                }
+                label="Last Name"
+                value={values.lastName}
+                onChange={handleChange}
+                onBlur={handleBlur}
+                errorMessage={touched.lastName ? errors.lastName : ''}
+              />
+
+              <FormControl
+                id="role"
+                isRequired
+                isInvalid={
+                  touched.role &&
+                  errors.role !== undefined &&
+                  errors.role !== ''
+                }>
+                <FormLabel>Role</FormLabel>
+                <Select value={values.role} onChange={handleChange}>
+                  <option value={0}>User</option>
+                  <option value={1}>Admin</option>
+                </Select>
+                <FormErrorMessage>
+                  {touched.role ? errors.role : ''}
+                </FormErrorMessage>
+              </FormControl>
+
+              <PasswordInput
+                id="password"
+                isInvalid={
+                  touched.password &&
+                  errors.password !== undefined &&
+                  errors.password !== ''
+                }
+                label="Password"
+                value={values.password}
+                onChange={handleChange}
+                onBlur={handleBlur}
+                errorMessage={touched.password ? errors.password : ''}
+              />
+
+              <Button
+                maxW="200px"
+                isLoading={isSubmitting}
+                type="submit"
+                colorScheme="cyan"
+                mt="32px"
+                color="white">
+                Add
+              </Button>
+            </form>
+          )}
+        </Formik>
+      </WideContentPage>
+    );
+  }
+
+  return (
+    <WideContentPage title="Edit user">
+      <Text mb={6}>Update user&apos;s information</Text>
       <Formik
         initialValues={{ email: '', role: 0 }}
         validationSchema={PartialUsersSchema}
@@ -125,14 +251,63 @@ const AddUserForm = (): JSX.Element => {
           isSubmitting,
         }) => (
           <form id="partial-user-form" onSubmit={handleSubmit}>
-            xd
+            <TextInput
+              id="email"
+              isRequired
+              isInvalid={
+                touched.email &&
+                errors.email !== undefined &&
+                errors.email !== ''
+              }
+              label="Email address"
+              value={values.email}
+              onChange={e => {
+                setHasChecked(false);
+                setEmailTaken(false);
+                handleChange(e);
+              }}
+              onBlur={handleBlur}
+              errorMessage={touched.email ? errors.email : ''}
+            />
+
+            {hasChecked && isEmailTaken && (
+              <FormControl
+                id="role"
+                isRequired
+                isInvalid={
+                  touched.role &&
+                  errors.role !== undefined &&
+                  errors.role !== ''
+                }>
+                <FormLabel>Role</FormLabel>
+                <Select>
+                  <option value={0}>User</option>
+                  <option value={1}>Admin</option>
+                </Select>
+                <FormErrorMessage>
+                  {touched.role ? errors.role : ''}
+                </FormErrorMessage>
+              </FormControl>
+            )}
+
+            <Button
+              isLoading={isSubmitting}
+              type="submit"
+              colorScheme="cyan"
+              mt={6}
+              maxW={['unset', 'unset', '250px']}
+              justifySelf="start"
+              w="100%"
+              color="white">
+              {!hasChecked && !isEmailTaken
+                ? 'Check if account exists'
+                : 'Add user to workspace'}
+            </Button>
           </form>
         )}
       </Formik>
-    );
-  }
-
-  return <div>xd</div>;
+    </WideContentPage>
+  );
 };
 
 export default AddUserForm;
