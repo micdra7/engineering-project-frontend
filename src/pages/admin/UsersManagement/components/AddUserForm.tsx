@@ -119,8 +119,8 @@ const AddUserForm = (): JSX.Element => {
 
   if (hasChecked && !isEmailTaken) {
     return (
-      <WideContentPage title="Edit user">
-        <Text mb={6}>Update user&apos;s information</Text>
+      <WideContentPage title="Add user">
+        <Text mb={6}>Add user to your workspace</Text>
         <Formik
           initialValues={{
             email: '',
@@ -235,8 +235,8 @@ const AddUserForm = (): JSX.Element => {
   }
 
   return (
-    <WideContentPage title="Edit user">
-      <Text mb={6}>Update user&apos;s information</Text>
+    <WideContentPage title="Add user">
+      <Text mb={6}>Add user to your workspace</Text>
       <Formik
         initialValues={{ email: '', role: 0 }}
         validationSchema={PartialUsersSchema}
