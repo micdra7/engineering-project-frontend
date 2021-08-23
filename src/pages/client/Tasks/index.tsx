@@ -61,7 +61,7 @@ const Tasks = (): JSX.Element => {
             </Text>
           )}
           {taskLists?.data?.data?.map(item => (
-            <TaskListEntry key={item.id} name={item.name} />
+            <TaskListEntry key={item.id} name={item.name} tasks={item.tasks} />
           ))}
         </>
       )}

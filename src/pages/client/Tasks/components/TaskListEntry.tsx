@@ -1,11 +1,14 @@
 import { Flex, Text } from '@chakra-ui/react';
 import React from 'react';
+import { TTask } from 'types/Task';
+import TaskItemEntry from './TaskItemEntry';
 
 type TTaskListEntryProps = {
   name: string;
+  tasks: TTask[];
 };
 
-const TaskListEntry = ({ name }: TTaskListEntryProps): JSX.Element => (
+const TaskListEntry = ({ name, tasks }: TTaskListEntryProps): JSX.Element => (
   <Flex
     w="100%"
     pos="relative"
@@ -27,6 +30,10 @@ const TaskListEntry = ({ name }: TTaskListEntryProps): JSX.Element => (
       fontWeight="semibold">
       {name}
     </Text>
+    {tasks?.map(task => (
+      <TaskItemEntry key={task.id} id={task.id} name={task.name} />
+    ))}
+    <TaskItemEntry name="Create new task" />
   </Flex>
 );
 
