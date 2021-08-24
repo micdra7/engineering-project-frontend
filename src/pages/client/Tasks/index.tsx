@@ -7,7 +7,7 @@ import {
   useDisclosure,
 } from '@chakra-ui/react';
 import { Loader, WideContentPage } from 'components';
-import React from 'react';
+import React, { useState } from 'react';
 import { FaPlus } from 'react-icons/fa';
 import { useQuery } from 'react-query';
 import { API } from 'services/api';
@@ -26,6 +26,17 @@ const Tasks = (): JSX.Element => {
     data: taskLists,
     refetch: refetchTaskLists,
   } = useQuery('/tasklists', () => API.get('/tasklists?page=1&limit=9999'));
+  const { isLoading: usersLoading, data: users } = useQuery('/users', () =>
+    API.get('/users?page=1&limit=9999'),
+  );
+
+  const [assignedIds, setAssignedIds] = useState<
+    {
+      listId: number;
+      ids: number[];
+    }[]
+  >([]);
+  console.log('assignedIds: ', assignedIds);
 
   return (
     <WideContentPage title="Tasks">
@@ -61,7 +72,17 @@ const Tasks = (): JSX.Element => {
             </Text>
           )}
           {taskLists?.data?.data?.map(item => (
-            <TaskListEntry key={item.id} name={item.name} tasks={item.tasks} />
+            <TaskListEntry
+              key={item.id}
+              id={item.id}
+              name={item.name}
+              tasks={item.tasks}
+              users={users?.data?.data}
+              assignedIds={
+                assignedIds.find(list => +list.listId === item.id)?.ids ?? []
+              }
+              setAssignedIds={setAssignedIds}
+            />
           ))}
         </>
       )}
