@@ -12,9 +12,9 @@ const TaskListEntry = ({ name, tasks }: TTaskListEntryProps): JSX.Element => (
   <Flex
     w="100%"
     pos="relative"
-    border="1px solid black"
-    borderColor="cyan.900"
     borderRadius="md"
+    bg="cyan.600"
+    color="white"
     p={4}
     mb={6}>
     <Text
@@ -22,12 +22,12 @@ const TaskListEntry = ({ name, tasks }: TTaskListEntryProps): JSX.Element => (
       py={1}
       pos="absolute"
       bottom="100%"
-      transform="translateY(50%)"
-      bg="white"
-      border="1px solid black"
-      borderColor="cyan.900"
+      transform="translateY(40%)"
+      minW="140px"
+      bg="cyan.400"
       borderRadius="md"
-      fontWeight="semibold">
+      fontWeight="semibold"
+      textAlign="center">
       {name}
     </Text>
     {tasks?.map(task => (
