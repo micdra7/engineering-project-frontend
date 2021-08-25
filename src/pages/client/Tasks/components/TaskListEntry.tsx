@@ -53,6 +53,7 @@ const TaskListEntry = ({
       />
     ))}
     <TaskItemEntry
+      id={0}
       taskListId={id}
       name="Create new task..."
       users={users}

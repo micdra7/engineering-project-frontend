@@ -2,8 +2,8 @@ import {
   Avatar,
   AvatarGroup,
   Button,
-  CloseButton,
   Flex,
+  Icon,
   Popover,
   PopoverArrow,
   PopoverBody,
@@ -15,10 +15,13 @@ import {
   useDisclosure,
 } from '@chakra-ui/react';
 import { CUIAutoComplete } from 'chakra-ui-autocomplete';
+import { TooltipAvatar } from 'components';
 import React, { useState } from 'react';
+import { FaCheckCircle } from 'react-icons/fa';
 import { TUser } from 'types/User';
 
 type TUsersSelector = {
+  taskId: number;
   taskListId: number;
   users: TUser[];
   assignedIds: number[];
@@ -26,6 +29,7 @@ type TUsersSelector = {
 };
 
 const UsersSelector = ({
+  taskId,
   taskListId,
   users,
   assignedIds,
@@ -33,7 +37,6 @@ const UsersSelector = ({
 }: TUsersSelector): JSX.Element => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [selectedItems, setSelectedItems] = useState([]);
-  console.log('selectedItems: ', selectedItems);
 
   const handleSelectedItemsChange = items => {
     if (items) {
@@ -42,31 +45,18 @@ const UsersSelector = ({
   };
   return (
     <Flex>
-      {users
-        .filter(u => assignedIds.includes(u.id))
-        .map(user => (
-          <AvatarGroup size="sm" max={3} pos="relative">
-            <Avatar
+      <AvatarGroup size="sm" max={3}>
+        {users
+          .filter(u => assignedIds.includes(u.id))
+          .map(user => (
+            <TooltipAvatar
+              key={user.id}
               size="sm"
               color="white"
               name={`${user.firstName} ${user.lastName}`}
             />
-            <CloseButton
-              size="sm"
-              onClick={() =>
-                setAssignedIds(ids =>
-                  ids.filter(
-                    (item: { value: string; ids: number[] }) =>
-                      !(
-                        item.value === `${taskListId}` &&
-                        item.ids.includes(user.id)
-                      ),
-                  ),
-                )
-              }
-            />
-          </AvatarGroup>
-        ))}
+          ))}
+      </AvatarGroup>
       <AvatarGroup>
         <Popover strategy="fixed" isOpen={isOpen} onClose={onClose}>
           <PopoverTrigger>
@@ -74,7 +64,10 @@ const UsersSelector = ({
               onClick={onOpen}
               cursor="pointer"
               size="sm"
+              bg="green.500"
+              mx="2"
               color="white"
+              border="2px solid white"
               name="..."
               getInitials={name => name}
             />
@@ -100,14 +93,18 @@ const UsersSelector = ({
                 hideToggleButton
                 disableCreateItem
                 listStyleProps={{
-                  bg: 'cyan.200',
+                  bg: 'cyan.400',
                   maxH: '200px',
                   overflowY: 'auto',
                 }}
                 listItemStyleProps={{
-                  bg: 'cyan.200',
+                  bg: 'cyan.400',
                   cursor: 'pointer',
-                  _hover: { bg: 'cyan.300' },
+                  _hover: { bg: 'cyan.600' },
+                }}
+                selectedIconProps={{
+                  icon: undefined, // undefined on purpose, otherwise typecheck wouldn't stop complaining
+                  color: 'green.600',
                 }}
                 selectedItems={selectedItems}
                 onSelectedItemsChange={changes =>
@@ -121,9 +118,20 @@ const UsersSelector = ({
                 colorScheme="cyan"
                 color="white"
                 onClick={() => {
-                  setAssignedIds((ids: number[]) => [
-                    ...ids,
+                  setAssignedIds(ids => [
+                    ...ids.filter(
+                      (item: {
+                        listId: string;
+                        taskId: string;
+                        ids: number[];
+                      }) =>
+                        !(
+                          item.listId === `${taskListId}` &&
+                          item.taskId === `${taskId}`
+                        ),
+                    ),
                     {
+                      taskId: `${taskId}`,
                       listId: `${taskListId}`,
                       ids: selectedItems.map(
                         (item: { value: string }) => +item.value,

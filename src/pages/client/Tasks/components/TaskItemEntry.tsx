@@ -48,6 +48,7 @@ const TaskItemEntry = ({
         <EditableInput />
       </Editable>
       <UsersSelector
+        taskId={id ?? 0}
         taskListId={taskListId}
         users={users ?? []}
         assignedIds={assignedIds ?? []}
