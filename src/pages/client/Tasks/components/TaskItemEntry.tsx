@@ -29,22 +29,25 @@ const TaskItemEntry = ({
 }: TTaskItemEntryProps): JSX.Element =>
   id ? (
     <SimpleGrid
-      columns={2}
+      columns={[1, 1, 3, 3, 3]}
       spacing={4}
-      templateColumns="1fr 1fr"
       w="100%"
       alignItems="center">
       <Text>{name}</Text>
     </SimpleGrid>
   ) : (
     <SimpleGrid
-      columns={3}
+      columns={[1, 1, 3, 3, 3]}
       spacing={4}
-      templateColumns="1fr 1fr"
       w="100%"
       alignItems="center">
-      <Editable defaultValue={name}>
-        <EditablePreview />
+      <Editable defaultValue={name} placeholder={name}>
+        <EditablePreview
+          maxW="100%"
+          textOverflow="ellipsis"
+          overflow="hidden"
+          whiteSpace="nowrap"
+        />
         <EditableInput />
       </Editable>
       <UsersSelector

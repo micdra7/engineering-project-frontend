@@ -36,7 +36,6 @@ const Tasks = (): JSX.Element => {
       ids: number[];
     }[]
   >([]);
-  console.log('assignedIds: ', assignedIds);
 
   return (
     <WideContentPage title="Tasks">
@@ -61,7 +60,7 @@ const Tasks = (): JSX.Element => {
       ) : (
         <></>
       )}
-      {taskListsLoading ? (
+      {taskListsLoading && usersLoading ? (
         <Loader />
       ) : (
         <>

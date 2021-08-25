@@ -3,7 +3,6 @@ import {
   AvatarGroup,
   Button,
   Flex,
-  Icon,
   Popover,
   PopoverArrow,
   PopoverBody,
@@ -17,7 +16,6 @@ import {
 import { CUIAutoComplete } from 'chakra-ui-autocomplete';
 import { TooltipAvatar } from 'components';
 import React, { useState } from 'react';
-import { FaCheckCircle } from 'react-icons/fa';
 import { TUser } from 'types/User';
 
 type TUsersSelector = {
