@@ -14,6 +14,7 @@ import { API } from 'services/api';
 import { TAuthProviderState, TAuthState, useAuth } from 'services/Auth/Auth';
 import AddListModal from './components/AddListModal';
 import AddTaskModal from './components/AddTaskModal';
+import EditTaskModal from './components/EditTaskModal';
 import TaskListEntry from './components/TaskListEntry';
 
 const Tasks = (): JSX.Element => {
@@ -25,6 +26,11 @@ const Tasks = (): JSX.Element => {
     isOpen: addTaskOpen,
     onOpen: onAddTaskOpen,
     onClose: onAddTaskClose,
+  } = useDisclosure();
+  const {
+    isOpen: editTaskOpen,
+    onOpen: onEditTaskOpen,
+    onClose: onEditTaskClose,
   } = useDisclosure();
 
   const {
@@ -43,6 +49,13 @@ const Tasks = (): JSX.Element => {
       ids: number[];
     }[]
   >([]);
+  const [currentId, setCurrentId] = useState(0);
+
+  useEffect(() => {
+    if (currentId) {
+      onEditTaskOpen();
+    }
+  }, [currentId]);
 
   useEffect(() => {
     if (!taskListsLoading && taskLists) {
@@ -118,6 +131,7 @@ const Tasks = (): JSX.Element => {
               users={users?.data?.data}
               assignedIds={assignedIds.filter(list => +list.listId === item.id)}
               setAssignedIds={setAssignedIds}
+              handleTaskEdit={(id: number) => setCurrentId(id)}
             />
           ))}
         </>
@@ -136,6 +150,15 @@ const Tasks = (): JSX.Element => {
           onAddTaskClose();
           refetchTaskLists();
         }}
+      />
+      <EditTaskModal
+        isOpen={editTaskOpen}
+        onClose={() => {
+          onEditTaskClose();
+          setCurrentId(0);
+          refetchTaskLists();
+        }}
+        taskId={currentId}
       />
     </WideContentPage>
   );

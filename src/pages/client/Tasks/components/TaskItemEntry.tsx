@@ -1,4 +1,4 @@
-import { SimpleGrid, Text, Tooltip } from '@chakra-ui/react';
+import { Button, SimpleGrid, Text, Tooltip } from '@chakra-ui/react';
 import React from 'react';
 import { DATE_TIME } from 'resources/constants';
 import { TUser } from 'types/User';
@@ -13,6 +13,7 @@ type TTaskItemEntryProps = {
   assignedIds?: number[];
   setAssignedIds?;
   startDate?: Date;
+  handleEdit: () => void;
 };
 
 const TaskItemEntry = ({
@@ -23,9 +24,10 @@ const TaskItemEntry = ({
   assignedIds,
   setAssignedIds,
   startDate,
+  handleEdit,
 }: TTaskItemEntryProps): JSX.Element => (
   <SimpleGrid
-    columns={[1, 1, 3, 3, 3]}
+    columns={[1, 1, 4, 4, 4]}
     spacing={4}
     w="100%"
     alignItems="center">
@@ -44,6 +46,9 @@ const TaskItemEntry = ({
       selectorVisible={false}
     />
     <Text>{moment(startDate).format(DATE_TIME.DATE_TIME) ?? 'N/A'}</Text>
+    <Button colorScheme="cyan" color="white" onClick={handleEdit}>
+      Edit
+    </Button>
   </SimpleGrid>
 );
 

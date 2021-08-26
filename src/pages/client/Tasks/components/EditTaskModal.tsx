@@ -13,34 +13,62 @@ import {
   ModalHeader,
   ModalOverlay,
 } from '@chakra-ui/react';
-import React, { useState } from 'react';
-import { useMutation, useQuery } from 'react-query';
-import * as yup from 'yup';
-import { Formik } from 'formik';
 import { TextInput, Select } from 'components';
+import { Formik } from 'formik';
+import React, { useState, useEffect } from 'react';
+import { useMutation, useQuery } from 'react-query';
 import { API } from 'services/api';
 import { useLogger } from 'services/toast';
+import * as yup from 'yup';
 import Flatpickr from 'react-flatpickr';
-import 'flatpickr/dist/themes/airbnb.css';
+import moment from 'moment';
 import UsersSelector from './UsersSelector';
+import 'flatpickr/dist/themes/airbnb.css';
 
-const AddTaskSchema = yup.object().shape({
+const formInitialValues = task => ({
+  name: task.name ?? '',
+  description: task.description ?? '',
+  taskListId: task.taskListId ?? 0,
+  startDate: moment(task.startDate).toDate() ?? new Date(),
+  finishDate: task.finishDate,
+  userIds: task.assignedUserIds ?? [],
+});
+
+const EditTaskSchema = yup.object().shape({
   name: yup.string().required('Name is required'),
   description: yup.string().required('Description is required'),
   taskListId: yup.string().required('Task list is required'),
   userIds: yup.array(yup.number()),
   startDate: yup.date().required('Start date is required'),
+  // finishDate: yup.date(),
 });
 
-type TAddTaskModalProps = {
+type TEditTaskModalProps = {
   isOpen: boolean;
   onClose: () => void;
+  taskId: number;
 };
 
-const AddTaskModal = ({ isOpen, onClose }: TAddTaskModalProps): JSX.Element => {
+const EditTaskModal = ({
+  isOpen,
+  onClose,
+  taskId,
+}: TEditTaskModalProps): JSX.Element => {
   const logger = useLogger();
   const mutation = useMutation((data: Record<string, unknown>) =>
-    API.post('/tasks', data),
+    API.patch(`/tasks/${taskId}`, data),
+  );
+
+  const { data: task } = useQuery(
+    `/tasks/${taskId}`,
+    () => API.get(`/tasks/${taskId}`),
+    { enabled: !!taskId },
+  );
+  const { data: taskLists } = useQuery('/tasklists', () =>
+    API.get('/tasklists?page=1&limit=9999'),
+  );
+  const { data: users } = useQuery('/users', () =>
+    API.get('/users?page=1&limit=9999'),
   );
 
   const [assignedIds, setAssignedIds] = useState<
@@ -51,18 +79,24 @@ const AddTaskModal = ({ isOpen, onClose }: TAddTaskModalProps): JSX.Element => {
     }[]
   >([]);
 
-  const { data: taskLists } = useQuery('/tasklists', () =>
-    API.get('/tasklists?page=1&limit=9999'),
-  );
-  const { data: users } = useQuery('/users', () =>
-    API.get('/users?page=1&limit=9999'),
-  );
+  useEffect(() => {
+    if (task) {
+      setAssignedIds([
+        {
+          taskId: `${taskId}`,
+          listId: '0',
+          ids: task.data.assignedUserIds,
+        },
+      ]);
+    }
+  }, [task]);
 
   const onSubmit = async (values, { setSubmitting }) => {
     setSubmitting(true);
 
     try {
       await mutation.mutateAsync({
+        id: taskId,
         name: values.name,
         description: values.description,
         taskListId: +values.taskListId,
@@ -71,7 +105,7 @@ const AddTaskModal = ({ isOpen, onClose }: TAddTaskModalProps): JSX.Element => {
       });
       logger.success({
         title: 'Success',
-        description: 'Task added successfully',
+        description: 'Task saved successfully',
       });
       setAssignedIds([]);
       onClose();
@@ -89,18 +123,12 @@ const AddTaskModal = ({ isOpen, onClose }: TAddTaskModalProps): JSX.Element => {
     <Modal isOpen={isOpen} onClose={onClose} isCentered>
       <ModalOverlay />
       <ModalContent bg="cyan.800" color="white" borderColor="white">
-        <ModalHeader>Create a new task</ModalHeader>
+        <ModalHeader>Edit task</ModalHeader>
         <ModalCloseButton />
-
         <Formik
-          initialValues={{
-            name: '',
-            description: '',
-            taskListId: '',
-            userIds: [],
-            startDate: new Date(),
-          }}
-          validationSchema={AddTaskSchema}
+          enableReinitialize
+          initialValues={formInitialValues(task?.data ?? {})}
+          validationSchema={EditTaskSchema}
           onSubmit={onSubmit}>
           {({
             values,
@@ -111,7 +139,7 @@ const AddTaskModal = ({ isOpen, onClose }: TAddTaskModalProps): JSX.Element => {
             handleSubmit,
             isSubmitting,
           }) => (
-            <form id="add-task-form" onSubmit={handleSubmit}>
+            <form id="edit-task-form" onSubmit={handleSubmit}>
               <ModalBody>
                 <TextInput
                   id="name"
@@ -163,7 +191,7 @@ const AddTaskModal = ({ isOpen, onClose }: TAddTaskModalProps): JSX.Element => {
                 {!!values.taskListId && (
                   <Box mt={2}>
                     <UsersSelector
-                      taskId={0}
+                      taskId={taskId}
                       taskListId={0}
                       users={users?.data?.data}
                       assignedIds={
@@ -194,19 +222,17 @@ const AddTaskModal = ({ isOpen, onClose }: TAddTaskModalProps): JSX.Element => {
                     options={{
                       enableTime: true,
                       dateFormat: 'Y-m-d H:i',
-                      minDate: new Date(),
                     }}
                   />
                 </FormControl>
               </ModalBody>
-
               <ModalFooter>
                 <Button
                   isLoading={isSubmitting}
                   type="submit"
                   colorScheme="cyan"
                   color="white">
-                  Create
+                  Save
                 </Button>
               </ModalFooter>
             </form>
@@ -217,4 +243,4 @@ const AddTaskModal = ({ isOpen, onClose }: TAddTaskModalProps): JSX.Element => {
   );
 };
 
-export default AddTaskModal;
+export default EditTaskModal;

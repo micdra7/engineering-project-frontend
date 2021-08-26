@@ -142,26 +142,50 @@ const UsersSelector = ({
                   colorScheme="cyan"
                   color="white"
                   onClick={() => {
-                    setAssignedIds(ids => [
-                      ...ids.filter(
-                        (item: {
-                          listId: string;
-                          taskId: string;
-                          ids: number[];
-                        }) =>
-                          !(
-                            item.listId === `${taskListId}` &&
-                            item.taskId === `${taskId}`
-                          ),
-                      ),
-                      {
-                        taskId: `${taskId}`,
-                        listId: `${taskListId}`,
-                        ids: selectedItems.map(
-                          (item: { value: string }) => +item.value,
+                    setAssignedIds(ids => {
+                      console.log(
+                        'ids: ',
+                        ids,
+                        ...ids.filter(
+                          (item: {
+                            listId: string;
+                            taskId: string;
+                            ids: number[];
+                          }) =>
+                            !(
+                              item.listId === `${taskListId}` &&
+                              item.taskId === `${taskId}`
+                            ),
                         ),
-                      },
-                    ]);
+                        {
+                          taskId: `${taskId}`,
+                          listId: `${taskListId}`,
+                          ids: selectedItems.map(
+                            (item: { value: string }) => +item.value,
+                          ),
+                        },
+                      );
+                      return [
+                        ...ids.filter(
+                          (item: {
+                            listId: string;
+                            taskId: string;
+                            ids: number[];
+                          }) =>
+                            !(
+                              item.listId === `${taskListId}` &&
+                              item.taskId === `${taskId}`
+                            ),
+                        ),
+                        {
+                          taskId: `${taskId}`,
+                          listId: `${taskListId}`,
+                          ids: selectedItems.map(
+                            (item: { value: string }) => +item.value,
+                          ),
+                        },
+                      ];
+                    });
                     onClose();
                   }}>
                   Save
