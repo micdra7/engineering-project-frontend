@@ -2,6 +2,9 @@
 import {
   Box,
   Button,
+  FormControl,
+  FormLabel,
+  Input,
   Modal,
   ModalBody,
   ModalCloseButton,
@@ -17,6 +20,8 @@ import { Formik } from 'formik';
 import { TextInput, Select } from 'components';
 import { API } from 'services/api';
 import { useLogger } from 'services/toast';
+import Flatpickr from 'react-flatpickr';
+import 'flatpickr/dist/themes/airbnb.css';
 import UsersSelector from './UsersSelector';
 
 const AddTaskSchema = yup.object().shape({
@@ -24,6 +29,7 @@ const AddTaskSchema = yup.object().shape({
   description: yup.string().required('Description is required'),
   taskListId: yup.string().required('Task list is required'),
   userIds: yup.array(yup.number()),
+  startDate: yup.date().required('Start date is required'),
 });
 
 type TAddTaskModalProps = {
@@ -60,8 +66,8 @@ const AddTaskModal = ({ isOpen, onClose }: TAddTaskModalProps): JSX.Element => {
         name: values.name,
         description: values.description,
         taskListId: +values.taskListId,
-        startDate: new Date(),
-        assignedUserIds: assignedIds[0].ids.map(item => +item),
+        startDate: values.startDate[0],
+        assignedUserIds: assignedIds[0]?.ids?.map(item => +item) ?? [],
       });
       logger.success({
         title: 'Success',
@@ -92,6 +98,7 @@ const AddTaskModal = ({ isOpen, onClose }: TAddTaskModalProps): JSX.Element => {
             description: '',
             taskListId: '',
             userIds: [],
+            startDate: new Date(),
           }}
           validationSchema={AddTaskSchema}
           onSubmit={onSubmit}>
@@ -166,6 +173,31 @@ const AddTaskModal = ({ isOpen, onClose }: TAddTaskModalProps): JSX.Element => {
                     />
                   </Box>
                 )}
+
+                <FormControl
+                  id="startDate"
+                  isRequired
+                  isInvalid={
+                    touched.startDate &&
+                    errors.startDate !== undefined &&
+                    errors.startDate !== ''
+                  }>
+                  <FormLabel>Start date</FormLabel>
+                  <Flatpickr
+                    value={values.startDate}
+                    onChange={date =>
+                      handleChange({ target: { value: date, id: 'startDate' } })
+                    }
+                    render={({ defaultValue }, ref) => (
+                      <Input defaultValue={defaultValue} ref={ref} />
+                    )}
+                    options={{
+                      enableTime: true,
+                      dateFormat: 'Y-m-d H:i',
+                      minDate: new Date(),
+                    }}
+                  />
+                </FormControl>
               </ModalBody>
 
               <ModalFooter>

@@ -1,5 +1,5 @@
 import {
-  Flex,
+  HStack,
   Icon,
   IconButton,
   Text,
@@ -8,7 +8,7 @@ import {
 } from '@chakra-ui/react';
 import { Loader, WideContentPage } from 'components';
 import React, { useEffect, useState } from 'react';
-import { FaPlus } from 'react-icons/fa';
+import { FaList, FaThumbtack } from 'react-icons/fa';
 import { useQuery } from 'react-query';
 import { API } from 'services/api';
 import { TAuthProviderState, TAuthState, useAuth } from 'services/Auth/Auth';
@@ -68,8 +68,8 @@ const Tasks = (): JSX.Element => {
   return (
     <WideContentPage title="Tasks">
       <Text mb={6}>View and manage your tasks</Text>
-      {authState.role === 1 ? (
-        <Flex w="100%" alignItems="center" justifyContent="flex-end" mb={4}>
+      <HStack w="100%" alignItems="center" justifyContent="flex-end" mb={4}>
+        {authState.role === 1 ? (
           <Tooltip
             hasArrow
             placement="left"
@@ -78,16 +78,27 @@ const Tasks = (): JSX.Element => {
             <IconButton
               aria-label="Add task list"
               onClick={onOpen}
-              icon={<Icon as={FaPlus} />}
+              icon={<Icon as={FaList} />}
               colorScheme="cyan"
               rounded="md"
               color="white"
             />
           </Tooltip>
-        </Flex>
-      ) : (
-        <></>
-      )}
+        ) : (
+          <></>
+        )}
+        <Tooltip hasArrow placement="left" label="Add task" bg="cyan.500">
+          <IconButton
+            aria-label="Add task"
+            onClick={onAddTaskOpen}
+            icon={<Icon as={FaThumbtack} />}
+            colorScheme="cyan"
+            rounded="md"
+            color="white"
+          />
+        </Tooltip>
+      </HStack>
+
       {taskListsLoading && usersLoading ? (
         <Loader />
       ) : (
@@ -111,14 +122,6 @@ const Tasks = (): JSX.Element => {
           ))}
         </>
       )}
-      <IconButton
-        aria-label="Add task list"
-        onClick={onAddTaskOpen}
-        icon={<Icon as={FaPlus} />}
-        colorScheme="cyan"
-        rounded="md"
-        color="white"
-      />
 
       <AddListModal
         isOpen={isOpen}
