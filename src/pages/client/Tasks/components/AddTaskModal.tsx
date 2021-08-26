@@ -30,6 +30,7 @@ const AddTaskSchema = yup.object().shape({
   taskListId: yup.string().required('Task list is required'),
   userIds: yup.array(yup.number()),
   startDate: yup.date().required('Start date is required'),
+  finishDate: yup.date(),
 });
 
 type TAddTaskModalProps = {
@@ -67,6 +68,7 @@ const AddTaskModal = ({ isOpen, onClose }: TAddTaskModalProps): JSX.Element => {
         description: values.description,
         taskListId: +values.taskListId,
         startDate: values.startDate[0],
+        finishDate: values.finishDate?.[0] ?? undefined,
         assignedUserIds: assignedIds[0]?.ids?.map(item => +item) ?? [],
       });
       logger.success({
@@ -99,6 +101,7 @@ const AddTaskModal = ({ isOpen, onClose }: TAddTaskModalProps): JSX.Element => {
             taskListId: '',
             userIds: [],
             startDate: new Date(),
+            finishDate: undefined,
           }}
           validationSchema={AddTaskSchema}
           onSubmit={onSubmit}>
@@ -187,6 +190,32 @@ const AddTaskModal = ({ isOpen, onClose }: TAddTaskModalProps): JSX.Element => {
                     value={values.startDate}
                     onChange={date =>
                       handleChange({ target: { value: date, id: 'startDate' } })
+                    }
+                    render={({ defaultValue }, ref) => (
+                      <Input defaultValue={defaultValue} ref={ref} />
+                    )}
+                    options={{
+                      enableTime: true,
+                      dateFormat: 'Y-m-d H:i',
+                      minDate: new Date(),
+                    }}
+                  />
+                </FormControl>
+
+                <FormControl
+                  id="finishDate"
+                  isInvalid={
+                    touched.startDate &&
+                    errors.startDate !== undefined &&
+                    errors.startDate !== ''
+                  }>
+                  <FormLabel>Finish date</FormLabel>
+                  <Flatpickr
+                    value={values.finishDate}
+                    onChange={date =>
+                      handleChange({
+                        target: { value: date, id: 'finishDate' },
+                      })
                     }
                     render={({ defaultValue }, ref) => (
                       <Input defaultValue={defaultValue} ref={ref} />

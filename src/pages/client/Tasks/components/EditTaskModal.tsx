@@ -40,7 +40,7 @@ const EditTaskSchema = yup.object().shape({
   taskListId: yup.string().required('Task list is required'),
   userIds: yup.array(yup.number()),
   startDate: yup.date().required('Start date is required'),
-  // finishDate: yup.date(),
+  finishDate: yup.date(),
 });
 
 type TEditTaskModalProps = {
@@ -101,6 +101,7 @@ const EditTaskModal = ({
         description: values.description,
         taskListId: +values.taskListId,
         startDate: values.startDate[0],
+        finishDate: values.finishDate[0],
         assignedUserIds: assignedIds[0]?.ids?.map(item => +item) ?? [],
       });
       logger.success({
@@ -222,6 +223,32 @@ const EditTaskModal = ({
                     options={{
                       enableTime: true,
                       dateFormat: 'Y-m-d H:i',
+                    }}
+                  />
+                </FormControl>
+
+                <FormControl
+                  id="finishDate"
+                  isInvalid={
+                    touched.startDate &&
+                    errors.startDate !== undefined &&
+                    errors.startDate !== ''
+                  }>
+                  <FormLabel>Finish date</FormLabel>
+                  <Flatpickr
+                    value={values.finishDate}
+                    onChange={date =>
+                      handleChange({
+                        target: { value: date, id: 'finishDate' },
+                      })
+                    }
+                    render={({ defaultValue }, ref) => (
+                      <Input defaultValue={defaultValue} ref={ref} />
+                    )}
+                    options={{
+                      enableTime: true,
+                      dateFormat: 'Y-m-d H:i',
+                      minDate: new Date(),
                     }}
                   />
                 </FormControl>
