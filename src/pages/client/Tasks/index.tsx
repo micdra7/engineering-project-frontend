@@ -107,9 +107,7 @@ const Tasks = (): JSX.Element => {
               name={item.name}
               tasks={item.tasks}
               users={users?.data?.data}
-              assignedIds={
-                assignedIds.find(list => +list.listId === item.id)?.ids ?? []
-              }
+              assignedIds={assignedIds.filter(list => +list.listId === item.id)}
               setAssignedIds={setAssignedIds}
             />
           ))}

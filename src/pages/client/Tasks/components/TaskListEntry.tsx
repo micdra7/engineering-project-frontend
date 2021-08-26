@@ -52,18 +52,20 @@ const TaskListEntry = ({
     </Text>
     <Divider />
     {tasks?.map(task => (
-      <>
+      <React.Fragment key={task.id}>
         <TaskItemEntry
           taskListId={id}
-          key={task.id}
           id={task.id}
           name={task.name}
           assignedIds={
-            assignedIds?.filter(item => item.taskId === `${task.id}`)?.[0]?.ids
+            assignedIds?.find(list => list.taskId === `${task.id}`)?.ids
           }
+          setAssignedIds={setAssignedIds}
+          users={users}
+          startDate={task.startDate}
         />
         <Divider />
-      </>
+      </React.Fragment>
     ))}
   </Flex>
 );

@@ -67,6 +67,7 @@ const AddTaskModal = ({ isOpen, onClose }: TAddTaskModalProps): JSX.Element => {
         title: 'Success',
         description: 'Task added successfully',
       });
+      setAssignedIds([]);
       onClose();
     } catch (error) {
       logger.error({
