@@ -51,9 +51,7 @@ const Tasks = (): JSX.Element => {
       taskLists.data.data.forEach(item => {
         item.tasks.forEach(task => {
           if (task.assignedUserIds?.length > 0) {
-            newIds = newIds.filter(
-              id => id.listId !== `${item.id}` && id.taskId !== `${task.id}`,
-            );
+            newIds = newIds.filter(id => id.taskId !== `${task.id}`);
 
             newIds.push({
               taskId: `${task.id}`,

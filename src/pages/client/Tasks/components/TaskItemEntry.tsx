@@ -1,4 +1,4 @@
-import { SimpleGrid, Text } from '@chakra-ui/react';
+import { SimpleGrid, Text, Tooltip } from '@chakra-ui/react';
 import React from 'react';
 import { DATE_TIME } from 'resources/constants';
 import { TUser } from 'types/User';
@@ -29,7 +29,12 @@ const TaskItemEntry = ({
     spacing={4}
     w="100%"
     alignItems="center">
-    <Text>{name}</Text>
+    <Tooltip hasArrow label={name} bg="cyan.500">
+      <Text textOverflow="ellipsis" overflow="hidden" whiteSpace="nowrap">
+        {name}
+      </Text>
+    </Tooltip>
+
     <UsersSelector
       taskId={id ?? 0}
       taskListId={taskListId}
