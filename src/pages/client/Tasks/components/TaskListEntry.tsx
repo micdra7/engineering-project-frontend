@@ -1,4 +1,4 @@
-import { Flex, Text } from '@chakra-ui/react';
+import { Divider, Flex, Text } from '@chakra-ui/react';
 import React from 'react';
 import { TTask } from 'types/Task';
 import { TUser } from 'types/User';
@@ -9,7 +9,11 @@ type TTaskListEntryProps = {
   name: string;
   tasks: TTask[];
   users?: TUser[];
-  assignedIds?: number[];
+  assignedIds?: {
+    taskId: string;
+    listId: string;
+    ids: number[];
+  }[];
   setAssignedIds;
 };
 
@@ -22,6 +26,8 @@ const TaskListEntry = ({
   setAssignedIds,
 }: TTaskListEntryProps): JSX.Element => (
   <Flex
+    flexFlow="row wrap"
+    gridRowGap="1rem"
     w="100%"
     pos="relative"
     borderRadius="md"
@@ -44,22 +50,21 @@ const TaskListEntry = ({
       textTransform="uppercase">
       {name}
     </Text>
+    <Divider />
     {tasks?.map(task => (
-      <TaskItemEntry
-        taskListId={id}
-        key={task.id}
-        id={task.id}
-        name={task.name}
-      />
+      <>
+        <TaskItemEntry
+          taskListId={id}
+          key={task.id}
+          id={task.id}
+          name={task.name}
+          assignedIds={
+            assignedIds?.filter(item => item.taskId === `${task.id}`)?.[0]?.ids
+          }
+        />
+        <Divider />
+      </>
     ))}
-    <TaskItemEntry
-      id={0}
-      taskListId={id}
-      name="Create new task..."
-      users={users}
-      assignedIds={assignedIds}
-      setAssignedIds={setAssignedIds}
-    />
   </Flex>
 );
 

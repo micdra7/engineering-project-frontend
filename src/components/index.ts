@@ -4,5 +4,6 @@ export { default as TooltipAvatar } from './atoms/TooltipAvatar';
 export { default as ErrorBoundary } from './molecules/ErrorBoundary';
 export { default as PasswordInput } from './molecules/PasswordInput';
 export { default as TextInput } from './molecules/TextInput';
+export { default as Select } from './molecules/Select';
 
 export { default as WideContentPage } from './organisms/Layout/WideContentPage';

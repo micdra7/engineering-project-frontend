@@ -26,41 +26,21 @@ const TaskItemEntry = ({
   users,
   assignedIds,
   setAssignedIds,
-}: TTaskItemEntryProps): JSX.Element =>
-  id ? (
-    <SimpleGrid
-      columns={[1, 1, 3, 3, 3]}
-      spacing={4}
-      w="100%"
-      alignItems="center">
-      <Text>{name}</Text>
-    </SimpleGrid>
-  ) : (
-    <SimpleGrid
-      columns={[1, 1, 3, 3, 3]}
-      spacing={4}
-      w="100%"
-      alignItems="center">
-      <Editable defaultValue={name} placeholder={name}>
-        <EditablePreview
-          maxW="100%"
-          textOverflow="ellipsis"
-          overflow="hidden"
-          whiteSpace="nowrap"
-        />
-        <EditableInput />
-      </Editable>
-      <UsersSelector
-        taskId={id ?? 0}
-        taskListId={taskListId}
-        users={users ?? []}
-        assignedIds={assignedIds ?? []}
-        setAssignedIds={setAssignedIds ?? (() => {})}
-      />
-      <Button colorScheme="cyan" color="white">
-        Save
-      </Button>
-    </SimpleGrid>
-  );
+}: TTaskItemEntryProps): JSX.Element => (
+  <SimpleGrid
+    columns={[1, 1, 3, 3, 3]}
+    spacing={4}
+    w="100%"
+    alignItems="center">
+    <Text>{name}</Text>
+    <UsersSelector
+      taskId={id ?? 0}
+      taskListId={taskListId}
+      users={users ?? []}
+      assignedIds={assignedIds ?? []}
+      setAssignedIds={setAssignedIds ?? (() => {})}
+    />
+  </SimpleGrid>
+);
 
 export default TaskItemEntry;

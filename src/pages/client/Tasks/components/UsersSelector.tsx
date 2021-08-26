@@ -33,6 +33,7 @@ const UsersSelector = ({
   assignedIds,
   setAssignedIds,
 }: TUsersSelector): JSX.Element => {
+  console.log(assignedIds);
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [selectedItems, setSelectedItems] = useState([]);
 
