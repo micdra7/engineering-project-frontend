@@ -1,9 +1,16 @@
-import { Button, SimpleGrid, Text, Tooltip } from '@chakra-ui/react';
+import {
+  Button,
+  ButtonGroup,
+  SimpleGrid,
+  Text,
+  Tooltip,
+} from '@chakra-ui/react';
 import React from 'react';
 import { DATE_TIME } from 'resources/constants';
 import { TUser } from 'types/User';
 import moment from 'moment';
 import UsersSelector from './UsersSelector';
+import ListSwitcher from './ListSwitcher';
 
 type TTaskItemEntryProps = {
   taskListId: number;
@@ -46,9 +53,16 @@ const TaskItemEntry = ({
       selectorVisible={false}
     />
     <Text>{moment(startDate).format(DATE_TIME.DATE_TIME) ?? 'N/A'}</Text>
-    <Button colorScheme="cyan" color="white" onClick={handleEdit}>
-      Edit
-    </Button>
+    <ButtonGroup
+      w={['100%', '100%', 'auto']}
+      size="md"
+      isAttached
+      justifyContent="center">
+      <ListSwitcher taskId={id ?? 0} taskListId={taskListId} />
+      <Button colorScheme="cyan" color="white" onClick={handleEdit}>
+        Edit
+      </Button>
+    </ButtonGroup>
   </SimpleGrid>
 );
 
