@@ -68,6 +68,7 @@ const TaskListEntry = ({
             users={users}
             startDate={task.startDate}
             handleEdit={() => handleTaskEdit(task.id ?? 0)}
+            childrenTaskCount={task.childrenTasks?.length ?? 0}
           />
           <Divider />
         </React.Fragment>

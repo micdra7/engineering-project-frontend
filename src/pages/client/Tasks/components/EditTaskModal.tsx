@@ -2,6 +2,7 @@
 import {
   Box,
   Button,
+  Divider,
   Flex,
   FormControl,
   FormLabel,
@@ -32,6 +33,7 @@ import { FaThumbtack } from 'react-icons/fa';
 import UsersSelector from './UsersSelector';
 import 'flatpickr/dist/themes/airbnb.css';
 import AddSubtaskModal from './AddSubtaskModal';
+import SubtaskEntry from './SubtaskEntry';
 
 const formInitialValues = task => ({
   name: task.name ?? '',
@@ -284,6 +286,21 @@ const EditTaskModal = ({
                     />
                   </Tooltip>
                 </Flex>
+
+                <Box>
+                  <Divider my={2} />
+                  {task?.data?.childrenTasks?.map(subtask => (
+                    <SubtaskEntry
+                      key={subtask.id}
+                      subtaskId={subtask.id}
+                      name={subtask.name}
+                      isDone={subtask.isDone}
+                      onStatusChange={() => {
+                        refetchTask();
+                      }}
+                    />
+                  ))}
+                </Box>
 
                 <AddSubtaskModal
                   isOpen={subtaskModalOpen}
