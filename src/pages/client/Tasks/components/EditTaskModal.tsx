@@ -2,8 +2,11 @@
 import {
   Box,
   Button,
+  Flex,
   FormControl,
   FormLabel,
+  Icon,
+  IconButton,
   Input,
   Modal,
   ModalBody,
@@ -12,6 +15,9 @@ import {
   ModalFooter,
   ModalHeader,
   ModalOverlay,
+  Text,
+  Tooltip,
+  useDisclosure,
 } from '@chakra-ui/react';
 import { TextInput, Select } from 'components';
 import { Formik } from 'formik';
@@ -22,8 +28,10 @@ import { useLogger } from 'services/toast';
 import * as yup from 'yup';
 import Flatpickr from 'react-flatpickr';
 import moment from 'moment';
+import { FaThumbtack } from 'react-icons/fa';
 import UsersSelector from './UsersSelector';
 import 'flatpickr/dist/themes/airbnb.css';
+import AddSubtaskModal from './AddSubtaskModal';
 
 const formInitialValues = task => ({
   name: task.name ?? '',
@@ -59,7 +67,13 @@ const EditTaskModal = ({
     API.patch(`/tasks/${taskId}`, data),
   );
 
-  const { data: task } = useQuery(
+  const {
+    isOpen: subtaskModalOpen,
+    onOpen: onSubtaskModalOpen,
+    onClose: onSubtaskModalClose,
+  } = useDisclosure();
+
+  const { data: task, refetch: refetchTask } = useQuery(
     `/tasks/${taskId}`,
     () => API.get(`/tasks/${taskId}`),
     { enabled: !!taskId },
@@ -252,6 +266,34 @@ const EditTaskModal = ({
                     }}
                   />
                 </FormControl>
+
+                <Flex justifyContent="space-between" alignItems="center" mt={2}>
+                  <Text>Subtasks</Text>
+                  <Tooltip
+                    hasArrow
+                    placement="left"
+                    label="Add subtask"
+                    bg="cyan.500">
+                    <IconButton
+                      onClick={onSubtaskModalOpen}
+                      aria-label="Add subtask"
+                      icon={<Icon as={FaThumbtack} />}
+                      colorScheme="cyan"
+                      rounded="md"
+                      color="white"
+                    />
+                  </Tooltip>
+                </Flex>
+
+                <AddSubtaskModal
+                  isOpen={subtaskModalOpen}
+                  onClose={() => {
+                    onSubtaskModalClose();
+                    refetchTask();
+                  }}
+                  taskListId={task?.data?.taskListId}
+                  parentTaskId={taskId}
+                />
               </ModalBody>
               <ModalFooter>
                 <Button

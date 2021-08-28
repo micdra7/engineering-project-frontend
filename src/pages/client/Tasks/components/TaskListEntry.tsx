@@ -53,23 +53,25 @@ const TaskListEntry = ({
       {name}
     </Text>
     <Divider />
-    {tasks?.map(task => (
-      <React.Fragment key={task.id}>
-        <TaskItemEntry
-          taskListId={id}
-          id={task.id}
-          name={task.name}
-          assignedIds={
-            assignedIds?.find(list => list.taskId === `${task.id}`)?.ids
-          }
-          setAssignedIds={setAssignedIds}
-          users={users}
-          startDate={task.startDate}
-          handleEdit={() => handleTaskEdit(task.id ?? 0)}
-        />
-        <Divider />
-      </React.Fragment>
-    ))}
+    {tasks
+      ?.filter(task => !task.parentTaskId)
+      .map(task => (
+        <React.Fragment key={task.id}>
+          <TaskItemEntry
+            taskListId={id}
+            id={task.id}
+            name={task.name}
+            assignedIds={
+              assignedIds?.find(list => list.taskId === `${task.id}`)?.ids
+            }
+            setAssignedIds={setAssignedIds}
+            users={users}
+            startDate={task.startDate}
+            handleEdit={() => handleTaskEdit(task.id ?? 0)}
+          />
+          <Divider />
+        </React.Fragment>
+      ))}
   </Flex>
 );
 
