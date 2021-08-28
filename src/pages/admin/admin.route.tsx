@@ -1,6 +1,7 @@
 import React from 'react';
 import { Redirect, Route, useRouteMatch, Switch } from 'react-router-dom';
 import { TAuthProviderState, TAuthState, useAuth } from 'services/Auth/Auth';
+import GamesManagement from './GamesManagement';
 import UsersRoute from './UsersManagement/users.route';
 
 const AdminRoute = (): JSX.Element => {
@@ -18,7 +19,9 @@ const AdminRoute = (): JSX.Element => {
       <Route path={`${path}/users`}>
         <UsersRoute />
       </Route>
-      <Route path={`${path}/games`}>Games</Route>
+      <Route path={`${path}/games`}>
+        <GamesManagement />
+      </Route>
     </Switch>
   );
 };
