@@ -16,6 +16,7 @@ type TTaskListEntryProps = {
   }[];
   setAssignedIds;
   handleTaskEdit: (id: number) => void;
+  handleTaskDelete: (id: number) => void;
 };
 
 const TaskListEntry = ({
@@ -26,6 +27,7 @@ const TaskListEntry = ({
   assignedIds,
   setAssignedIds,
   handleTaskEdit,
+  handleTaskDelete,
 }: TTaskListEntryProps): JSX.Element => (
   <Flex
     flexFlow="row wrap"
@@ -69,6 +71,7 @@ const TaskListEntry = ({
             startDate={task.startDate}
             handleEdit={() => handleTaskEdit(task.id ?? 0)}
             childrenTaskCount={task.childrenTasks?.length ?? 0}
+            handleDelete={() => handleTaskDelete(task.id ?? 0)}
           />
           <Divider />
         </React.Fragment>

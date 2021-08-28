@@ -9,15 +9,17 @@ import {
 import { Loader, WideContentPage } from 'components';
 import React, { useEffect, useState } from 'react';
 import { FaList, FaThumbtack } from 'react-icons/fa';
-import { useQuery } from 'react-query';
+import { useMutation, useQuery } from 'react-query';
 import { API } from 'services/api';
 import { TAuthProviderState, TAuthState, useAuth } from 'services/Auth/Auth';
+import { useLogger } from 'services/toast';
 import AddListModal from './components/AddListModal';
 import AddTaskModal from './components/AddTaskModal';
 import EditTaskModal from './components/EditTaskModal';
 import TaskListEntry from './components/TaskListEntry';
 
 const Tasks = (): JSX.Element => {
+  const logger = useLogger();
   const auth: TAuthProviderState = useAuth();
   const authState: TAuthState = auth.getCurrentState();
 
@@ -42,6 +44,10 @@ const Tasks = (): JSX.Element => {
     API.get('/users?page=1&limit=9999'),
   );
 
+  const deleteMutation = useMutation((id: number) =>
+    API.delete(`/tasks/${id}`),
+  );
+
   const [assignedIds, setAssignedIds] = useState<
     {
       taskId: string;
@@ -50,6 +56,18 @@ const Tasks = (): JSX.Element => {
     }[]
   >([]);
   const [currentId, setCurrentId] = useState(0);
+
+  const handleTaskDelete = async (taskId: number) => {
+    try {
+      await deleteMutation.mutateAsync(taskId);
+      refetchTaskLists();
+    } catch (error) {
+      logger.error({
+        title: 'Error',
+        description: error?.response?.data?.message ?? 'Something went wrong',
+      });
+    }
+  };
 
   useEffect(() => {
     if (currentId) {
@@ -132,6 +150,7 @@ const Tasks = (): JSX.Element => {
               assignedIds={assignedIds.filter(list => +list.listId === item.id)}
               setAssignedIds={setAssignedIds}
               handleTaskEdit={(id: number) => setCurrentId(id)}
+              handleTaskDelete={(id: number) => handleTaskDelete(id)}
             />
           ))}
         </>

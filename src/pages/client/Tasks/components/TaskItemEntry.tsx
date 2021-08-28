@@ -1,6 +1,8 @@
 import {
   Button,
   ButtonGroup,
+  Icon,
+  IconButton,
   SimpleGrid,
   Tag,
   TagLabel,
@@ -12,7 +14,7 @@ import React from 'react';
 import { DATE_TIME } from 'resources/constants';
 import { TUser } from 'types/User';
 import moment from 'moment';
-import { FaTasks } from 'react-icons/fa';
+import { FaTasks, FaTrash } from 'react-icons/fa';
 import UsersSelector from './UsersSelector';
 import ListSwitcher from './ListSwitcher';
 
@@ -26,6 +28,7 @@ type TTaskItemEntryProps = {
   startDate?: Date;
   handleEdit: () => void;
   childrenTaskCount: number;
+  handleDelete: () => void;
 };
 
 const TaskItemEntry = ({
@@ -38,6 +41,7 @@ const TaskItemEntry = ({
   startDate,
   handleEdit,
   childrenTaskCount,
+  handleDelete,
 }: TTaskItemEntryProps): JSX.Element => (
   <SimpleGrid
     columns={[1, 1, 5, 5, 5]}
@@ -74,6 +78,13 @@ const TaskItemEntry = ({
       <Button colorScheme="cyan" color="white" onClick={handleEdit}>
         Edit
       </Button>
+      <IconButton
+        onClick={handleDelete}
+        colorScheme="red"
+        color="white"
+        icon={<Icon as={FaTrash} />}
+        aria-label="Delete task"
+      />
     </ButtonGroup>
   </SimpleGrid>
 );
