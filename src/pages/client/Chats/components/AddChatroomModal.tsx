@@ -7,10 +7,15 @@ import {
   ModalBody,
   ModalFooter,
   Button,
+  Box,
+  Text,
 } from '@chakra-ui/react';
 import { TextInput } from 'components';
 import { Formik } from 'formik';
-import React from 'react';
+import UsersSelector from 'pages/client/Tasks/components/UsersSelector';
+import React, { useState } from 'react';
+import { useMutation, useQuery } from 'react-query';
+import { API } from 'services/api';
 import { useLogger } from 'services/toast';
 import * as yup from 'yup';
 
@@ -29,6 +34,55 @@ const AddChatroomModal = ({
   onClose,
 }: TAddChatroomModalProps): JSX.Element => {
   const logger = useLogger();
+  const { data: users } = useQuery('/users', () =>
+    API.get('/users?page=1&limit=9999'),
+  );
+  const mutation = useMutation((data: Record<string, unknown>) =>
+    API.post('/chatrooms', data),
+  );
+
+  const [assignedIds, setAssignedIds] = useState<
+    {
+      taskId: string;
+      listId: string;
+      ids: number[];
+    }[]
+  >([]);
+
+  const onSubmit = async (values, { setSubmitting }) => {
+    const selectedUsers = assignedIds.map(item => item.ids).flat();
+
+    if (selectedUsers.length < 2) {
+      logger.warning({
+        description:
+          'At least 2 users have to be assigned to a room in order to create it',
+      });
+      return;
+    }
+
+    setSubmitting(true);
+
+    try {
+      await mutation.mutateAsync({
+        name: values.name,
+        assignedUserIds: selectedUsers,
+      });
+
+      logger.success({
+        title: 'Success',
+        description: 'Chatroom added successfully',
+      });
+      setAssignedIds([]);
+      onClose();
+    } catch (error) {
+      logger.error({
+        title: 'Error',
+        description: error?.response?.data?.message ?? 'Something went wrong',
+      });
+    }
+
+    setSubmitting(false);
+  };
 
   return (
     <Modal isOpen={isOpen} onClose={onClose} isCentered>
@@ -40,9 +94,7 @@ const AddChatroomModal = ({
         <Formik
           initialValues={{ name: '', userIds: [] }}
           validationSchema={AddChatroomSchema}
-          onSubmit={data => {
-            console.log(data);
-          }}>
+          onSubmit={onSubmit}>
           {({
             values,
             errors,
@@ -68,6 +120,18 @@ const AddChatroomModal = ({
                   onBlur={handleBlur}
                   errorMessage={touched.name ? errors.name : ''}
                 />
+                <Box mt={2}>
+                  <Text>Select users</Text>
+                  <UsersSelector
+                    taskId={0}
+                    taskListId={0}
+                    users={users?.data?.data}
+                    assignedIds={
+                      assignedIds.find(list => list.listId === '0')?.ids ?? []
+                    }
+                    setAssignedIds={setAssignedIds}
+                  />
+                </Box>
               </ModalBody>
 
               <ModalFooter>
