@@ -10,6 +10,7 @@ import {
   Icon,
 } from '@chakra-ui/react';
 import { FaList } from 'react-icons/fa';
+import { Loader } from 'components';
 import AddChatroomModal from './AddChatroomModal';
 import ChatListItem from './ChatListItem';
 
@@ -52,14 +53,21 @@ const ChatList = (): JSX.Element => {
           onClose();
         }}
       />
-      {chatList?.data?.data?.map(chatroom => (
-        <ChatListItem
-          key={chatroom.id}
-          name={chatroom.name}
-          userCount={chatroom.users.length}
-          to={`/chatroom/${chatroom.id}`}
-        />
-      ))}
+
+      {chatListLoading ? (
+        <Loader />
+      ) : (
+        <>
+          {chatList?.data?.data?.map(chatroom => (
+            <ChatListItem
+              key={chatroom.id}
+              name={chatroom.name}
+              userCount={chatroom.users.length}
+              to={`/client/chatroom/${chatroom.id}`}
+            />
+          ))}
+        </>
+      )}
     </div>
   );
 };
