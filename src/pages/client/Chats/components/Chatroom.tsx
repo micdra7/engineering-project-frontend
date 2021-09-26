@@ -1,12 +1,22 @@
-import React, { useState } from 'react';
-import { useParams } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { useParams, Redirect } from 'react-router-dom';
 import { useQuery } from 'react-query';
 import { API } from 'services/api';
-import { Box, Grid, Textarea, IconButton, Icon } from '@chakra-ui/react';
-import { Loader } from 'components';
+import {
+  Box,
+  Grid,
+  Textarea,
+  IconButton,
+  Icon,
+  Flex,
+  Text,
+} from '@chakra-ui/react';
+import { Loader, TooltipAvatar } from 'components';
 import { FaPaperPlane } from 'react-icons/fa';
 import { Socket } from 'socket.io-client';
 import { DefaultEventsMap } from 'socket.io-client/build/typed-events';
+import moment from 'moment';
+import { DATE_TIME } from 'resources/constants';
 
 type TChatroomProps = {
   userId: number;
@@ -22,15 +32,28 @@ const Chatroom = ({ userId, socket }: TChatroomProps): JSX.Element => {
     `/chatrooms/${chatroomId}`,
     () => API.get(`/chatrooms/${chatroomId}`),
   );
-  const { isLoading: messagesLoading, data: messages } = useQuery(
-    `/chatrooms/messages/${chatroomId}?limit=${limit}`,
-    () => API.get(`/chatrooms/messages/${chatroomId}?limit=${limit}`),
+  const {
+    isLoading: messagesLoading,
+    data: messages,
+    refetch: refetchMessages,
+  } = useQuery(`/chatrooms/messages/${chatroomId}?limit=${limit}`, () =>
+    API.get(`/chatrooms/messages/${chatroomId}?limit=${limit}`),
   );
+
+  useEffect(() => {
+    socket.on('message', () => {
+      refetchMessages();
+    });
+  }, []);
 
   const onSend = () => {
     socket.emit('message', { userId, chatroomId, content: message });
     setMessage('');
   };
+
+  if (!userId) {
+    return <Redirect to="/client/chats" />;
+  }
 
   return (
     <Box>
@@ -38,6 +61,32 @@ const Chatroom = ({ userId, socket }: TChatroomProps): JSX.Element => {
         <Loader />
       ) : (
         <Grid templateColumns={['1fr']}>
+          {messages?.data?.data?.map(m => (
+            <Flex
+              wrap="wrap"
+              key={m.id}
+              align="center"
+              justify={userId === m.userId ? 'flex-end' : 'flex-start'}>
+              <Flex
+                w="60%"
+                my={1}
+                p={2}
+                align="center"
+                borderRadius="lg"
+                background={userId === m.userId ? 'cyan.600' : 'cyan.100'}
+                color={userId === m.userId ? 'white' : 'black'}>
+                <TooltipAvatar size="sm" name={m.userFullName} mx={1} />
+                <Text>{m.content}</Text>
+              </Flex>
+              <Text
+                fontSize="xs"
+                w="100%"
+                textAlign={userId === m.userId ? 'right' : 'left'}>
+                {moment(m.sendTime).format(DATE_TIME.DATE_TIME)}
+              </Text>
+            </Flex>
+          ))}
+
           <Grid
             p={4}
             w="100%"
