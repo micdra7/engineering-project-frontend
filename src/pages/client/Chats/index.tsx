@@ -4,6 +4,7 @@ import React from 'react';
 import { Route, Switch, useRouteMatch } from 'react-router-dom';
 import { TAuthProviderState, TAuthState, useAuth } from 'services/Auth/Auth';
 import ChatList from './components/ChatList';
+import Chatroom from './components/Chatroom';
 
 const Chats = (): JSX.Element => {
   const auth: TAuthProviderState = useAuth();
@@ -22,7 +23,9 @@ const Chats = (): JSX.Element => {
         <Route exact={exact} path={path}>
           <ChatList />
         </Route>
-        <Route path={`${path}/chatroom/:chatroomId`}>chatroom</Route>
+        <Route path={`${path}/chatroom/:chatroomId`}>
+          <Chatroom />
+        </Route>
       </Switch>
     </WideContentPage>
   );
