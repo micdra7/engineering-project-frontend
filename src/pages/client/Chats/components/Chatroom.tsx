@@ -12,11 +12,13 @@ import {
   Text,
 } from '@chakra-ui/react';
 import { Loader, TooltipAvatar } from 'components';
-import { FaPaperPlane } from 'react-icons/fa';
+import { FaEllipsisH, FaPaperPlane } from 'react-icons/fa';
 import { Socket } from 'socket.io-client';
 import { DefaultEventsMap } from 'socket.io-client/build/typed-events';
 import moment from 'moment';
 import { DATE_TIME } from 'resources/constants';
+
+const maxLimit = 1000;
 
 type TMessage = {
   id: number;
@@ -76,17 +78,34 @@ const Chatroom = ({ userId, socket }: TChatroomProps): JSX.Element => {
     refetchMessages();
   };
 
+  const onLimitChange = () => {
+    const totalItems = messages?.data?.meta?.totalItems;
+
+    if (limit < maxLimit && limit < totalItems) {
+      setLimit(totalItems < maxLimit ? totalItems : maxLimit);
+    }
+  };
+
   if (!userId) {
     return <Redirect to="/client/chats" />;
   }
 
   return (
     <Box>
-      {chatroomLoading && messagesLoading ? (
+      {chatroomLoading || messagesLoading ? (
         <Loader />
       ) : (
         <Grid templateColumns={['1fr']}>
-          <Grid templateColumns="1fr" height="90%" overflowY="auto">
+          <Grid templateColumns="1fr" h="90%" maxH="75vh" overflowY="auto">
+            {!!messages?.data &&
+              limit !== maxLimit &&
+              limit !== messages?.data?.meta?.totalItems && (
+                <IconButton
+                  aria-label="Load more"
+                  icon={<Icon as={FaEllipsisH} />}
+                  onClick={onLimitChange}
+                />
+              )}
             {[]
               .concat(messages?.data?.data ?? [])
               .reverse()
@@ -124,10 +143,12 @@ const Chatroom = ({ userId, socket }: TChatroomProps): JSX.Element => {
               bottom="0"
               right="0"
               p={4}
-              w="85%"
+              pl="20%"
+              w="100%"
               minH="120px"
               templateColumns="1fr 0.25fr"
-              gap="0.5rem">
+              gap="0.5rem"
+              bg="white">
               <Textarea
                 value={message}
                 onChange={event => setMessage(event.target.value)}
