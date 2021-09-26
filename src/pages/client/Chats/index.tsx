@@ -40,7 +40,6 @@ const Chats = (): JSX.Element => {
   useEffect(() => {
     if (userId) {
       socket.emit('joinAll', { userId });
-      socket.onAny((name, ...data) => console.log(name, data));
     }
   }, [userId]);
 

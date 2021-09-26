@@ -41,14 +41,16 @@ const Chatroom = ({ userId, socket }: TChatroomProps): JSX.Element => {
   );
 
   useEffect(() => {
-    socket.on('message', () => {
-      refetchMessages();
-    });
-  }, []);
+    if (socket)
+      socket.on('message', () => {
+        refetchMessages();
+      });
+  }, [socket]);
 
   const onSend = () => {
     socket.emit('message', { userId, chatroomId, content: message });
     setMessage('');
+    refetchMessages();
   };
 
   if (!userId) {
@@ -61,35 +63,40 @@ const Chatroom = ({ userId, socket }: TChatroomProps): JSX.Element => {
         <Loader />
       ) : (
         <Grid templateColumns={['1fr']}>
-          {messages?.data?.data?.map(m => (
-            <Flex
-              wrap="wrap"
-              key={m.id}
-              align="center"
-              justify={userId === m.userId ? 'flex-end' : 'flex-start'}>
+          <Grid templateColumns="1fr" height="90%" overflowY="auto">
+            {messages?.data?.data?.map(m => (
               <Flex
-                w="60%"
-                my={1}
-                p={2}
+                wrap="wrap"
+                key={m.id}
                 align="center"
-                borderRadius="lg"
-                background={userId === m.userId ? 'cyan.600' : 'cyan.100'}
-                color={userId === m.userId ? 'white' : 'black'}>
-                <TooltipAvatar size="sm" name={m.userFullName} mx={1} />
-                <Text>{m.content}</Text>
+                justify={userId === m.userId ? 'flex-end' : 'flex-start'}>
+                <Flex
+                  w="60%"
+                  my={1}
+                  p={2}
+                  align="center"
+                  borderRadius="lg"
+                  background={userId === m.userId ? 'cyan.600' : 'cyan.100'}
+                  color={userId === m.userId ? 'white' : 'black'}>
+                  <TooltipAvatar size="sm" name={m.userFullName} mx={1} />
+                  <Text>{m.content}</Text>
+                </Flex>
+                <Text
+                  fontSize="xs"
+                  w="100%"
+                  textAlign={userId === m.userId ? 'right' : 'left'}>
+                  {moment(m.sendTime).format(DATE_TIME.DATE_TIME)}
+                </Text>
               </Flex>
-              <Text
-                fontSize="xs"
-                w="100%"
-                textAlign={userId === m.userId ? 'right' : 'left'}>
-                {moment(m.sendTime).format(DATE_TIME.DATE_TIME)}
-              </Text>
-            </Flex>
-          ))}
+            ))}
+          </Grid>
 
           <Grid
+            pos="fixed"
+            bottom="0"
+            right="0"
             p={4}
-            w="100%"
+            w="85%"
             minH="120px"
             templateColumns="1fr 0.25fr"
             gap="0.5rem">
