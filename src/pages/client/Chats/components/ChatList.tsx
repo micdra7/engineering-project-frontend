@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { API } from 'services/api';
 import { TAuthProviderState, TAuthState, useAuth } from 'services/Auth/Auth';
 import { useQuery } from 'react-query';
@@ -14,7 +14,11 @@ import { Loader } from 'components';
 import AddChatroomModal from './AddChatroomModal';
 import ChatListItem from './ChatListItem';
 
-const ChatList = (): JSX.Element => {
+type TChatListProps = {
+  setUserId: React.Dispatch<React.SetStateAction<number>>;
+};
+
+const ChatList = ({ setUserId }: TChatListProps): JSX.Element => {
   const auth: TAuthProviderState = useAuth();
   const authState: TAuthState = auth.getCurrentState();
 
@@ -27,6 +31,17 @@ const ChatList = (): JSX.Element => {
   } = useQuery('/chatrooms?page=1&limit=9999', () =>
     API.get('/chatrooms?page=1&limit=9999'),
   );
+
+  useEffect(() => {
+    if (!chatListLoading && chatList?.data) {
+      setUserId(
+        chatList?.data?.data
+          ?.map(item => item.users)
+          ?.flat()
+          ?.find(user => user.email === authState.email)?.id,
+      );
+    }
+  }, [chatListLoading, chatList]);
 
   return (
     <div>

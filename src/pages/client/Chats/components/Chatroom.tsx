@@ -5,8 +5,15 @@ import { API } from 'services/api';
 import { Box, Grid, Textarea, IconButton, Icon } from '@chakra-ui/react';
 import { Loader } from 'components';
 import { FaPaperPlane } from 'react-icons/fa';
+import { Socket } from 'socket.io-client';
+import { DefaultEventsMap } from 'socket.io-client/build/typed-events';
 
-const Chatroom = (): JSX.Element => {
+type TChatroomProps = {
+  userId: number;
+  socket: Socket<DefaultEventsMap, DefaultEventsMap>;
+};
+
+const Chatroom = ({ userId, socket }: TChatroomProps): JSX.Element => {
   const [limit, setLimit] = useState(10);
   const [message, setMessage] = useState('');
 
@@ -19,6 +26,11 @@ const Chatroom = (): JSX.Element => {
     `/chatrooms/messages/${chatroomId}?limit=${limit}`,
     () => API.get(`/chatrooms/messages/${chatroomId}?limit=${limit}`),
   );
+
+  const onSend = () => {
+    socket.emit('message', { userId, chatroomId, content: message });
+    setMessage('');
+  };
 
   return (
     <Box>
@@ -45,6 +57,7 @@ const Chatroom = (): JSX.Element => {
               rounded="md"
               h="100%"
               icon={<Icon as={FaPaperPlane} color="white" />}
+              onClick={onSend}
             />
           </Grid>
         </Grid>
