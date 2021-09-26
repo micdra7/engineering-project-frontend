@@ -1,4 +1,4 @@
-import { Text } from '@chakra-ui/react';
+import { Text, useBreakpointValue } from '@chakra-ui/react';
 import { WideContentPage } from 'components';
 import React from 'react';
 import { Route, Switch, useRouteMatch } from 'react-router-dom';
@@ -9,6 +9,8 @@ const Chats = (): JSX.Element => {
   const auth: TAuthProviderState = useAuth();
   const authState: TAuthState = auth.getCurrentState();
 
+  const exact = useBreakpointValue([true, true, false]);
+
   const { path } = useRouteMatch();
 
   return (
@@ -17,7 +19,7 @@ const Chats = (): JSX.Element => {
         Send messages to users in your chatrooms or create new ones
       </Text>
       <Switch>
-        <Route path={path}>
+        <Route exact={exact} path={path}>
           <ChatList />
         </Route>
         <Route path={`${path}/chatroom/:chatroomId`}>chatroom</Route>

@@ -63,7 +63,7 @@ const ChatList = (): JSX.Element => {
               key={chatroom.id}
               name={chatroom.name}
               userCount={chatroom.users.length}
-              to={`/client/chatroom/${chatroom.id}`}
+              to={`/client/chats/chatroom/${chatroom.id}`}
             />
           ))}
         </>
