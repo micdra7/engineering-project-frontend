@@ -43,7 +43,7 @@ const Chatroom = ({ userId, socket }: TChatroomProps): JSX.Element => {
   const chatRef = useRef<HTMLDivElement>();
 
   const { chatroomId }: { chatroomId: string } = useParams();
-  const { isLoading: chatroomLoading, data: chatroom } = useQuery(
+  const { isLoading: chatroomLoading } = useQuery(
     `/chatrooms/${chatroomId}`,
     () => API.get(`/chatrooms/${chatroomId}`),
   );
