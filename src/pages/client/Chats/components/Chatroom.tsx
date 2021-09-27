@@ -91,12 +91,12 @@ const Chatroom = ({ userId, socket }: TChatroomProps): JSX.Element => {
   }
 
   return (
-    <Box>
+    <Box h="100%">
       {chatroomLoading || messagesLoading ? (
         <Loader />
       ) : (
-        <Grid templateColumns={['1fr']}>
-          <Grid templateColumns="1fr" h="90%" maxH="75vh" overflowY="auto">
+        <Grid templateColumns={['1fr']} h="100%" overflowY="auto">
+          <Grid templateColumns="1fr" h="100%" maxH="100%">
             {!!messages?.data &&
               limit !== maxLimit &&
               limit !== messages?.data?.meta?.totalItems && (
