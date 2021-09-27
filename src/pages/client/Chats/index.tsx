@@ -1,4 +1,4 @@
-import { Text, useBreakpointValue } from '@chakra-ui/react';
+import { Text, useBreakpointValue, Grid } from '@chakra-ui/react';
 import { WideContentPage } from 'components';
 import React, { useState, useEffect } from 'react';
 import { Route, Switch, useRouteMatch } from 'react-router-dom';
@@ -24,7 +24,7 @@ const socket = io(process.env.REACT_APP_WS_URL as string, {
 });
 
 const Chats = (): JSX.Element => {
-  const exact = useBreakpointValue([true, true, false]);
+  const exact = useBreakpointValue([true, true, true, false]);
   const { path } = useRouteMatch();
 
   const [userId, setUserId] = useState(0);
@@ -41,12 +41,16 @@ const Chats = (): JSX.Element => {
         Send messages to users in your chatrooms or create new ones
       </Text>
       <Switch>
-        <Route exact={exact} path={path}>
-          <ChatList setUserId={setUserId} />
-        </Route>
-        <Route path={`${path}/chatroom/:chatroomId`}>
-          <Chatroom userId={userId} socket={socket} />
-        </Route>
+        <Grid
+          templateColumns={['1fr', '1fr', '1fr', '0.5fr 1fr']}
+          columnGap="4">
+          <Route exact={exact} path={path}>
+            <ChatList setUserId={setUserId} />
+          </Route>
+          <Route path={`${path}/chatroom/:chatroomId`}>
+            <Chatroom userId={userId} socket={socket} />
+          </Route>
+        </Grid>
       </Switch>
     </WideContentPage>
   );
