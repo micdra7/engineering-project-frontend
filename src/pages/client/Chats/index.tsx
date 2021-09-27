@@ -2,12 +2,7 @@ import { Text, useBreakpointValue } from '@chakra-ui/react';
 import { WideContentPage } from 'components';
 import React, { useState, useEffect } from 'react';
 import { Route, Switch, useRouteMatch } from 'react-router-dom';
-import {
-  LocalStorageAuthKey,
-  TAuthProviderState,
-  TAuthState,
-  useAuth,
-} from 'services/Auth/Auth';
+import { LocalStorageAuthKey } from 'services/Auth/Auth';
 import { io } from 'socket.io-client';
 import ChatList from './components/ChatList';
 import Chatroom from './components/Chatroom';
@@ -29,9 +24,6 @@ const socket = io(process.env.REACT_APP_WS_URL as string, {
 });
 
 const Chats = (): JSX.Element => {
-  const auth: TAuthProviderState = useAuth();
-  const authState: TAuthState = auth.getCurrentState();
-
   const exact = useBreakpointValue([true, true, false]);
   const { path } = useRouteMatch();
 
