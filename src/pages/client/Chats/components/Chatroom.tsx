@@ -91,12 +91,17 @@ const Chatroom = ({ userId, socket }: TChatroomProps): JSX.Element => {
   }
 
   return (
-    <Box h="100%">
+    <Box pos="relative" h="100%">
       {chatroomLoading || messagesLoading ? (
         <Loader />
       ) : (
-        <Grid templateColumns={['1fr']} h="100%" overflowY="auto">
-          <Grid templateColumns="1fr" h="100%" maxH="100%">
+        <Flex h="100%">
+          <Grid
+            templateColumns="1fr"
+            h="calc(100% - 140px)"
+            maxH="calc(100vh - 140px)"
+            w="100%"
+            overflowY="auto">
             {!!messages?.data &&
               limit !== maxLimit &&
               limit !== messages?.data?.meta?.totalItems && (
@@ -137,18 +142,18 @@ const Chatroom = ({ userId, socket }: TChatroomProps): JSX.Element => {
             <Flex h="0%" opacity="0" ref={chatRef} />
           </Grid>
 
-          <form id="send-message-form" onSubmit={onSend}>
-            <Grid
-              pos="fixed"
-              bottom="0"
-              right="0"
-              p={4}
-              pl="20%"
-              w="100%"
-              minH="120px"
-              templateColumns="1fr 0.25fr"
-              gap="0.5rem"
-              bg="white">
+          <Grid
+            pos="absolute"
+            bottom="0"
+            right="0"
+            p={4}
+            pl="20%"
+            w="100%"
+            h="140px"
+            templateColumns="1fr 0.25fr"
+            gap="0.5rem"
+            bg="white">
+            <form id="send-message-form" onSubmit={onSend}>
               <Textarea
                 value={message}
                 onChange={event => setMessage(event.target.value)}
@@ -159,17 +164,17 @@ const Chatroom = ({ userId, socket }: TChatroomProps): JSX.Element => {
                   if (event.key === 'Enter') onSend();
                 }}
               />
-              <IconButton
-                colorScheme="cyan"
-                aria-label="Send"
-                rounded="md"
-                h="100%"
-                icon={<Icon as={FaPaperPlane} color="white" />}
-                onClick={onSend}
-              />
-            </Grid>
-          </form>
-        </Grid>
+            </form>
+            <IconButton
+              colorScheme="cyan"
+              aria-label="Send"
+              rounded="md"
+              h="100%"
+              icon={<Icon as={FaPaperPlane} color="white" />}
+              onClick={onSend}
+            />
+          </Grid>
+        </Flex>
       )}
     </Box>
   );

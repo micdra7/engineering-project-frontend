@@ -12,14 +12,11 @@ const WideContentPage = ({
   title,
   children,
 }: TWideContentPageProps): JSX.Element => (
-  <Grid
-    templateColumns={['1fr', '1fr', '100px 1fr', '250px 1fr']}
-    w="100%"
-    h="100%">
+  <Grid templateColumns={['1fr', '1fr', '100px 1fr', '250px 1fr']} w="100%">
     <GridItem>
       <Navbar />
     </GridItem>
-    <GridItem w="100%" maxW="1440px" mx="auto" p={4} h="100%">
+    <GridItem w="100%" maxW="1440px" mx="auto" p={4}>
       <Heading size="2xl" color="cyan.900">
         {title}
       </Heading>
