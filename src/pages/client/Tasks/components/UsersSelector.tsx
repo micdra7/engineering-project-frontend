@@ -142,50 +142,26 @@ const UsersSelector = ({
                   colorScheme="cyan"
                   color="white"
                   onClick={() => {
-                    setAssignedIds(ids => {
-                      console.log(
-                        'ids: ',
-                        ids,
-                        ...ids.filter(
-                          (item: {
-                            listId: string;
-                            taskId: string;
-                            ids: number[];
-                          }) =>
-                            !(
-                              item.listId === `${taskListId}` &&
-                              item.taskId === `${taskId}`
-                            ),
-                        ),
-                        {
-                          taskId: `${taskId}`,
-                          listId: `${taskListId}`,
-                          ids: selectedItems.map(
-                            (item: { value: string }) => +item.value,
+                    setAssignedIds(ids => [
+                      ...ids.filter(
+                        (item: {
+                          listId: string;
+                          taskId: string;
+                          ids: number[];
+                        }) =>
+                          !(
+                            item.listId === `${taskListId}` &&
+                            item.taskId === `${taskId}`
                           ),
-                        },
-                      );
-                      return [
-                        ...ids.filter(
-                          (item: {
-                            listId: string;
-                            taskId: string;
-                            ids: number[];
-                          }) =>
-                            !(
-                              item.listId === `${taskListId}` &&
-                              item.taskId === `${taskId}`
-                            ),
+                      ),
+                      {
+                        taskId: `${taskId}`,
+                        listId: `${taskListId}`,
+                        ids: selectedItems.map(
+                          (item: { value: string }) => +item.value,
                         ),
-                        {
-                          taskId: `${taskId}`,
-                          listId: `${taskListId}`,
-                          ids: selectedItems.map(
-                            (item: { value: string }) => +item.value,
-                          ),
-                        },
-                      ];
-                    });
+                      },
+                    ]);
                     onClose();
                   }}>
                   Save
