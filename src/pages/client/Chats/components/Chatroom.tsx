@@ -34,9 +34,14 @@ type TMessage = {
 type TChatroomProps = {
   userId: number;
   socket: Socket<DefaultEventsMap, DefaultEventsMap>;
+  setCurrentChatroomId: React.Dispatch<React.SetStateAction<number>>;
 };
 
-const Chatroom = ({ userId, socket }: TChatroomProps): JSX.Element => {
+const Chatroom = ({
+  userId,
+  socket,
+  setCurrentChatroomId,
+}: TChatroomProps): JSX.Element => {
   const [limit, setLimit] = useState(10);
   const [message, setMessage] = useState('');
 
@@ -69,6 +74,10 @@ const Chatroom = ({ userId, socket }: TChatroomProps): JSX.Element => {
       });
     }
   }, [messagesLoading, messages]);
+
+  useEffect(() => {
+    setCurrentChatroomId(+chatroomId);
+  }, [chatroomId]);
 
   const onSend = () => {
     if (!message?.trim()) return;
@@ -147,7 +156,7 @@ const Chatroom = ({ userId, socket }: TChatroomProps): JSX.Element => {
             bottom="0"
             right="0"
             p={4}
-            pl="20%"
+            pl={['20%', '20%', '20%', '0']}
             w="100%"
             h="140px"
             templateColumns="1fr 0.25fr"
