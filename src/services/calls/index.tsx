@@ -1,8 +1,10 @@
-import { Socket } from 'socket.io-client';
+import { LocalStorageAuthKey } from 'services/Auth/Auth';
+import { io, Socket } from 'socket.io-client';
 
 export class PeerConnection {
   socket: Socket;
   peerConnection: RTCPeerConnection;
+  room = '';
 
   private isCalling = false;
   private isInCall = false;
@@ -44,6 +46,11 @@ export class PeerConnection {
     this.onDisconnected = callback;
   }
 
+  joinRoom(room: string): void {
+    this.room = room;
+    this.socket.emit('joinRoom', room);
+  }
+
   onCallMade(): void {
     this.socket.on('call-answer-made', async data => {
       if (!this.isInCall) {
@@ -70,4 +77,65 @@ export class PeerConnection {
       this.isInCall = true;
     });
   }
+
+  onUserRemove(callback: (socketId: string) => void): void {
+    this.socket.on(`${this.room}-remove-user`, ({ socketId }) => {
+      callback(socketId);
+    });
+  }
+
+  onUserListUpdate(callback: (users: unknown) => void): void {
+    this.socket.on(`${this.room}-update-user-list`, ({ users }) => {
+      callback(users);
+    });
+  }
+
+  onAnswer(callback: (socketId: string) => void): void {
+    this.socket.on('call-answer-made', async data => {
+      await this.peerConnection.setRemoteDescription(
+        new RTCSessionDescription(data.answer),
+      );
+
+      if (!this.isCalling) {
+        callback(data.socket);
+        this.isCalling = true;
+      }
+    });
+  }
+
+  onCallRejected(callback: (data: unknown) => void): void {
+    this.socket.on('call-reject-made', data => {
+      callback(data);
+    });
+  }
+
+  onTrack(callback: (stream: unknown) => void): void {
+    this.peerConnection.ontrack = ({ streams: [stream] }) => {
+      callback(stream);
+    };
+  }
 }
+
+const getToken = (): string => {
+  if (localStorage.getItem(LocalStorageAuthKey)) {
+    return JSON.parse(
+      localStorage.getItem(LocalStorageAuthKey) ?? '{ "accessToken": "" }',
+    )?.accessToken;
+  }
+
+  return '';
+};
+
+export const createPeerConnection = (): PeerConnection => {
+  const peerConnection = new RTCPeerConnection({
+    iceServers: [{ urls: 'stun:stun.l.google.com:19302' }],
+  });
+
+  const socket = io(process.env.REACT_APP_WS_URL as string, {
+    extraHeaders: {
+      authorization: `Bearer ${getToken()}`,
+    },
+  });
+
+  return new PeerConnection(socket, peerConnection);
+};
