@@ -27,6 +27,7 @@ export class PeerConnection {
           break;
       }
     });
+    this.onCallMade();
   }
 
   async callUser(to: number): Promise<void> {
@@ -48,11 +49,11 @@ export class PeerConnection {
 
   joinRoom(room: string): void {
     this.room = room;
-    this.socket.emit('joinRoom', room);
+    this.socket.emit('joinRoom', { room });
   }
 
   onCallMade(): void {
-    this.socket.on('call-answer-made', async data => {
+    this.socket.on('call-offer', async data => {
       if (!this.isInCall) {
         // eslint-disable-next-line no-alert
         const confirmed = window.confirm(
@@ -136,6 +137,7 @@ export const createPeerConnection = (): PeerConnection => {
       authorization: `Bearer ${getToken()}`,
     },
   });
+  console.log('socket: ', socket);
 
   return new PeerConnection(socket, peerConnection);
 };
