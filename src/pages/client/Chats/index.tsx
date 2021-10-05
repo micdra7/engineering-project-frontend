@@ -49,6 +49,10 @@ const Chats = (): JSX.Element => {
   );
 
   useEffect(() => {
+    if (socket.disconnected) {
+      socket.connect();
+    }
+
     if (userId) {
       socket.emit('joinAll', { userId });
     }

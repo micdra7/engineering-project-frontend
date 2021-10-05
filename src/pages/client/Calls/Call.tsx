@@ -55,6 +55,10 @@ const Call = (): JSX.Element => {
   }, [userMediaStream]);
 
   useEffect(() => {
+    if (peerVideoConnection.socket.disconnected) {
+      peerVideoConnection.socket.connect();
+    }
+
     peerVideoConnection.joinRoom('test');
     peerVideoConnection.onUserRemove(socketId =>
       setConnectedUsers((oldUsers: any) =>
