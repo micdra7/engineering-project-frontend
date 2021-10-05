@@ -3,7 +3,6 @@ import { Grid, SimpleGrid, Button } from '@chakra-ui/react';
 import { useQuery } from 'react-query';
 import { API } from 'services/api';
 import { createPeerConnection } from 'services/calls';
-import { useParams } from 'react-router-dom';
 
 const senders: RTCRtpSender[] = [];
 const peerVideoConnection = createPeerConnection();
@@ -11,7 +10,6 @@ const peerVideoConnection = createPeerConnection();
 const Call = (): JSX.Element => {
   // const { room } = useParams();
   const [connectedUsers, setConnectedUsers] = useState([]);
-  console.log('connectedUsers: ', connectedUsers);
   const [userMediaStream, setUserMediaStream] = useState<MediaStream>();
   const [displayMediaStream, setDisplayMediaStream] = useState(null);
   const [isFullScreen, setFullScreen] = useState(false);
@@ -48,6 +46,12 @@ const Call = (): JSX.Element => {
     };
 
     createMediaStream();
+
+    return () => {
+      userMediaStream?.getTracks()?.forEach(track => {
+        track?.stop();
+      });
+    };
   }, [userMediaStream]);
 
   useEffect(() => {
@@ -78,6 +82,10 @@ const Call = (): JSX.Element => {
       setStartTimer(false);
       if (remoteRef?.current) remoteRef.current.srcObject = null;
     });
+
+    return () => {
+      peerVideoConnection.socket.disconnect();
+    };
   }, []);
 
   const enterFullScreen = () => {

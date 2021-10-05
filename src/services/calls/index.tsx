@@ -132,12 +132,14 @@ export const createPeerConnection = (): PeerConnection => {
     iceServers: [{ urls: 'stun:stun.l.google.com:19302' }],
   });
 
-  const socket = io(process.env.REACT_APP_WS_URL as string, {
-    extraHeaders: {
-      authorization: `Bearer ${getToken()}`,
+  const socket = io(
+    `${process.env.REACT_APP_WS_URL}:${process.env.REACT_APP_CALL_PORT}`,
+    {
+      extraHeaders: {
+        authorization: `Bearer ${getToken()}`,
+      },
     },
-  });
-  console.log('socket: ', socket);
+  );
 
   return new PeerConnection(socket, peerConnection);
 };
