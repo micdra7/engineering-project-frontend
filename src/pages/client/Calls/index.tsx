@@ -1,7 +1,7 @@
 import { Text } from '@chakra-ui/react';
 import { WideContentPage } from 'components';
 import React from 'react';
-import Call from './Call';
+import Call from './components/Call';
 
 const Calls = (): JSX.Element => (
   <WideContentPage title="Calls">
