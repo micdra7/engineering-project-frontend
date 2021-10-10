@@ -6,7 +6,7 @@ import {
   Icon,
   Box,
 } from '@chakra-ui/react';
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { FaList } from 'react-icons/fa';
 import { Calendar, momentLocalizer } from 'react-big-calendar';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
@@ -14,16 +14,28 @@ import moment from 'moment';
 import { useQuery } from 'react-query';
 import { API } from 'services/api';
 import AddCallModal from './AddCallModal';
+import EventModal from './EventModal';
 
 const localizer = momentLocalizer(moment);
 
 const CallList = (): JSX.Element => {
+  const [selectedCallId, setSelectedCallId] = useState(0);
+
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const {
+    isOpen: eventOpen,
+    onOpen: onEventOpen,
+    onClose: onEventClose,
+  } = useDisclosure();
 
   const { data: calls, refetch: refetchCalls } = useQuery(
     '/calls?page=1&limit=9999',
     () => API.get('/calls?page=1&limit=9999'),
   );
+
+  useEffect(() => {
+    if (selectedCallId) onEventOpen();
+  }, [selectedCallId]);
 
   return (
     <div>
@@ -48,12 +60,23 @@ const CallList = (): JSX.Element => {
         }}
       />
 
+      <EventModal
+        isOpen={eventOpen}
+        onClose={() => {
+          onEventClose();
+          setSelectedCallId(0);
+        }}
+        callId={selectedCallId}
+      />
+
       <Box w="100%" maxW="100%" overflowX="auto">
         <Box minH="50vh" minW="700px">
           <Calendar
             localizer={localizer}
             events={
               calls?.data?.data?.map(call => ({
+                id: call.id,
+                code: call.generatedCode,
                 title: call.name,
                 start: moment(call.startDate).toDate(),
                 end: moment(call.finishDate).toDate(),
@@ -66,6 +89,9 @@ const CallList = (): JSX.Element => {
             style={{ height: '100%' }}
             defaultView="week"
             views={['week']}
+            onSelectEvent={obj => {
+              setSelectedCallId(obj.id);
+            }}
           />
         </Box>
       </Box>
