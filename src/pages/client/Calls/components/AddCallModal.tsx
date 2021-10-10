@@ -163,9 +163,9 @@ const AddCallModal = ({ isOpen, onClose }: TAddCallModal): JSX.Element => {
                 <FormControl
                   id="finishDate"
                   isInvalid={
-                    touched.startDate &&
-                    errors.startDate !== undefined &&
-                    errors.startDate !== ''
+                    touched.finishDate &&
+                    errors.finishDate !== undefined &&
+                    errors.finishDate !== ''
                   }>
                   <FormLabel>Finish date</FormLabel>
                   <Flatpickr
