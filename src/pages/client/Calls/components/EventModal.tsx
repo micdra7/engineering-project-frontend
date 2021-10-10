@@ -16,6 +16,7 @@ import { API } from 'services/api';
 import moment from 'moment';
 import { DATE_TIME } from 'resources/constants';
 import { Link } from 'react-router-dom';
+import UsersSelector from 'pages/client/Tasks/components/UsersSelector';
 
 type TEventModalProps = {
   callId: number;
@@ -32,6 +33,9 @@ const EventModal = ({
     `/calls/${callId}`,
     () => API.get(`/calls/${callId}`),
     { enabled: !!callId && isOpen },
+  );
+  const { data: users } = useQuery('/users', () =>
+    API.get('/users?page=1&limit=9999'),
   );
 
   return (
@@ -50,6 +54,16 @@ const EventModal = ({
               {moment(call?.data?.finishDate).format(DATE_TIME.DATE_TIME)}
             </Box>
           </SimpleGrid>
+          <Box mt={2}>
+            <UsersSelector
+              taskId={0}
+              taskListId={0}
+              users={users?.data?.data}
+              assignedIds={call?.data?.users?.map(user => user.id) ?? []}
+              setAssignedIds={() => {}}
+              selectorVisible={false}
+            />
+          </Box>
           <Box mt={2}>
             <Link to={`/calls/${call?.data?.generatedCode}`}>
               <Text fontSize="xs">{`${window.location.origin}/calls/${call?.data?.generatedCode}`}</Text>
