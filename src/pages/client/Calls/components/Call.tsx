@@ -1,22 +1,31 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Grid, SimpleGrid, Button } from '@chakra-ui/react';
+import {
+  Box,
+  SimpleGrid,
+  Button,
+  Heading,
+  AvatarGroup,
+  Text,
+} from '@chakra-ui/react';
 import { useQuery } from 'react-query';
 import { API } from 'services/api';
 import { createPeerConnection } from 'services/calls';
+import { useParams } from 'react-router-dom';
+import { TooltipAvatar } from 'components';
 
 const senders: RTCRtpSender[] = [];
 const peerVideoConnection = createPeerConnection();
 
 const Call = (): JSX.Element => {
-  // const { room } = useParams();
+  const { callId }: { callId: string } = useParams();
   const [connectedUsers, setConnectedUsers] = useState([]);
   const [userMediaStream, setUserMediaStream] = useState<MediaStream>();
-  const [displayMediaStream, setDisplayMediaStream] = useState(null);
+  // const [displayMediaStream, setDisplayMediaStream] = useState(null);
   const [isFullScreen, setFullScreen] = useState(false);
   const [startTimer, setStartTimer] = useState(false);
 
-  const { data: users } = useQuery('/users', () =>
-    API.get('/users?page=1&limit=9999'),
+  const { data: call } = useQuery(`/calls/uuid/${callId}`, () =>
+    API.get(`/calls/uuid/${callId}`),
   );
 
   const contentRef = useRef<HTMLDivElement>(null);
@@ -59,7 +68,7 @@ const Call = (): JSX.Element => {
       peerVideoConnection.socket.connect();
     }
 
-    peerVideoConnection.joinRoom('test');
+    peerVideoConnection.joinRoom(callId);
     peerVideoConnection.onUserRemove(socketId =>
       setConnectedUsers((oldUsers: any) =>
         oldUsers.filter(user => user !== socketId),
@@ -112,16 +121,23 @@ const Call = (): JSX.Element => {
   };
 
   return (
-    <Grid>
-      <SimpleGrid columns={4} gap={2}>
-        {users?.data?.data?.map(user => (
-          <Button
+    <Box w="100%" h="100vh" bg="cyan.800">
+      <Heading textAlign="center" color="white">
+        {call?.data?.name}
+      </Heading>
+      <Heading size="md" color="white" p={4}>
+        Users:
+      </Heading>
+      <AvatarGroup size="sm" max={5} p={4}>
+        {call?.data?.users?.map(user => (
+          <TooltipAvatar
             key={user.id}
-            onClick={() => peerVideoConnection.callUser(connectedUsers[0])}>
-            {user.email}
-          </Button>
+            size="sm"
+            color="white"
+            name={`${user.firstName} ${user.lastName}`}
+          />
         ))}
-      </SimpleGrid>
+      </AvatarGroup>
       <SimpleGrid columns={2} gap={2} ref={contentRef}>
         <video ref={localRef} autoPlay />
         <video ref={remoteRef} autoPlay muted />
@@ -129,7 +145,7 @@ const Call = (): JSX.Element => {
       <SimpleGrid columns={2} gap={2}>
         <Button onClick={() => toggleFullScreen}>Fullscreen</Button>
       </SimpleGrid>
-    </Grid>
+    </Box>
   );
 };
 
