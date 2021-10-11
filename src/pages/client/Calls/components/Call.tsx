@@ -2,7 +2,6 @@ import React, { useState, useRef, useEffect } from 'react';
 import {
   Box,
   SimpleGrid,
-  Button,
   Heading,
   AvatarGroup,
   HStack,
@@ -22,13 +21,17 @@ import {
   FaVideo,
   FaVideoSlash,
 } from 'react-icons/fa';
+import { TAuthProviderState, TAuthState, useAuth } from 'services/Auth/Auth';
 
 const senders: RTCRtpSender[] = [];
 const peerVideoConnection = createPeerConnection();
 
 const Call = (): JSX.Element => {
+  const auth: TAuthProviderState = useAuth();
+  const authState: TAuthState = auth.getCurrentState();
+
   const { callId }: { callId: string } = useParams();
-  const [connectedUsers, setConnectedUsers] = useState([]);
+  const [connectedUsers, setConnectedUsers] = useState<string[]>([]);
   const [userMediaStream, setUserMediaStream] = useState<MediaStream>();
   // const [displayMediaStream, setDisplayMediaStream] = useState(null);
   const [isFullScreen, setFullScreen] = useState(false);
@@ -41,7 +44,7 @@ const Call = (): JSX.Element => {
   );
 
   const localRef = useRef<HTMLVideoElement>(null);
-  const remoteRef = useRef<HTMLVideoElement>(null);
+  const [remoteStreams, setRemoteStreams] = useState<MediaStream[]>([]);
 
   useEffect(() => {
     const createMediaStream = async () => {
@@ -82,22 +85,22 @@ const Call = (): JSX.Element => {
 
     peerVideoConnection.joinRoom(callId);
     peerVideoConnection.onUserRemove(socketId =>
-      setConnectedUsers((oldUsers: any) =>
+      setConnectedUsers((oldUsers: string[]) =>
         oldUsers.filter(user => user !== socketId),
       ),
     );
-    peerVideoConnection.onUserListUpdate((updatedUsers: any) =>
+    peerVideoConnection.onUserListUpdate((updatedUsers: string[]) =>
       setConnectedUsers(updatedUsers),
     );
-    peerVideoConnection.onAnswer((socket: any) =>
-      peerVideoConnection.callUser(socket),
-    );
-    peerVideoConnection.onCallRejected((data: any) =>
+    peerVideoConnection.onAnswer((socket: number) => {
+      peerVideoConnection.callUser(socket);
+    });
+    peerVideoConnection.onCallRejected((data: { socket: string }) =>
       // eslint-disable-next-line no-alert
       alert(`User: "Socket: ${data.socket}" rejected your call.`),
     );
-    peerVideoConnection.onTrack((stream: any) => {
-      if (remoteRef?.current) remoteRef.current.srcObject = stream;
+    peerVideoConnection.onTrack((stream: MediaStream) => {
+      setRemoteStreams((prevState: MediaStream[]) => [...prevState, stream]);
     });
 
     peerVideoConnection.setOnConnected(() => {
@@ -105,13 +108,24 @@ const Call = (): JSX.Element => {
     });
     peerVideoConnection.setOnDisconnected(() => {
       setStartTimer(false);
-      if (remoteRef?.current) remoteRef.current.srcObject = null;
+      // TODO just for testing, in finished version should filter out user who disconnected
+      setRemoteStreams([]);
     });
 
     return () => {
       peerVideoConnection.socket.disconnect();
     };
   }, []);
+
+  useEffect(() => {
+    if (call?.data) {
+      call?.data?.users?.forEach(user => {
+        if (user.email === authState.email) return;
+
+        peerVideoConnection.callUser(user.id);
+      });
+    }
+  }, [call]);
 
   const enterFullScreen = () => {
     document.body.requestFullscreen();
@@ -194,7 +208,11 @@ const Call = (): JSX.Element => {
             />
           </HStack>
         </Flex>
-        <video ref={remoteRef} autoPlay muted />
+        {remoteStreams.map(stream => (
+          <Flex key={stream.id} flexFlow="row wrap" justifyContent="center">
+            <video src={URL.createObjectURL(stream)} autoPlay />
+          </Flex>
+        ))}
       </SimpleGrid>
     </Box>
   );

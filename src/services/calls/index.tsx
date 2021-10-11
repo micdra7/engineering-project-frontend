@@ -85,13 +85,13 @@ export class PeerConnection {
     });
   }
 
-  onUserListUpdate(callback: (users: unknown) => void): void {
+  onUserListUpdate(callback: (users: string[]) => void): void {
     this.socket.on(`${this.room}-update-user-list`, ({ users }) => {
       callback(users);
     });
   }
 
-  onAnswer(callback: (socketId: string) => void): void {
+  onAnswer(callback: (socketId: number) => void): void {
     this.socket.on('call-answer-made', async data => {
       await this.peerConnection.setRemoteDescription(
         new RTCSessionDescription(data.answer),
@@ -104,13 +104,13 @@ export class PeerConnection {
     });
   }
 
-  onCallRejected(callback: (data: unknown) => void): void {
+  onCallRejected(callback: (data: { socket: string }) => void): void {
     this.socket.on('call-reject-made', data => {
       callback(data);
     });
   }
 
-  onTrack(callback: (stream: unknown) => void): void {
+  onTrack(callback: (stream: MediaStream) => void): void {
     this.peerConnection.ontrack = ({ streams: [stream] }) => {
       callback(stream);
     };
