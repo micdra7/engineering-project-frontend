@@ -5,13 +5,23 @@ import {
   Button,
   Heading,
   AvatarGroup,
-  Text,
+  HStack,
+  IconButton,
+  Icon,
+  Flex,
 } from '@chakra-ui/react';
 import { useQuery } from 'react-query';
 import { API } from 'services/api';
 import { createPeerConnection } from 'services/calls';
 import { useParams } from 'react-router-dom';
 import { TooltipAvatar } from 'components';
+import {
+  FaExpand,
+  FaMicrophone,
+  FaMicrophoneSlash,
+  FaVideo,
+  FaVideoSlash,
+} from 'react-icons/fa';
 
 const senders: RTCRtpSender[] = [];
 const peerVideoConnection = createPeerConnection();
@@ -23,12 +33,13 @@ const Call = (): JSX.Element => {
   // const [displayMediaStream, setDisplayMediaStream] = useState(null);
   const [isFullScreen, setFullScreen] = useState(false);
   const [startTimer, setStartTimer] = useState(false);
+  const [isMuted, setMuted] = useState(true);
+  const [isVideoOff, setVideoOff] = useState(true);
 
   const { data: call } = useQuery(`/calls/uuid/${callId}`, () =>
     API.get(`/calls/uuid/${callId}`),
   );
 
-  const contentRef = useRef<HTMLDivElement>(null);
   const localRef = useRef<HTMLVideoElement>(null);
   const remoteRef = useRef<HTMLVideoElement>(null);
 
@@ -45,6 +56,7 @@ const Call = (): JSX.Element => {
         }
 
         stream.getTracks().forEach(track => {
+          track.enabled = false;
           senders.push(
             peerVideoConnection.peerConnection.addTrack(track, stream),
           );
@@ -102,7 +114,7 @@ const Call = (): JSX.Element => {
   }, []);
 
   const enterFullScreen = () => {
-    contentRef?.current?.requestFullscreen();
+    document.body.requestFullscreen();
   };
 
   const exitFullScreen = () => {
@@ -118,6 +130,20 @@ const Call = (): JSX.Element => {
     } else {
       enterFullScreen();
     }
+  };
+
+  const toggleAudio = () => {
+    userMediaStream?.getAudioTracks()?.forEach(track => {
+      track.enabled = !track.enabled;
+    });
+    setMuted(!isMuted);
+  };
+
+  const toggleVideo = () => {
+    userMediaStream?.getVideoTracks()?.forEach(track => {
+      track.enabled = !track.enabled;
+    });
+    setVideoOff(!isVideoOff);
   };
 
   return (
@@ -138,12 +164,37 @@ const Call = (): JSX.Element => {
           />
         ))}
       </AvatarGroup>
-      <SimpleGrid columns={2} gap={2} ref={contentRef}>
-        <video ref={localRef} autoPlay />
+      <SimpleGrid columns={[1, 1, 2]} gap={2} p={4}>
+        <Flex flexFlow="row wrap" justifyContent="center">
+          <video ref={localRef} autoPlay style={{ width: '100%' }} />
+          <HStack justifyContent="center" w="100%" p={4}>
+            <IconButton
+              aria-label="Toggle audio"
+              onClick={toggleAudio}
+              icon={<Icon as={isMuted ? FaMicrophoneSlash : FaMicrophone} />}
+              colorScheme="cyan"
+              rounded="md"
+              color="white"
+            />
+            <IconButton
+              aria-label="Toggle video"
+              onClick={toggleVideo}
+              icon={<Icon as={isVideoOff ? FaVideoSlash : FaVideo} />}
+              colorScheme="cyan"
+              rounded="md"
+              color="white"
+            />
+            <IconButton
+              aria-label="Toggle fullscreen"
+              onClick={toggleFullScreen}
+              icon={<Icon as={FaExpand} />}
+              colorScheme="cyan"
+              rounded="md"
+              color="white"
+            />
+          </HStack>
+        </Flex>
         <video ref={remoteRef} autoPlay muted />
-      </SimpleGrid>
-      <SimpleGrid columns={2} gap={2}>
-        <Button onClick={() => toggleFullScreen}>Fullscreen</Button>
       </SimpleGrid>
     </Box>
   );
