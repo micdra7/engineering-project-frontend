@@ -21,15 +21,11 @@ import {
   FaVideo,
   FaVideoSlash,
 } from 'react-icons/fa';
-import { TAuthProviderState, TAuthState, useAuth } from 'services/Auth/Auth';
 
 const senders: RTCRtpSender[] = [];
 const peerVideoConnection = createPeerConnection();
 
 const Call = (): JSX.Element => {
-  const auth: TAuthProviderState = useAuth();
-  const authState: TAuthState = auth.getCurrentState();
-
   const { callId }: { callId: string } = useParams();
   const [connectedUsers, setConnectedUsers] = useState<string[]>([]);
   const [userMediaStream, setUserMediaStream] = useState<MediaStream>();
@@ -92,13 +88,9 @@ const Call = (): JSX.Element => {
     peerVideoConnection.onUserListUpdate((updatedUsers: string[]) =>
       setConnectedUsers(updatedUsers),
     );
-    peerVideoConnection.onAnswer((socket: number) => {
+    peerVideoConnection.onAnswer((socket: string) => {
       peerVideoConnection.callUser(socket);
     });
-    peerVideoConnection.onCallRejected((data: { socket: string }) =>
-      // eslint-disable-next-line no-alert
-      alert(`User: "Socket: ${data.socket}" rejected your call.`),
-    );
     peerVideoConnection.onTrack((stream: MediaStream) => {
       setRemoteStreams((prevState: MediaStream[]) => [...prevState, stream]);
     });
@@ -118,14 +110,12 @@ const Call = (): JSX.Element => {
   }, []);
 
   useEffect(() => {
-    if (call?.data) {
-      call?.data?.users?.forEach(user => {
-        if (user.email === authState.email) return;
-
-        peerVideoConnection.callUser(user.id);
+    if (connectedUsers.length > 0) {
+      connectedUsers.forEach(user => {
+        peerVideoConnection.callUser(user);
       });
     }
-  }, [call]);
+  }, [connectedUsers]);
 
   const enterFullScreen = () => {
     document.body.requestFullscreen();
@@ -210,7 +200,12 @@ const Call = (): JSX.Element => {
         </Flex>
         {remoteStreams.map(stream => (
           <Flex key={stream.id} flexFlow="row wrap" justifyContent="center">
-            <video src={URL.createObjectURL(stream)} autoPlay />
+            <video
+              ref={videoRef => {
+                if (videoRef) videoRef.srcObject = stream;
+              }}
+              autoPlay
+            />
           </Flex>
         ))}
       </SimpleGrid>

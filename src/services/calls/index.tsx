@@ -30,7 +30,7 @@ export class PeerConnection {
     this.onCallMade();
   }
 
-  async callUser(to: number): Promise<void> {
+  async callUser(to: string): Promise<void> {
     const offer = await this.peerConnection.createOffer();
     await this.peerConnection.setLocalDescription(
       new RTCSessionDescription(offer),
@@ -55,15 +55,7 @@ export class PeerConnection {
   onCallMade(): void {
     this.socket.on('call-offer', async data => {
       if (!this.isInCall) {
-        // eslint-disable-next-line no-alert
-        const confirmed = window.confirm(
-          `User ${data.socket} wants to call you. Do you accept?`,
-        );
-
-        if (!confirmed) {
-          this.socket.emit('call-reject', { from: data.socket });
-          return;
-        }
+        this.socket.emit('call-reject', { from: data.socket });
       }
 
       await this.peerConnection.setRemoteDescription(
@@ -91,8 +83,10 @@ export class PeerConnection {
     });
   }
 
-  onAnswer(callback: (socketId: number) => void): void {
+  onAnswer(callback: (socketId: string) => void): void {
     this.socket.on('call-answer-made', async data => {
+      if (data.answer.socket === this.socket.id) return;
+
       await this.peerConnection.setRemoteDescription(
         new RTCSessionDescription(data.answer),
       );
