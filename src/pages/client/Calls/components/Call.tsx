@@ -23,7 +23,7 @@ import {
 } from 'react-icons/fa';
 
 const senders: RTCRtpSender[] = [];
-const peerVideoConnection = createPeerConnection();
+const peerVideoConnections = [createPeerConnection()];
 
 const Call = (): JSX.Element => {
   const { callId }: { callId: string } = useParams();
@@ -57,7 +57,7 @@ const Call = (): JSX.Element => {
         stream.getTracks().forEach(track => {
           track.enabled = false;
           senders.push(
-            peerVideoConnection.peerConnection.addTrack(track, stream),
+            peerVideoConnections[0].peerConnection.addTrack(track, stream),
           );
         });
 
@@ -75,44 +75,53 @@ const Call = (): JSX.Element => {
   }, [userMediaStream]);
 
   useEffect(() => {
-    if (peerVideoConnection.socket.disconnected) {
-      peerVideoConnection.socket.connect();
+    if (peerVideoConnections[0].socket.disconnected) {
+      peerVideoConnections[0].socket.connect();
     }
 
-    peerVideoConnection.joinRoom(callId);
-    peerVideoConnection.onUserRemove(socketId =>
-      setConnectedUsers((oldUsers: string[]) =>
-        oldUsers.filter(user => user !== socketId),
-      ),
-    );
-    peerVideoConnection.onUserListUpdate((updatedUsers: string[]) =>
-      setConnectedUsers(updatedUsers),
-    );
-    peerVideoConnection.onAnswer((socket: string) => {
-      peerVideoConnection.callUser(socket);
-    });
-    peerVideoConnection.onTrack((stream: MediaStream) => {
-      setRemoteStreams((prevState: MediaStream[]) => [...prevState, stream]);
-    });
+    peerVideoConnections.forEach(connection => {
+      connection.joinRoom(callId);
+      connection.onUserRemove(socketId =>
+        setConnectedUsers((oldUsers: string[]) =>
+          oldUsers.filter(user => user !== socketId),
+        ),
+      );
+      connection.onUserListUpdate((updatedUsers: string[]) =>
+        setConnectedUsers(updatedUsers),
+      );
+      connection.onAnswer((socket: string) => {
+        connection.callUser(socket);
+      });
+      connection.onTrack((stream: MediaStream) => {
+        setRemoteStreams((prevState: MediaStream[]) => [...prevState, stream]);
+      });
 
-    peerVideoConnection.setOnConnected(() => {
-      setStartTimer(true);
-    });
-    peerVideoConnection.setOnDisconnected(() => {
-      setStartTimer(false);
-      // TODO just for testing, in finished version should filter out user who disconnected
-      setRemoteStreams([]);
+      connection.setOnConnected(() => {
+        setStartTimer(true);
+      });
+      connection.setOnDisconnected(() => {
+        setStartTimer(false);
+        // TODO just for testing, in finished version should filter out user who disconnected
+        setRemoteStreams([]);
+      });
     });
 
     return () => {
-      peerVideoConnection.socket.disconnect();
+      peerVideoConnections[0].socket.disconnect();
     };
   }, []);
 
   useEffect(() => {
     if (connectedUsers.length > 0) {
       connectedUsers.forEach(user => {
-        peerVideoConnection.callUser(user);
+        if (connectedUsers.length === 1) {
+          peerVideoConnections[0].callUser(user);
+        } else {
+          const newConnection = createPeerConnection();
+          newConnection.callUser(user);
+
+          peerVideoConnections.push(newConnection);
+        }
       });
     }
   }, [connectedUsers]);
@@ -170,7 +179,7 @@ const Call = (): JSX.Element => {
       </AvatarGroup>
       <SimpleGrid columns={[1, 1, 2]} gap={2} p={4}>
         <Flex flexFlow="row wrap" justifyContent="center">
-          <video ref={localRef} autoPlay style={{ width: '100%' }} />
+          <video ref={localRef} autoPlay muted style={{ width: '100%' }} />
           <HStack justifyContent="center" w="100%" p={4}>
             <IconButton
               aria-label="Toggle audio"
