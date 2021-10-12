@@ -11,7 +11,7 @@ import {
 } from '@chakra-ui/react';
 import { useQuery } from 'react-query';
 import { API } from 'services/api';
-import { createPeerConnection } from 'services/calls';
+import { PeerManager } from 'services/calls';
 import { useParams } from 'react-router-dom';
 import { TooltipAvatar } from 'components';
 import {
@@ -21,17 +21,35 @@ import {
   FaVideo,
   FaVideoSlash,
 } from 'react-icons/fa';
+import { LocalStorageAuthKey } from 'services/Auth/Auth';
+import { io } from 'socket.io-client';
 
-const senders: RTCRtpSender[] = [];
-const peerVideoConnections = [createPeerConnection()];
+const getToken = (): string => {
+  if (localStorage.getItem(LocalStorageAuthKey)) {
+    return JSON.parse(
+      localStorage.getItem(LocalStorageAuthKey) ?? '{ "accessToken": "" }',
+    )?.accessToken;
+  }
+
+  return '';
+};
+
+const socket = io(
+  `${process.env.REACT_APP_WS_URL}:${process.env.REACT_APP_CALL_PORT}`,
+  {
+    extraHeaders: {
+      authorization: `Bearer ${getToken()}`,
+    },
+  },
+);
 
 const Call = (): JSX.Element => {
   const { callId }: { callId: string } = useParams();
+  const [peerManager] = useState<PeerManager>(new PeerManager(socket, callId));
+
   const [connectedUsers, setConnectedUsers] = useState<string[]>([]);
   const [userMediaStream, setUserMediaStream] = useState<MediaStream>();
-  // const [displayMediaStream, setDisplayMediaStream] = useState(null);
   const [isFullScreen, setFullScreen] = useState(false);
-  const [startTimer, setStartTimer] = useState(false);
   const [isMuted, setMuted] = useState(true);
   const [isVideoOff, setVideoOff] = useState(true);
 
@@ -56,9 +74,6 @@ const Call = (): JSX.Element => {
 
         stream.getTracks().forEach(track => {
           track.enabled = false;
-          senders.push(
-            peerVideoConnections[0].peerConnection.addTrack(track, stream),
-          );
         });
 
         setUserMediaStream(stream);
@@ -75,56 +90,93 @@ const Call = (): JSX.Element => {
   }, [userMediaStream]);
 
   useEffect(() => {
-    if (peerVideoConnections[0].socket.disconnected) {
-      peerVideoConnections[0].socket.connect();
+    if (socket.disconnected) {
+      socket.connect();
     }
 
-    peerVideoConnections.forEach(connection => {
-      connection.joinRoom(callId);
-      connection.onUserRemove(socketId =>
-        setConnectedUsers((oldUsers: string[]) =>
-          oldUsers.filter(user => user !== socketId),
-        ),
-      );
-      connection.onUserListUpdate((updatedUsers: string[]) =>
-        setConnectedUsers(updatedUsers),
-      );
-      connection.onAnswer((socket: string) => {
-        connection.callUser(socket);
-      });
-      connection.onTrack((stream: MediaStream) => {
+    if (userMediaStream) {
+      peerManager.joinRoom((stream: MediaStream) => {
         setRemoteStreams((prevState: MediaStream[]) => [...prevState, stream]);
       });
-
-      connection.setOnConnected(() => {
-        setStartTimer(true);
+      peerManager.onUserRemove(socketId => {
+        setConnectedUsers((prevState: string[]) =>
+          prevState.filter(user => user !== socketId),
+        );
       });
-      connection.setOnDisconnected(() => {
-        setStartTimer(false);
-        // TODO just for testing, in finished version should filter out user who disconnected
-        setRemoteStreams([]);
-      });
-    });
+      peerManager.onUserListUpdate((updatedUsers: string[]) =>
+        setConnectedUsers(updatedUsers),
+      );
+      peerManager.onCallOffer();
+      peerManager.onCallAnswer();
+      // peerManager.onCallAnswer((socketId: string) => {
+      //   peerManager.call(socketId, userMediaStream);
+      // });
+    }
 
     return () => {
-      peerVideoConnections[0].socket.disconnect();
+      socket.disconnect();
     };
-  }, []);
+  }, [userMediaStream]);
 
   useEffect(() => {
-    if (connectedUsers.length > 0) {
+    if (connectedUsers.length > 0 && userMediaStream) {
       connectedUsers.forEach(user => {
-        if (connectedUsers.length === 1) {
-          peerVideoConnections[0].callUser(user);
-        } else {
-          const newConnection = createPeerConnection();
-          newConnection.callUser(user);
-
-          peerVideoConnections.push(newConnection);
-        }
+        peerManager.call(user, userMediaStream);
       });
     }
   }, [connectedUsers]);
+
+  // useEffect(() => {
+  //   if (peerVideoConnections[0].socket.disconnected) {
+  //     peerVideoConnections[0].socket.connect();
+  //   }
+
+  //   peerVideoConnections.forEach(connection => {
+  //     connection.joinRoom(callId);
+  //     connection.onUserRemove(socketId =>
+  //       setConnectedUsers((oldUsers: string[]) =>
+  //         oldUsers.filter(user => user !== socketId),
+  //       ),
+  //     );
+  //     connection.onUserListUpdate((updatedUsers: string[]) =>
+  //       setConnectedUsers(updatedUsers),
+  //     );
+  //     connection.onAnswer((socket: string) => {
+  //       connection.callUser(socket);
+  //     });
+  //     connection.onTrack((stream: MediaStream) => {
+  //       setRemoteStreams((prevState: MediaStream[]) => [...prevState, stream]);
+  //     });
+
+  //     connection.setOnConnected(() => {
+  //       setStartTimer(true);
+  //     });
+  //     connection.setOnDisconnected(() => {
+  //       setStartTimer(false);
+  //       // TODO just for testing, in finished version should filter out user who disconnected
+  //       setRemoteStreams([]);
+  //     });
+  //   });
+
+  //   return () => {
+  //     peerVideoConnections[0].socket.disconnect();
+  //   };
+  // }, []);
+
+  // useEffect(() => {
+  //   if (connectedUsers.length > 0) {
+  //     connectedUsers.forEach(user => {
+  //       if (connectedUsers.length === 1) {
+  //         peerVideoConnections[0].callUser(user);
+  //       } else {
+  //         const newConnection = createPeerConnection();
+  //         newConnection.callUser(user);
+
+  //         peerVideoConnections.push(newConnection);
+  //       }
+  //     });
+  //   }
+  // }, [connectedUsers]);
 
   const enterFullScreen = () => {
     document.body.requestFullscreen();
