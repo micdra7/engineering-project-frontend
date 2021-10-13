@@ -8,6 +8,7 @@ import { ErrorBoundary } from 'components';
 import { AuthContextProvider } from 'services/Auth/Auth';
 import ClientRoute from 'pages/client/client.route';
 import AdminRoute from 'pages/admin/admin.route';
+import Call from 'pages/client/Calls/components/Call';
 
 const queryClient = new QueryClient();
 
@@ -15,6 +16,9 @@ const GlobalRoutes = () => (
   <Switch>
     <Route exact path="/">
       <LandingPage />
+    </Route>
+    <Route path="/calls/:callId">
+      <Call />
     </Route>
     <Route path="/client">
       <ClientRoute />

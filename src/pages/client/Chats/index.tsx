@@ -24,11 +24,14 @@ const getToken = (): string => {
   return '';
 };
 
-const socket = io(process.env.REACT_APP_WS_URL as string, {
-  extraHeaders: {
-    authorization: `Bearer ${getToken()}`,
+const socket = io(
+  `${process.env.REACT_APP_WS_URL}:${process.env.REACT_APP_CHAT_PORT}`,
+  {
+    extraHeaders: {
+      authorization: `Bearer ${getToken()}`,
+    },
   },
-});
+);
 
 const Chats = (): JSX.Element => {
   const auth: TAuthProviderState = useAuth();
@@ -46,9 +49,17 @@ const Chats = (): JSX.Element => {
   );
 
   useEffect(() => {
+    if (socket.disconnected) {
+      socket.connect();
+    }
+
     if (userId) {
       socket.emit('joinAll', { userId });
     }
+
+    return () => {
+      socket.disconnect();
+    };
   }, [userId]);
 
   useEffect(() => {

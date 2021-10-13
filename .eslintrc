@@ -61,7 +61,8 @@
       { "ignoreClassFields": true }
     ],
     "lines-between-class-members": "off",
-    "@typescript-eslint/lines-between-class-members": ["off"]
+    "@typescript-eslint/lines-between-class-members": ["off"],
+    "jsx-a11y/media-has-caption": "off"
   },
   "settings": {
     "import/resolver": {
