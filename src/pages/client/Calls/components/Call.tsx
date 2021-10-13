@@ -11,7 +11,6 @@ import {
 } from '@chakra-ui/react';
 import { useQuery } from 'react-query';
 import { API } from 'services/api';
-import { PeerManager } from 'services/calls';
 import { useParams } from 'react-router-dom';
 import { TooltipAvatar } from 'components';
 import {
@@ -22,7 +21,8 @@ import {
   FaVideoSlash,
 } from 'react-icons/fa';
 import { LocalStorageAuthKey } from 'services/Auth/Auth';
-import { io } from 'socket.io-client';
+import { io, Socket } from 'socket.io-client';
+import Peer from 'peerjs';
 
 const getToken = (): string => {
   if (localStorage.getItem(LocalStorageAuthKey)) {
@@ -34,31 +34,51 @@ const getToken = (): string => {
   return '';
 };
 
-const socket = io(
-  `${process.env.REACT_APP_WS_URL}:${process.env.REACT_APP_CALL_PORT}`,
-  {
-    extraHeaders: {
-      authorization: `Bearer ${getToken()}`,
-    },
-  },
-);
-
 const Call = (): JSX.Element => {
   const { callId }: { callId: string } = useParams();
-  const [peerManager] = useState<PeerManager>(new PeerManager(socket, callId));
-
-  const [connectedUsers, setConnectedUsers] = useState<string[]>([]);
+  const [socket] = useState<Socket>(
+    io(`${process.env.REACT_APP_WS_URL}:${process.env.REACT_APP_CALL_PORT}`, {
+      extraHeaders: {
+        authorization: `Bearer ${getToken()}`,
+      },
+    }),
+  );
+  const [localId, setLocalId] = useState<string>();
+  const [peers, setPeers] = useState<
+    { id: string; call: Peer.MediaConnection }[]
+  >([]);
   const [userMediaStream, setUserMediaStream] = useState<MediaStream>();
   const [isFullScreen, setFullScreen] = useState(false);
   const [isMuted, setMuted] = useState(true);
   const [isVideoOff, setVideoOff] = useState(true);
 
-  const { data: call } = useQuery(`/calls/uuid/${callId}`, () =>
-    API.get(`/calls/uuid/${callId}`),
+  const { data: call } = useQuery(
+    `/calls/uuid/${callId}`,
+    () => API.get(`/calls/uuid/${callId}`),
+    {
+      refetchOnWindowFocus: false,
+    },
   );
 
   const localRef = useRef<HTMLVideoElement>(null);
-  const [remoteStreams, setRemoteStreams] = useState<MediaStream[]>([]);
+  const [remoteStreams, setRemoteStreams] = useState<
+    { stream: MediaStream; id: string }[]
+  >([]);
+
+  const createRemoteStream = (userCall: Peer.MediaConnection) => {
+    userCall.on('stream', userStream => {
+      setRemoteStreams(prevState => {
+        if (prevState.find(item => item.id === userCall.peer)) return prevState;
+
+        return [...prevState, { id: userCall.peer, stream: userStream }];
+      });
+    });
+    userCall.on('close', () => {
+      setRemoteStreams(prevState =>
+        prevState.filter(item => item.id !== userCall.peer),
+      );
+    });
+  };
 
   useEffect(() => {
     const createMediaStream = async () => {
@@ -87,96 +107,58 @@ const Call = (): JSX.Element => {
         track?.stop();
       });
     };
-  }, [userMediaStream]);
+  }, []);
 
   useEffect(() => {
+    if (!userMediaStream) return () => {};
+
     if (socket.disconnected) {
       socket.connect();
     }
 
-    if (userMediaStream) {
-      peerManager.joinRoom((stream: MediaStream) => {
-        setRemoteStreams((prevState: MediaStream[]) => [...prevState, stream]);
+    const peer = new Peer(undefined, {
+      host: process.env.REACT_APP_HOST,
+      port: +`${process.env.REACT_APP_CALL_PORT}` + 1,
+      path: '/peer',
+    });
+
+    peer.on('open', id => {
+      setLocalId(id);
+      socket.emit('joinRoom', { room: callId, id });
+    });
+
+    peer.on('call', userCall => {
+      userCall.answer(userMediaStream);
+      createRemoteStream(userCall);
+    });
+
+    socket.on('user-connected', ({ user }) => {
+      if (!userMediaStream) return;
+
+      const userCall = peer.call(user, userMediaStream);
+
+      createRemoteStream(userCall);
+
+      setPeers(prevPeers => {
+        if (prevPeers.find(item => item.id === user)) return prevPeers;
+
+        return [...prevPeers, { id: user, call: userCall }];
       });
-      peerManager.onUserRemove(socketId => {
-        setConnectedUsers((prevState: string[]) =>
-          prevState.filter(user => user !== socketId),
-        );
-      });
-      peerManager.onUserListUpdate((updatedUsers: string[]) =>
-        setConnectedUsers(updatedUsers),
-      );
-      peerManager.onCallOffer();
-      peerManager.onCallAnswer();
-      // peerManager.onCallAnswer((socketId: string) => {
-      //   peerManager.call(socketId, userMediaStream);
-      // });
-    }
+    });
+
+    socket.on('user-disconnected', ({ user }) => {
+      const remotePeer = peers.find(item => item.id === user);
+      if (remotePeer) {
+        remotePeer.call.close();
+      }
+    });
 
     return () => {
+      socket.emit('leaveRoom', { room: callId, id: localId });
+      peer.destroy();
       socket.disconnect();
     };
   }, [userMediaStream]);
-
-  useEffect(() => {
-    if (connectedUsers.length > 0 && userMediaStream) {
-      connectedUsers.forEach(user => {
-        peerManager.call(user, userMediaStream);
-      });
-    }
-  }, [connectedUsers]);
-
-  // useEffect(() => {
-  //   if (peerVideoConnections[0].socket.disconnected) {
-  //     peerVideoConnections[0].socket.connect();
-  //   }
-
-  //   peerVideoConnections.forEach(connection => {
-  //     connection.joinRoom(callId);
-  //     connection.onUserRemove(socketId =>
-  //       setConnectedUsers((oldUsers: string[]) =>
-  //         oldUsers.filter(user => user !== socketId),
-  //       ),
-  //     );
-  //     connection.onUserListUpdate((updatedUsers: string[]) =>
-  //       setConnectedUsers(updatedUsers),
-  //     );
-  //     connection.onAnswer((socket: string) => {
-  //       connection.callUser(socket);
-  //     });
-  //     connection.onTrack((stream: MediaStream) => {
-  //       setRemoteStreams((prevState: MediaStream[]) => [...prevState, stream]);
-  //     });
-
-  //     connection.setOnConnected(() => {
-  //       setStartTimer(true);
-  //     });
-  //     connection.setOnDisconnected(() => {
-  //       setStartTimer(false);
-  //       // TODO just for testing, in finished version should filter out user who disconnected
-  //       setRemoteStreams([]);
-  //     });
-  //   });
-
-  //   return () => {
-  //     peerVideoConnections[0].socket.disconnect();
-  //   };
-  // }, []);
-
-  // useEffect(() => {
-  //   if (connectedUsers.length > 0) {
-  //     connectedUsers.forEach(user => {
-  //       if (connectedUsers.length === 1) {
-  //         peerVideoConnections[0].callUser(user);
-  //       } else {
-  //         const newConnection = createPeerConnection();
-  //         newConnection.callUser(user);
-
-  //         peerVideoConnections.push(newConnection);
-  //       }
-  //     });
-  //   }
-  // }, [connectedUsers]);
 
   const enterFullScreen = () => {
     document.body.requestFullscreen();
@@ -212,7 +194,7 @@ const Call = (): JSX.Element => {
   };
 
   return (
-    <Box w="100%" h="100vh" bg="cyan.800">
+    <Box w="100%" minH="100vh" bg="cyan.800">
       <Heading textAlign="center" color="white">
         {call?.data?.name}
       </Heading>
@@ -259,13 +241,14 @@ const Call = (): JSX.Element => {
             />
           </HStack>
         </Flex>
-        {remoteStreams.map(stream => (
-          <Flex key={stream.id} flexFlow="row wrap" justifyContent="center">
+        {remoteStreams.map(item => (
+          <Flex key={item.id} flexFlow="row wrap" justifyContent="center">
             <video
               ref={videoRef => {
-                if (videoRef) videoRef.srcObject = stream;
+                if (videoRef) videoRef.srcObject = item.stream;
               }}
               autoPlay
+              style={{ width: '100%' }}
             />
           </Flex>
         ))}
