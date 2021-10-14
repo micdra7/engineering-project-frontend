@@ -224,7 +224,12 @@ const Call = (): JSX.Element => {
       </AvatarGroup>
       <SimpleGrid columns={[1, 1, 2]} gap={2} p={4}>
         <Flex pos="relative" flexFlow="row wrap" justifyContent="center">
-          <video ref={localRef} autoPlay muted style={{ width: '100%' }} />
+          <video
+            ref={localRef}
+            autoPlay
+            muted
+            style={{ width: '100%', maxHeight: '40vh' }}
+          />
           <HStack
             pos="absolute"
             bottom="0"
@@ -264,7 +269,7 @@ const Call = (): JSX.Element => {
                 if (videoRef) videoRef.srcObject = item.stream;
               }}
               autoPlay
-              style={{ width: '100%' }}
+              style={{ width: '100%', maxHeight: '40vh' }}
             />
           </Flex>
         ))}
