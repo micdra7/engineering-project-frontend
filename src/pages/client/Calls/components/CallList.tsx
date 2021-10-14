@@ -89,7 +89,7 @@ const CallList = (): JSX.Element => {
             start={moment().toDate()}
             end={moment().add(7, 'day').toDate()}
             style={{ height: '100%', width: '100%' }}
-            view={view}
+            view={view ?? 'week'}
             views={['week', 'day']}
             onSelectEvent={obj => {
               setSelectedCallId(obj.id);
