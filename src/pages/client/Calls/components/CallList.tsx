@@ -5,6 +5,7 @@ import {
   IconButton,
   Icon,
   Box,
+  useBreakpointValue,
 } from '@chakra-ui/react';
 import React, { useState, useEffect } from 'react';
 import { FaList } from 'react-icons/fa';
@@ -19,6 +20,7 @@ import EventModal from './EventModal';
 const localizer = momentLocalizer(moment);
 
 const CallList = (): JSX.Element => {
+  const view = useBreakpointValue(['day', 'day', 'day', 'week']);
   const [selectedCallId, setSelectedCallId] = useState(0);
 
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -69,8 +71,8 @@ const CallList = (): JSX.Element => {
         callId={selectedCallId}
       />
 
-      <Box w="100%" maxW="100%" overflowX="auto">
-        <Box minH="50vh" minW="700px">
+      <Box w="100%" overflowY="unset" overflowX="auto" maxW="100%">
+        <Box minH="50vh" w="100%">
           <Calendar
             localizer={localizer}
             events={
@@ -86,9 +88,9 @@ const CallList = (): JSX.Element => {
             endAccessor="end"
             start={moment().toDate()}
             end={moment().add(7, 'day').toDate()}
-            style={{ height: '100%' }}
-            defaultView="week"
-            views={['week']}
+            style={{ height: '100%', width: '100%' }}
+            view={view}
+            views={['week', 'day']}
             onSelectEvent={obj => {
               setSelectedCallId(obj.id);
             }}
