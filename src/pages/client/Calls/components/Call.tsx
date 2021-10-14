@@ -116,10 +116,12 @@ const Call = (): JSX.Element => {
       socket.connect();
     }
 
-    const peer = new Peer(undefined, {
-      host: process.env.REACT_APP_HOST,
-      path: '/peer',
-    });
+    const peer = new Peer();
+    // const peer = new Peer(undefined, {
+    //   port: +`${process.env.REACT_APP_PEER_PORT}`,
+    //   host: process.env.REACT_APP_HOST,
+    //   path: '/peer',
+    // });
 
     peer.on('open', id => {
       setLocalId(id);
@@ -211,9 +213,14 @@ const Call = (): JSX.Element => {
         ))}
       </AvatarGroup>
       <SimpleGrid columns={[1, 1, 2]} gap={2} p={4}>
-        <Flex flexFlow="row wrap" justifyContent="center">
+        <Flex pos="relative" flexFlow="row wrap" justifyContent="center">
           <video ref={localRef} autoPlay muted style={{ width: '100%' }} />
-          <HStack justifyContent="center" w="100%" p={4}>
+          <HStack
+            pos="absolute"
+            bottom="0"
+            justifyContent="center"
+            w="100%"
+            p={4}>
             <IconButton
               aria-label="Toggle audio"
               onClick={toggleAudio}
