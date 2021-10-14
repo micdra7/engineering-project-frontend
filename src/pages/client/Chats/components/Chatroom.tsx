@@ -107,10 +107,11 @@ const Chatroom = ({
         <Flex h="100%">
           <Grid
             templateColumns="1fr"
-            h="calc(100% - 140px)"
-            maxH="calc(100vh - 140px)"
+            h="calc(100vh - 140px)"
             w="100%"
-            overflowY="auto">
+            overflowY="auto"
+            pb="140px"
+            alignContent="start">
             {!!messages?.data &&
               limit !== maxLimit &&
               limit !== messages?.data?.meta?.totalItems && (
@@ -120,34 +121,31 @@ const Chatroom = ({
                   onClick={onLimitChange}
                 />
               )}
-            {[]
-              .concat(messages?.data?.data ?? [])
-              .reverse()
-              ?.map((m: TMessage) => (
+            {messages?.data?.data?.reverse()?.map((m: TMessage) => (
+              <Flex
+                wrap="wrap"
+                key={m.id}
+                align="center"
+                justify={userId === m.userId ? 'flex-end' : 'flex-start'}>
                 <Flex
-                  wrap="wrap"
-                  key={m.id}
+                  w="60%"
+                  my={1}
+                  p={2}
                   align="center"
-                  justify={userId === m.userId ? 'flex-end' : 'flex-start'}>
-                  <Flex
-                    w="60%"
-                    my={1}
-                    p={2}
-                    align="center"
-                    borderRadius="lg"
-                    background={userId === m.userId ? 'cyan.600' : 'cyan.100'}
-                    color={userId === m.userId ? 'white' : 'black'}>
-                    <TooltipAvatar size="sm" name={m.userFullName} mx={1} />
-                    <Text>{m.content}</Text>
-                  </Flex>
-                  <Text
-                    fontSize="xs"
-                    w="100%"
-                    textAlign={userId === m.userId ? 'right' : 'left'}>
-                    {moment(m.sendTime).format(DATE_TIME.DATE_TIME)}
-                  </Text>
+                  borderRadius="lg"
+                  background={userId === m.userId ? 'cyan.600' : 'cyan.100'}
+                  color={userId === m.userId ? 'white' : 'black'}>
+                  <TooltipAvatar size="sm" name={m.userFullName} mx={1} />
+                  <Text>{m.content}</Text>
                 </Flex>
-              ))}
+                <Text
+                  fontSize="xs"
+                  w="100%"
+                  textAlign={userId === m.userId ? 'right' : 'left'}>
+                  {moment(m.sendTime).format(DATE_TIME.DATE_TIME)}
+                </Text>
+              </Flex>
+            ))}
             <Flex h="0%" opacity="0" ref={chatRef} />
           </Grid>
 
