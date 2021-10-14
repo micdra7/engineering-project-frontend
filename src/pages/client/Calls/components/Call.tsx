@@ -44,9 +44,10 @@ const Call = (): JSX.Element => {
     }),
   );
   const [localId, setLocalId] = useState<string>();
-  const [peers, setPeers] = useState<
-    { id: string; call: Peer.MediaConnection }[]
-  >([]);
+  const [, setPeers] = useState<{ id: string; call: Peer.MediaConnection }[]>(
+    [],
+  );
+
   const [userMediaStream, setUserMediaStream] = useState<MediaStream>();
   const [isFullScreen, setFullScreen] = useState(false);
   const [isMuted, setMuted] = useState(true);
@@ -148,9 +149,18 @@ const Call = (): JSX.Element => {
     });
 
     socket.on('user-disconnected', ({ user }) => {
-      const remotePeer = peers.find(item => item.id === user);
-      if (remotePeer) {
-        remotePeer.call.close();
+      let currentPeers: { id: string; call: Peer.MediaConnection }[] = [];
+
+      setPeers(prevState => {
+        currentPeers = prevState;
+        return prevState;
+      });
+
+      if (currentPeers?.length > 0) {
+        const remotePeer = currentPeers.find(item => item.id === user);
+        if (remotePeer) {
+          remotePeer.call.close();
+        }
       }
     });
 
