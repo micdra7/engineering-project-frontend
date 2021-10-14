@@ -37,7 +37,7 @@ const getToken = (): string => {
 const Call = (): JSX.Element => {
   const { callId }: { callId: string } = useParams();
   const [socket] = useState<Socket>(
-    io(`${process.env.REACT_APP_WS_URL}:${process.env.REACT_APP_CALL_PORT}`, {
+    io(`${process.env.REACT_APP_WS_URL}`, {
       extraHeaders: {
         authorization: `Bearer ${getToken()}`,
       },
@@ -118,7 +118,6 @@ const Call = (): JSX.Element => {
 
     const peer = new Peer(undefined, {
       host: process.env.REACT_APP_HOST,
-      port: +`${process.env.REACT_APP_CALL_PORT}` + 1,
       path: '/peer',
     });
 
