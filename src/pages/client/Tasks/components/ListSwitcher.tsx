@@ -98,7 +98,7 @@ const ListSwitcher = ({
             <form id={`list-switch-form-${taskId}`} onSubmit={handleSubmit}>
               <PopoverBody>
                 <Select
-                  id={`taskListId-${taskId}`}
+                  id="taskListId"
                   isRequired
                   isInvalid={
                     touched.taskListId &&
