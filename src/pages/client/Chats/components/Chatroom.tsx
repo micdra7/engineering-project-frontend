@@ -45,10 +45,12 @@ const Chatroom = ({
   const [limit, setLimit] = useState(10);
   const [message, setMessage] = useState('');
 
+  const [loadedMessages, setLoadedMessages] = useState<TMessage[]>([]);
+
   const chatRef = useRef<HTMLDivElement>();
 
   const { chatroomId }: { chatroomId: string } = useParams();
-  const { isLoading: chatroomLoading } = useQuery(
+  const { isLoading: chatroomLoading, data: chatroomData } = useQuery(
     `/chatrooms/${chatroomId}`,
     () => API.get(`/chatrooms/${chatroomId}`),
   );
@@ -72,6 +74,8 @@ const Chatroom = ({
       chatRef?.current?.scrollIntoView({
         behavior: 'smooth',
       });
+
+      setLoadedMessages(messages.data.data);
     }
   }, [messagesLoading, messages]);
 
@@ -84,6 +88,23 @@ const Chatroom = ({
 
     socket.emit('message', { userId, chatroomId, content: message });
     setMessage('');
+
+    const user = chatroomData?.data?.users?.find(u => u.id === userId);
+
+    setLoadedMessages((prevState: TMessage[]) => [
+      ...prevState,
+      {
+        id: -1,
+        chatroomId: +chatroomId,
+        userId,
+        content: message,
+        chatroomName: chatroomData?.data?.name,
+        userEmail: user.email,
+        userFullName: `${user.firstName} ${user.lastName}`,
+        sendTime: moment().format(DATE_TIME.DATE_TIME),
+      } as TMessage,
+    ]);
+
     refetchMessages();
   };
 
@@ -121,7 +142,7 @@ const Chatroom = ({
                   onClick={onLimitChange}
                 />
               )}
-            {messages?.data?.data?.reverse()?.map((m: TMessage) => (
+            {loadedMessages.map((m: TMessage) => (
               <Flex
                 wrap="wrap"
                 key={m.id}
