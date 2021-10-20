@@ -8,13 +8,14 @@ import {
 } from '@chakra-ui/react';
 import { Loader, WideContentPage } from 'components';
 import React, { useEffect, useState } from 'react';
-import { FaList, FaThumbtack } from 'react-icons/fa';
+import { FaFolderMinus, FaList, FaThumbtack } from 'react-icons/fa';
 import { useMutation, useQuery } from 'react-query';
 import { API } from 'services/api';
 import { TAuthProviderState, TAuthState, useAuth } from 'services/Auth/Auth';
 import { useLogger } from 'services/toast';
 import AddListModal from './components/AddListModal';
 import AddTaskModal from './components/AddTaskModal';
+import DeletedTasksModal from './components/DeletedTasksModal';
 import EditTaskModal from './components/EditTaskModal';
 import TaskListEntry from './components/TaskListEntry';
 
@@ -33,6 +34,11 @@ const Tasks = (): JSX.Element => {
     isOpen: editTaskOpen,
     onOpen: onEditTaskOpen,
     onClose: onEditTaskClose,
+  } = useDisclosure();
+  const {
+    isOpen: deletedTasksOpen,
+    onOpen: onDeletedTasksOpen,
+    onClose: onDeletedTasksClose,
   } = useDisclosure();
 
   const {
@@ -103,7 +109,7 @@ const Tasks = (): JSX.Element => {
         {authState.role === 1 ? (
           <Tooltip
             hasArrow
-            placement="left"
+            placement="bottom"
             label="Add task list"
             bg="cyan.500">
             <IconButton
@@ -118,11 +124,25 @@ const Tasks = (): JSX.Element => {
         ) : (
           <></>
         )}
-        <Tooltip hasArrow placement="left" label="Add task" bg="cyan.500">
+        <Tooltip hasArrow placement="bottom" label="Add task" bg="cyan.500">
           <IconButton
             aria-label="Add task"
             onClick={onAddTaskOpen}
             icon={<Icon as={FaThumbtack} />}
+            colorScheme="cyan"
+            rounded="md"
+            color="white"
+          />
+        </Tooltip>
+        <Tooltip
+          hasArrow
+          placement="bottom"
+          label="Show closed tasks"
+          bg="cyan.500">
+          <IconButton
+            aria-label="Show closed tasks"
+            onClick={onDeletedTasksOpen}
+            icon={<Icon as={FaFolderMinus} />}
             colorScheme="cyan"
             rounded="md"
             color="white"
@@ -178,6 +198,10 @@ const Tasks = (): JSX.Element => {
           refetchTaskLists();
         }}
         taskId={currentId}
+      />
+      <DeletedTasksModal
+        isOpen={deletedTasksOpen}
+        onClose={onDeletedTasksClose}
       />
     </WideContentPage>
   );
