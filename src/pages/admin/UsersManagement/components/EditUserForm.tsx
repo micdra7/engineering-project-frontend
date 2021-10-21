@@ -86,7 +86,8 @@ const EditUserForm = (): JSX.Element => {
         }
         enableReinitialize
         validationSchema={UserSchema}
-        onSubmit={onSubmit}>
+        onSubmit={onSubmit}
+      >
         {({
           values,
           errors,
@@ -99,7 +100,8 @@ const EditUserForm = (): JSX.Element => {
           <form
             style={{ width: '100%' }}
             id="user-form"
-            onSubmit={handleSubmit}>
+            onSubmit={handleSubmit}
+          >
             <Grid w="100%">
               {userLoading ? (
                 <Loader />
@@ -157,7 +159,8 @@ const EditUserForm = (): JSX.Element => {
                       touched.role &&
                       errors.role !== undefined &&
                       errors.role !== ''
-                    }>
+                    }
+                  >
                     <FormLabel>Role</FormLabel>
                     <Select value={values.role} onChange={handleChange}>
                       <option value={0}>User</option>
@@ -187,7 +190,8 @@ const EditUserForm = (): JSX.Element => {
                     isLoading={isSubmitting}
                     type="submit"
                     colorScheme="cyan"
-                    mt="32px">
+                    mt="32px"
+                  >
                     Save
                   </Button>
                 </>

@@ -59,7 +59,8 @@ const LoginModal = ({ isOpen, onClose }: TLoginModalProps): JSX.Element => {
         <Formik
           initialValues={formInitialValues}
           validationSchema={LoginSchema}
-          onSubmit={onSubmit}>
+          onSubmit={onSubmit}
+        >
           {({
             values,
             errors,
@@ -107,7 +108,8 @@ const LoginModal = ({ isOpen, onClose }: TLoginModalProps): JSX.Element => {
                   isLoading={isSubmitting}
                   type="submit"
                   colorScheme="cyan"
-                  color="white">
+                  color="white"
+                >
                   Log in
                 </Button>
               </ModalFooter>

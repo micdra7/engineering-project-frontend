@@ -85,7 +85,8 @@ const ListSwitcher = ({
           initialValues={{ taskListId: `${taskListId}` }}
           enableReinitialize
           validationSchema={ListSwitchSchema}
-          onSubmit={onSubmit}>
+          onSubmit={onSubmit}
+        >
           {({
             values,
             errors,
@@ -121,7 +122,8 @@ const ListSwitcher = ({
                   isLoading={isSubmitting}
                   type="submit"
                   colorScheme="cyan"
-                  color="white">
+                  color="white"
+                >
                   Save
                 </Button>
               </PopoverFooter>

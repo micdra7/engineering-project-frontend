@@ -50,7 +50,8 @@ const PasswordInput = ({
             color="white"
             h="1.75rem"
             size="sm"
-            onClick={() => setShowPassword(!showPassword)}>
+            onClick={() => setShowPassword(!showPassword)}
+          >
             {showPassword ? 'Hide' : 'Show'}
           </Button>
         </InputRightElement>

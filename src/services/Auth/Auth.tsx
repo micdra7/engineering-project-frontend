@@ -231,7 +231,8 @@ const AuthContextProvider = ({
         logout,
         register,
         switchWorkspace,
-      }}>
+      }}
+    >
       {children}
     </AuthContext.Provider>
   );

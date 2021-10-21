@@ -47,7 +47,8 @@ const TaskItemEntry = ({
     columns={[1, 1, 5, 5, 5]}
     spacing={4}
     w="100%"
-    alignItems="center">
+    alignItems="center"
+  >
     <Tooltip hasArrow label={name} bg="cyan.500">
       <Text textOverflow="ellipsis" overflow="hidden" whiteSpace="nowrap">
         {name}
@@ -73,7 +74,8 @@ const TaskItemEntry = ({
       w={['100%', '100%', 'auto']}
       size="md"
       isAttached
-      justifyContent="center">
+      justifyContent="center"
+    >
       <ListSwitcher taskId={id ?? 0} taskListId={taskListId} />
       <Button colorScheme="cyan" color="white" onClick={handleEdit}>
         Edit

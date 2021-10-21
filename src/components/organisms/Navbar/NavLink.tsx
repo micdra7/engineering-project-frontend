@@ -24,7 +24,8 @@ const NavLink = ({
       justifyContent={['flex-start', 'flex-start', 'center', 'flex-start']}
       alignItems="center"
       fontSize={['1.25em', '1.25em', '2em', '1.45em']}
-      my={[0, 0, 0, 1]}>
+      my={[0, 0, 0, 1]}
+    >
       <Tooltip label={text} aria-label={`A tooltip for ${text} link`}>
         <Link
           opacity={[
@@ -39,7 +40,8 @@ const NavLink = ({
           to={to}
           textAlign={['left', 'left', 'center', 'left']}
           textDecor={location.pathname === to ? 'underline' : ''}
-          color={location.pathname === to ? 'cyan.300' : 'white'}>
+          color={location.pathname === to ? 'cyan.300' : 'white'}
+        >
           <Box
             d="inline-block"
             mr={['2', '2', '0', '2']}
@@ -48,12 +50,14 @@ const NavLink = ({
               isNavbarOpen ? '100%' : '0%',
               '100%',
             ]}
-            transition="opacity 0.15s ease-in-out">
+            transition="opacity 0.15s ease-in-out"
+          >
             {icon}
           </Box>
           <Box
             d={['inline-block', 'inline-block', 'none', 'inline-block']}
-            _hover={{ textDecor: 'underline' }}>
+            _hover={{ textDecor: 'underline' }}
+          >
             {text}
           </Box>
         </Link>

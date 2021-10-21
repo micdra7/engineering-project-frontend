@@ -96,7 +96,8 @@ const AddCallModal = ({ isOpen, onClose }: TAddCallModal): JSX.Element => {
             finishDate: new Date(),
           }}
           validationSchema={AddCallSchema}
-          onSubmit={onSubmit}>
+          onSubmit={onSubmit}
+        >
           {({
             values,
             errors,
@@ -142,7 +143,8 @@ const AddCallModal = ({ isOpen, onClose }: TAddCallModal): JSX.Element => {
                     touched.startDate &&
                     errors.startDate !== undefined &&
                     errors.startDate !== ''
-                  }>
+                  }
+                >
                   <FormLabel>Start date</FormLabel>
                   <Flatpickr
                     value={values.startDate}
@@ -166,7 +168,8 @@ const AddCallModal = ({ isOpen, onClose }: TAddCallModal): JSX.Element => {
                     touched.finishDate &&
                     errors.finishDate !== undefined &&
                     errors.finishDate !== ''
-                  }>
+                  }
+                >
                   <FormLabel>Finish date</FormLabel>
                   <Flatpickr
                     value={values.finishDate}
@@ -192,7 +195,8 @@ const AddCallModal = ({ isOpen, onClose }: TAddCallModal): JSX.Element => {
                   isLoading={isSubmitting}
                   type="submit"
                   colorScheme="cyan"
-                  color="white">
+                  color="white"
+                >
                   Create
                 </Button>
               </ModalFooter>

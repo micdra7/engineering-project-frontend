@@ -130,7 +130,8 @@ const AddUserForm = (): JSX.Element => {
             role: 0,
           }}
           validationSchema={FullUsersSchema}
-          onSubmit={handleCreate}>
+          onSubmit={handleCreate}
+        >
           {({
             values,
             errors,
@@ -193,7 +194,8 @@ const AddUserForm = (): JSX.Element => {
                   touched.role &&
                   errors.role !== undefined &&
                   errors.role !== ''
-                }>
+                }
+              >
                 <FormLabel>Role</FormLabel>
                 <Select value={values.role} onChange={handleChange}>
                   <option value={0}>User</option>
@@ -224,7 +226,8 @@ const AddUserForm = (): JSX.Element => {
                 type="submit"
                 colorScheme="cyan"
                 mt="32px"
-                color="white">
+                color="white"
+              >
                 Add
               </Button>
             </form>
@@ -240,7 +243,8 @@ const AddUserForm = (): JSX.Element => {
       <Formik
         initialValues={{ email: '', role: 0 }}
         validationSchema={PartialUsersSchema}
-        onSubmit={!hasChecked ? handleEmailCheck : handleAddToWorkspace}>
+        onSubmit={!hasChecked ? handleEmailCheck : handleAddToWorkspace}
+      >
         {({
           values,
           errors,
@@ -278,7 +282,8 @@ const AddUserForm = (): JSX.Element => {
                   touched.role &&
                   errors.role !== undefined &&
                   errors.role !== ''
-                }>
+                }
+              >
                 <FormLabel>Role</FormLabel>
                 <Select>
                   <option value={0}>User</option>
@@ -298,7 +303,8 @@ const AddUserForm = (): JSX.Element => {
               maxW={['unset', 'unset', '250px']}
               justifySelf="start"
               w="100%"
-              color="white">
+              color="white"
+            >
               {!hasChecked && !isEmailTaken
                 ? 'Check if account exists'
                 : 'Add user to workspace'}

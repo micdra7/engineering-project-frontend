@@ -235,7 +235,8 @@ const Call = (): JSX.Element => {
             bottom="0"
             justifyContent="center"
             w="100%"
-            p={4}>
+            p={4}
+          >
             <IconButton
               aria-label="Toggle audio"
               onClick={toggleAudio}
