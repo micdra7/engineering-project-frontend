@@ -111,7 +111,8 @@ const Tasks = (): JSX.Element => {
             hasArrow
             placement="bottom"
             label="Add task list"
-            bg="cyan.500">
+            bg="cyan.500"
+          >
             <IconButton
               aria-label="Add task list"
               onClick={onOpen}
@@ -138,7 +139,8 @@ const Tasks = (): JSX.Element => {
           hasArrow
           placement="bottom"
           label="Show closed tasks"
-          bg="cyan.500">
+          bg="cyan.500"
+        >
           <IconButton
             aria-label="Show closed tasks"
             onClick={onDeletedTasksOpen}

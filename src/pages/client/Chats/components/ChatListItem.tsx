@@ -22,7 +22,8 @@ const ChatListItem = ({
         templateColumns="1fr auto"
         bg={isActive ? 'cyan.300' : 'white'}
         p={2}
-        _hover={{ color: 'cyan.500' }}>
+        _hover={{ color: 'cyan.500' }}
+      >
         <Text>{name}</Text>
         <Tag colorScheme="cyan">{`${userCount} users`}</Tag>
       </Grid>

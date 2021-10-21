@@ -1,9 +1,6 @@
 import React from 'react';
 import {
   SimpleGrid,
-  Tag,
-  TagLabel,
-  TagRightIcon,
   Text,
   Tooltip,
   AccordionButton,
@@ -17,7 +14,7 @@ import {
 import { TUser } from 'types/User';
 import moment from 'moment';
 import { DATE_TIME } from 'resources/constants';
-import { FaCheckCircle, FaTasks } from 'react-icons/fa';
+import { FaCheckCircle } from 'react-icons/fa';
 import { TTask } from 'types/Task';
 import UsersSelector from './UsersSelector';
 

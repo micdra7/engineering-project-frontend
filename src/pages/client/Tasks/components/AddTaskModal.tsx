@@ -104,7 +104,8 @@ const AddTaskModal = ({ isOpen, onClose }: TAddTaskModalProps): JSX.Element => {
             finishDate: undefined,
           }}
           validationSchema={AddTaskSchema}
-          onSubmit={onSubmit}>
+          onSubmit={onSubmit}
+        >
           {({
             values,
             errors,
@@ -184,7 +185,8 @@ const AddTaskModal = ({ isOpen, onClose }: TAddTaskModalProps): JSX.Element => {
                     touched.startDate &&
                     errors.startDate !== undefined &&
                     errors.startDate !== ''
-                  }>
+                  }
+                >
                   <FormLabel>Start date</FormLabel>
                   <Flatpickr
                     value={values.startDate}
@@ -208,7 +210,8 @@ const AddTaskModal = ({ isOpen, onClose }: TAddTaskModalProps): JSX.Element => {
                     touched.startDate &&
                     errors.startDate !== undefined &&
                     errors.startDate !== ''
-                  }>
+                  }
+                >
                   <FormLabel>Finish date</FormLabel>
                   <Flatpickr
                     value={values.finishDate}
@@ -234,7 +237,8 @@ const AddTaskModal = ({ isOpen, onClose }: TAddTaskModalProps): JSX.Element => {
                   isLoading={isSubmitting}
                   type="submit"
                   colorScheme="cyan"
-                  color="white">
+                  color="white"
+                >
                   Create
                 </Button>
               </ModalFooter>

@@ -8,7 +8,8 @@ const Loader = (): JSX.Element => (
     minH="50%"
     flexFlow="row wrap"
     justifyContent="center"
-    alignItems="center">
+    alignItems="center"
+  >
     <Spinner
       size="xl"
       w="20vh"

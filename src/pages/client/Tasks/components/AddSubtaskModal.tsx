@@ -76,7 +76,8 @@ const AddSubtaskModal = ({
         <Formik
           initialValues={{ name: '' }}
           validationSchema={SubtaskSchema}
-          onSubmit={onSubmit}>
+          onSubmit={onSubmit}
+        >
           {({
             values,
             errors,
@@ -109,7 +110,8 @@ const AddSubtaskModal = ({
                   isLoading={isSubmitting}
                   type="submit"
                   colorScheme="cyan"
-                  color="white">
+                  color="white"
+                >
                   Save
                 </Button>
               </ModalFooter>

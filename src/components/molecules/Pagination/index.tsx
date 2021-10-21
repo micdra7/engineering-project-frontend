@@ -20,7 +20,8 @@ const Pagination = ({
   <HStack spacing="8px" ml="auto" mt={4} w="100%" maxW="400px">
     <Text
       textAlign="center"
-      w="16rem">{`Page ${currentPage} of ${totalPages}`}</Text>
+      w="16rem"
+    >{`Page ${currentPage} of ${totalPages}`}</Text>
     <IconButton
       colorScheme="cyan"
       aria-label="Previous page"
@@ -33,7 +34,8 @@ const Pagination = ({
       value={itemCount}
       onChange={event => {
         onItemCountChange(+event.target.value);
-      }}>
+      }}
+    >
       <option value={10}>10</option>
       <option value={25}>25</option>
       <option value={50}>50</option>
