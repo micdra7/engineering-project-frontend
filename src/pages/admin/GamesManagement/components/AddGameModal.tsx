@@ -14,6 +14,8 @@ import * as yup from 'yup';
 import { Formik } from 'formik';
 import { FileInput, TextInput } from 'components';
 import { FilePondFile } from 'filepond';
+import { useMutation } from 'react-query';
+import { API } from 'services/api';
 
 const AddGameSchema = yup.object().shape({
   name: yup.string().required('Name is required'),
@@ -26,9 +28,34 @@ type TAddGameModalProps = {
 
 const AddGameModal = ({ isOpen, onClose }: TAddGameModalProps): JSX.Element => {
   const logger = useLogger();
+  const addGameMutation = useMutation((data: FormData) =>
+    API.post('/games', data),
+  );
+
   const [files, setFiles] = useState<FilePondFile[]>([]);
 
-  const onSubmit = () => {};
+  const onSubmit = async (values, { setSubmitting }) => {
+    setSubmitting(true);
+
+    try {
+      const formData = new FormData();
+      formData.append('name', values.name);
+      formData.append('file', files[0].file);
+
+      await addGameMutation.mutateAsync(formData);
+
+      logger.success({
+        title: 'Success',
+        description: 'Game added successfully',
+      });
+      onClose();
+    } catch (error) {
+      logger.error({
+        title: 'Error',
+        description: error?.response?.data?.message ?? 'Something went wrong',
+      });
+    }
+  };
 
   useEffect(() => {
     setFiles([]);
@@ -70,7 +97,18 @@ const AddGameModal = ({ isOpen, onClose }: TAddGameModalProps): JSX.Element => {
                   onBlur={handleBlur}
                   errorMessage={touched.name ? errors.name : ''}
                 />
-                <FileInput files={files} setFiles={setFiles} />
+                <FileInput
+                  files={files}
+                  setFiles={setFiles}
+                  required
+                  acceptedFileTypes={[
+                    'application/javascript',
+                    'application/x-javascript',
+                    'application/ecmascript',
+                    'text/javascript',
+                    'text/ecmascript',
+                  ]}
+                />
               </ModalBody>
 
               <ModalFooter>

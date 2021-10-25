@@ -20,6 +20,7 @@
     "chakra-ui-autocomplete": "^1.4.3",
     "eslint-plugin-simple-import-sort": "^7.0.0",
     "filepond": "^4.30.3",
+    "filepond-plugin-file-validate-type": "^1.2.6",
     "flatpickr": "^4.6.9",
     "focus-visible": "^5.2.0",
     "formik": "^2.2.9",
