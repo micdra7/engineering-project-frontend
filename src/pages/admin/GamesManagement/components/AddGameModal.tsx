@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useLogger } from 'services/toast';
 import {
   Button,
@@ -12,7 +12,8 @@ import {
 } from '@chakra-ui/react';
 import * as yup from 'yup';
 import { Formik } from 'formik';
-import { TextInput } from 'components';
+import { FileInput, TextInput } from 'components';
+import { FilePondFile } from 'filepond';
 
 const AddGameSchema = yup.object().shape({
   name: yup.string().required('Name is required'),
@@ -25,8 +26,13 @@ type TAddGameModalProps = {
 
 const AddGameModal = ({ isOpen, onClose }: TAddGameModalProps): JSX.Element => {
   const logger = useLogger();
+  const [files, setFiles] = useState<FilePondFile[]>([]);
 
   const onSubmit = () => {};
+
+  useEffect(() => {
+    setFiles([]);
+  }, [isOpen]);
 
   return (
     <Modal isOpen={isOpen} onClose={onClose} isCentered>
@@ -46,8 +52,9 @@ const AddGameModal = ({ isOpen, onClose }: TAddGameModalProps): JSX.Element => {
             handleChange,
             handleBlur,
             handleSubmit,
+            isSubmitting,
           }) => (
-            <form id="add-game-form">
+            <form id="add-game-form" onSubmit={handleSubmit}>
               <ModalBody>
                 <TextInput
                   id="name"
@@ -63,7 +70,18 @@ const AddGameModal = ({ isOpen, onClose }: TAddGameModalProps): JSX.Element => {
                   onBlur={handleBlur}
                   errorMessage={touched.name ? errors.name : ''}
                 />
+                <FileInput files={files} setFiles={setFiles} />
               </ModalBody>
+
+              <ModalFooter>
+                <Button
+                  isLoading={isSubmitting}
+                  type="submit"
+                  colorScheme="cyan"
+                  color="white">
+                  Add
+                </Button>
+              </ModalFooter>
             </form>
           )}
         </Formik>
@@ -71,3 +89,5 @@ const AddGameModal = ({ isOpen, onClose }: TAddGameModalProps): JSX.Element => {
     </Modal>
   );
 };
+
+export default AddGameModal;

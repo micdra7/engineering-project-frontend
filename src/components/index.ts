@@ -1,3 +1,4 @@
+export { default as FileInput } from './atoms/FileInput';
 export { default as Loader } from './atoms/Loader';
 export { default as TooltipAvatar } from './atoms/TooltipAvatar';
 
