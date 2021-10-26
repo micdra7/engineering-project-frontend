@@ -14,24 +14,37 @@ import * as yup from 'yup';
 import { Formik } from 'formik';
 import { FileInput, TextInput } from 'components';
 import { FilePondFile } from 'filepond';
-import { useMutation } from 'react-query';
+import { useMutation, useQuery } from 'react-query';
 import { API } from 'services/api';
 
-const AddGameSchema = yup.object().shape({
+const GameSchema = yup.object().shape({
   name: yup.string().required('Name is required'),
 });
 
-type TAddGameModalProps = {
+type TGameModalProps = {
   isOpen: boolean;
   onClose: () => void;
+  gameId?: number;
 };
 
-const AddGameModal = ({ isOpen, onClose }: TAddGameModalProps): JSX.Element => {
+const GameModal = ({
+  isOpen,
+  onClose,
+  gameId,
+}: TGameModalProps): JSX.Element => {
   const logger = useLogger();
   const addGameMutation = useMutation((data: FormData) =>
     API.post('/games', data),
   );
+  const editGameMutation = useMutation((data: FormData) =>
+    API.patch(`/games/${gameId}`, data),
+  );
 
+  const { data: game } = useQuery(
+    `/games/${gameId}`,
+    () => API.get(`/games/${gameId}`),
+    { enabled: !!gameId },
+  );
   const [files, setFiles] = useState<FilePondFile[]>([]);
 
   const onSubmit = async (values, { setSubmitting }) => {
@@ -42,7 +55,8 @@ const AddGameModal = ({ isOpen, onClose }: TAddGameModalProps): JSX.Element => {
       formData.append('name', values.name);
       formData.append('file', files[0].file);
 
-      await addGameMutation.mutateAsync(formData);
+      if (gameId) await editGameMutation.mutateAsync(formData);
+      else await addGameMutation.mutateAsync(formData);
 
       logger.success({
         title: 'Success',
@@ -69,8 +83,9 @@ const AddGameModal = ({ isOpen, onClose }: TAddGameModalProps): JSX.Element => {
         <ModalCloseButton />
 
         <Formik
-          initialValues={{ name: '' }}
-          validationSchema={AddGameSchema}
+          initialValues={{ name: game?.data?.name ?? '' }}
+          enableReinitialize
+          validationSchema={GameSchema}
           onSubmit={onSubmit}>
           {({
             values,
@@ -117,7 +132,7 @@ const AddGameModal = ({ isOpen, onClose }: TAddGameModalProps): JSX.Element => {
                   type="submit"
                   colorScheme="cyan"
                   color="white">
-                  Add
+                  Save
                 </Button>
               </ModalFooter>
             </form>
@@ -128,4 +143,4 @@ const AddGameModal = ({ isOpen, onClose }: TAddGameModalProps): JSX.Element => {
   );
 };
 
-export default AddGameModal;
+export default GameModal;

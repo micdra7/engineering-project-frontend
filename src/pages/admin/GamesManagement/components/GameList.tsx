@@ -21,10 +21,11 @@ import { FaDatabase, FaList } from 'react-icons/fa';
 import { useQuery } from 'react-query';
 import { useHistory } from 'react-router-dom';
 import { API } from 'services/api';
-import AddGameModal from './AddGameModal';
+import GameModal from './AddGameModal';
 
 const GameList = (): JSX.Element => {
   const history = useHistory();
+  const [gameId, setGameId] = useState(0);
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   const [paginationState, setPaginationState] = useState({
@@ -52,6 +53,10 @@ const GameList = (): JSX.Element => {
       setPaginationState(games.data.meta);
     }
   }, [gamesLoaded, games]);
+
+  useEffect(() => {
+    if (gameId) onOpen();
+  }, [gameId]);
 
   return (
     <Grid w="100%">
@@ -91,7 +96,10 @@ const GameList = (): JSX.Element => {
                   <Td>{item.name}</Td>
                   <Td>
                     <ButtonGroup isAttached colorScheme="cyan">
-                      <Button mr="-px" color="white">
+                      <Button
+                        mr="-px"
+                        color="white"
+                        onClick={() => setGameId(item.id)}>
                         Edit
                       </Button>
                       <IconButton
@@ -126,12 +134,13 @@ const GameList = (): JSX.Element => {
         }}
       />
 
-      <AddGameModal
+      <GameModal
         isOpen={isOpen}
         onClose={() => {
           onClose();
           refetchGames();
         }}
+        gameId={gameId}
       />
     </Grid>
   );
