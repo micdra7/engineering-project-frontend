@@ -21,7 +21,7 @@ import { FaDatabase, FaList } from 'react-icons/fa';
 import { useQuery } from 'react-query';
 import { useHistory } from 'react-router-dom';
 import { API } from 'services/api';
-import GameModal from './AddGameModal';
+import GameModal from './GameModal';
 
 const GameList = (): JSX.Element => {
   const history = useHistory();
