@@ -33,6 +33,7 @@
     "react-filepond": "^7.1.1",
     "react-flatpickr": "^3.10.7",
     "react-icons": "^3.0.0",
+    "react-json-editor-ajrm": "^2.5.13",
     "react-query": "^3.19.6",
     "react-router-dom": "^5.2.0",
     "react-scripts": "4.0.3",

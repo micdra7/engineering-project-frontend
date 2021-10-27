@@ -17,22 +17,28 @@ import {
 } from '@chakra-ui/react';
 import { Loader, Pagination } from 'components';
 import React, { useEffect, useState } from 'react';
-import { FaDatabase, FaList } from 'react-icons/fa';
-import { useQuery } from 'react-query';
-import { useHistory } from 'react-router-dom';
+import { FaList, FaTrash } from 'react-icons/fa';
+import { useMutation, useQuery } from 'react-query';
+import { useParams } from 'react-router-dom';
 import { API } from 'services/api';
+import { useLogger } from 'services/toast';
+import GameDataModal from './GameDataModal';
 
 const GameDataList = (): JSX.Element => {
-  const history = useHistory();
-  const [gameId, setGameId] = useState(0);
+  const logger = useLogger();
+  const { gameId }: { gameId: string } = useParams();
   const { isOpen, onOpen, onClose } = useDisclosure();
-
   const [paginationState, setPaginationState] = useState({
     currentPage: 1,
     totalPages: 1,
     totalItems: 10,
     itemCount: 10,
   });
+  const [gameDataId, setGameDataId] = useState(0);
+
+  const deleteGameDataMutation = useMutation((id: number) =>
+    API.delete(`/games/data/entries/${id}`),
+  );
 
   const {
     isLoading: gameDataLoading,
@@ -40,12 +46,41 @@ const GameDataList = (): JSX.Element => {
     data: gameData,
     refetch: refetchGameData,
   } = useQuery(
-    ['/games/data', paginationState.currentPage, paginationState.itemCount],
+    [
+      '/games/data',
+      paginationState.currentPage,
+      paginationState.itemCount,
+      gameId,
+    ],
     () =>
       API.get(
-        `/games/data/entries?page=${paginationState.currentPage}&limit=${paginationState.itemCount}`,
+        `/games/data/entries?page=${paginationState.currentPage}&limit=${paginationState.itemCount}&gameId=${gameId}`,
       ),
   );
+
+  const onDelete = async (id: number) => {
+    try {
+      await deleteGameDataMutation.mutateAsync(id);
+
+      logger.success({
+        title: 'Success',
+        description: 'Game data entry has been successfully deleted',
+      });
+    } catch (error) {
+      logger.error({
+        title: 'Error',
+        description: error?.response?.data?.message ?? 'Something went wrong',
+      });
+    }
+
+    refetchGameData();
+  };
+
+  const onModalClose = () => {
+    refetchGameData();
+    setGameDataId(0);
+    onClose();
+  };
 
   useEffect(() => {
     if (gameDataLoaded && gameData) {
@@ -54,8 +89,8 @@ const GameDataList = (): JSX.Element => {
   }, [gameDataLoaded, gameData]);
 
   useEffect(() => {
-    if (gameId) onOpen();
-  }, [gameId]);
+    if (gameDataId) onOpen();
+  }, [gameDataId]);
 
   return (
     <Grid w="100%">
@@ -91,23 +126,27 @@ const GameDataList = (): JSX.Element => {
             <Tbody>
               {gameData?.data?.data?.map(item => (
                 <Tr key={item.id}>
-                  <Td>{JSON.stringify(item.data).substr(0, 200)}...</Td>
-                  <Td>{item.name}</Td>
+                  <Td>{item.id}</Td>
+                  <Td>
+                    {JSON.stringify(item.data)
+                      .substr(0, 200)
+                      .replaceAll('\\', '')}
+                    ...
+                  </Td>
                   <Td>
                     <ButtonGroup isAttached colorScheme="cyan">
                       <Button
                         mr="-px"
                         color="white"
-                        onClick={() => setGameId(item.id)}>
-                        Edit
+                        onClick={() => setGameDataId(item.id)}>
+                        Preview
                       </Button>
                       <IconButton
+                        colorScheme="red"
                         color="white"
-                        aria-label="Manage game data"
-                        icon={<Icon as={FaDatabase} />}
-                        onClick={() =>
-                          history.push(`/admin/games/${item.id}/data`)
-                        }
+                        aria-label="Delete game data entry"
+                        icon={<Icon as={FaTrash} />}
+                        onClick={() => onDelete(item.id)}
                       />
                     </ButtonGroup>
                   </Td>
@@ -131,6 +170,13 @@ const GameDataList = (): JSX.Element => {
             currentPage: 1,
           });
         }}
+      />
+
+      <GameDataModal
+        isOpen={isOpen}
+        onClose={onModalClose}
+        gameId={+gameId}
+        gameDataId={gameDataId}
       />
     </Grid>
   );
