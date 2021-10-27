@@ -38,12 +38,12 @@ const GameDataList = (): JSX.Element => {
     isLoading: gameDataLoading,
     isSuccess: gameDataLoaded,
     data: gameData,
-    refetch: refetchGames,
+    refetch: refetchGameData,
   } = useQuery(
     ['/games/data', paginationState.currentPage, paginationState.itemCount],
     () =>
       API.get(
-        `/games/data?page=${paginationState.currentPage}&limit=${paginationState.itemCount}`,
+        `/games/data/entries?page=${paginationState.currentPage}&limit=${paginationState.itemCount}`,
       ),
   );
 
