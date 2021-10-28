@@ -137,6 +137,7 @@ const GameList = (): JSX.Element => {
       <GameModal
         isOpen={isOpen}
         onClose={() => {
+          setGameId(0);
           onClose();
           refetchGames();
         }}

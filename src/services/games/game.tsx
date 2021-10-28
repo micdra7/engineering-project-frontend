@@ -7,6 +7,7 @@ type TUseGameProps = {
 };
 
 type TUseGame = {
+  getUrl: (fileId: string) => string;
   startGame: (gameId: number) => void;
   sendData: (data: string) => void;
   finishGame: () => void;
@@ -14,6 +15,11 @@ type TUseGame = {
 };
 
 const useGame = ({ room, socket }: TUseGameProps): TUseGame => {
+  const getUrl = useCallback(
+    (fileId: string) => `${process.env.REACT_APP_API_URL}/games/file/${fileId}`,
+    [],
+  );
+
   const startGame = useCallback((gameId: number) => {
     socket.emit('startGame', { gameId, room });
   }, []);
@@ -31,6 +37,7 @@ const useGame = ({ room, socket }: TUseGameProps): TUseGame => {
   }, []);
 
   return {
+    getUrl,
     startGame,
     sendData,
     finishGame,
