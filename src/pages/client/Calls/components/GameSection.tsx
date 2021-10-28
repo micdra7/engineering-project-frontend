@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import useGame from 'services/games/game';
 import { Socket } from 'socket.io-client';
 import { Flex } from '@chakra-ui/react';
@@ -20,6 +20,8 @@ const GameSection = ({
   room,
   socket,
 }: TGameSectionProps): JSX.Element => {
+  const [currentData, setCurrentData] = useState<string[]>([]);
+  const [isGameFinished, setGameFinished] = useState(false);
   const game = useGame({ room, socket });
 
   const { data: currentGame, isLoading: gameLoading } = useQuery(
@@ -38,6 +40,40 @@ const GameSection = ({
     game.startGame(selectedId);
   };
 
+  const addListeners = () => {
+    socket.on('gameData', ({ data }) => {
+      setCurrentData(prevState => [...prevState, data]);
+    });
+    socket.on('gameFinish', () => {
+      setGameFinished(true);
+    });
+  };
+
+  const removeListeners = () => {
+    socket.off('gameData');
+    socket.off('gameFinish');
+  };
+
+  useEffect(() => {
+    socket.on('gameStart', ({ gameId: newGameId }) => {
+      if (!gameId) {
+        setGameId(+newGameId);
+      }
+    });
+  }, []);
+
+  useEffect(() => {
+    if (gameId) {
+      addListeners();
+    } else {
+      removeListeners();
+    }
+
+    return () => {
+      removeListeners();
+    };
+  }, [gameId]);
+
   return (
     <Flex w="100%">
       {!gameId || (!!gameId && gameLoading && gameDataLoading) ? (
@@ -47,7 +83,12 @@ const GameSection = ({
           url={game.getUrl(currentGame?.data?.filepath)}
           sendData={game.sendData}
           sendFinish={game.finishGame}
-          sendScore={(score: number) => game.sendScore(gameId, 1, score)}
+          sendScore={(score: number) => {
+            game.sendScore(gameId, 1, score);
+            setGameId(0);
+          }}
+          isFinished={isGameFinished}
+          currentData={currentData}
           name={currentGame?.data?.name}
           gameDataEntries={currentGameData?.data?.data?.map(item => item.data)}
         />

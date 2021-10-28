@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 
 type TQuizProps = {
   sendData: (data: string) => void;
@@ -6,6 +6,8 @@ type TQuizProps = {
   sendScore: (score: number) => void;
   name: string;
   gameDataEntries: string[];
+  isFinished: boolean;
+  currentData: string[];
 };
 
 const Quiz = ({
@@ -14,8 +16,14 @@ const Quiz = ({
   sendScore,
   name,
   gameDataEntries,
+  isFinished,
+  currentData,
 }: TQuizProps): JSX.Element => {
   const a = 'a';
+
+  useEffect(() => {
+    if (isFinished) sendScore(123);
+  }, []);
 
   return (
     <div>
