@@ -53,6 +53,8 @@ const Call = (): JSX.Element => {
   const [isMuted, setMuted] = useState(true);
   const [isVideoOff, setVideoOff] = useState(true);
 
+  const [gameSectionVisible, setGameSectionVisible] = useState(false);
+
   const { data: call } = useQuery(
     `/calls/uuid/${callId}`,
     () => API.get(`/calls/uuid/${callId}`),
@@ -75,6 +77,11 @@ const Call = (): JSX.Element => {
       });
     });
     userCall.on('close', () => {
+      setRemoteStreams(prevState =>
+        prevState.filter(item => item.id !== userCall.peer),
+      );
+    });
+    userCall.on('error', () => {
       setRemoteStreams(prevState =>
         prevState.filter(item => item.id !== userCall.peer),
       );
@@ -235,8 +242,7 @@ const Call = (): JSX.Element => {
             bottom="0"
             justifyContent="center"
             w="100%"
-            p={4}
-          >
+            p={4}>
             <IconButton
               aria-label="Toggle audio"
               onClick={toggleAudio}
