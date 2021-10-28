@@ -5,21 +5,29 @@ import { Flex } from '@chakra-ui/react';
 import { useQuery } from 'react-query';
 import { API } from 'services/api';
 import { RemoteComponent } from '@paciolan/remote-component';
+import { TAuthProviderState, TAuthState, useAuth } from 'services/Auth/Auth';
 import AvailableGamesList from './AvailableGamesList';
 
 type TGameSectionProps = {
+  userPeerId: string;
   gameId: number;
   setGameId: React.Dispatch<React.SetStateAction<number>>;
   room: string;
   socket: Socket;
+  usersCount: number;
 };
 
 const GameSection = ({
+  userPeerId,
   gameId,
   setGameId,
   room,
   socket,
+  usersCount,
 }: TGameSectionProps): JSX.Element => {
+  const auth: TAuthProviderState = useAuth();
+  const authState: TAuthState = auth.getCurrentState();
+
   const [currentData, setCurrentData] = useState<string[]>([]);
   const [isGameFinished, setGameFinished] = useState(false);
   const game = useGame({ room, socket });
@@ -55,14 +63,6 @@ const GameSection = ({
   };
 
   useEffect(() => {
-    socket.on('gameStart', ({ gameId: newGameId }) => {
-      if (!gameId) {
-        setGameId(+newGameId);
-      }
-    });
-  }, []);
-
-  useEffect(() => {
     if (gameId) {
       addListeners();
     } else {
@@ -76,7 +76,11 @@ const GameSection = ({
 
   return (
     <Flex w="100%">
-      {!gameId || (!!gameId && gameLoading && gameDataLoading) ? (
+      {!gameId ||
+      (!!gameId &&
+        gameLoading &&
+        gameDataLoading &&
+        !currentGame?.data?.filepath) ? (
         <AvailableGamesList setGameId={onGameSelect} />
       ) : (
         <RemoteComponent
@@ -84,13 +88,14 @@ const GameSection = ({
           sendData={game.sendData}
           sendFinish={game.finishGame}
           sendScore={(score: number) => {
-            game.sendScore(gameId, 1, score);
+            game.sendScore(gameId, userPeerId, score, authState.id);
             setGameId(0);
           }}
           isFinished={isGameFinished}
           currentData={currentData}
           name={currentGame?.data?.name}
           gameDataEntries={currentGameData?.data?.data?.map(item => item.data)}
+          usersCount={usersCount}
         />
       )}
     </Flex>

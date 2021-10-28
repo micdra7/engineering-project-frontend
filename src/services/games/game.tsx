@@ -11,7 +11,12 @@ type TUseGame = {
   startGame: (gameId: number) => void;
   sendData: (data: string) => void;
   finishGame: () => void;
-  sendScore: (gameId: number, id: number, score: number) => void;
+  sendScore: (
+    gameId: number,
+    id: string,
+    score: number,
+    userId: number,
+  ) => void;
 };
 
 const useGame = ({ room, socket }: TUseGameProps): TUseGame => {
@@ -32,9 +37,12 @@ const useGame = ({ room, socket }: TUseGameProps): TUseGame => {
     socket.emit('sendGameFinish', { room });
   }, []);
 
-  const sendScore = useCallback((gameId: number, id: number, score: number) => {
-    socket.emit('sendGameScore', { gameId, id, score, room });
-  }, []);
+  const sendScore = useCallback(
+    (gameId: number, id: string, score: number, userId: number) => {
+      socket.emit('sendGameScore', { gameId, id, score, room, userId });
+    },
+    [],
+  );
 
   return {
     getUrl,

@@ -48,9 +48,9 @@ const Call = (): JSX.Element => {
     }),
   );
   const [localId, setLocalId] = useState<string>();
-  const [, setPeers] = useState<{ id: string; call: Peer.MediaConnection }[]>(
-    [],
-  );
+  const [peers, setPeers] = useState<
+    { id: string; call: Peer.MediaConnection }[]
+  >([]);
 
   const [userMediaStream, setUserMediaStream] = useState<MediaStream>();
   const [isFullScreen, setFullScreen] = useState(false);
@@ -79,6 +79,11 @@ const Call = (): JSX.Element => {
         if (prevState.find(item => item.id === userCall.peer)) return prevState;
 
         return [...prevState, { id: userCall.peer, stream: userStream }];
+      });
+      setPeers(prevPeers => {
+        if (prevPeers.find(item => item.id === userCall.peer)) return prevPeers;
+
+        return [...prevPeers, { id: userCall.peer, call: userCall }];
       });
     });
     userCall.on('close', () => {
@@ -223,6 +228,19 @@ const Call = (): JSX.Element => {
     setVideoOff(!isVideoOff);
   };
 
+  useEffect(() => {
+    socket.on('gameStart', ({ gameId: newGameId }) => {
+      if (!gameId) {
+        setGameId(+newGameId);
+        setGameSectionVisible(true);
+      }
+    });
+  }, []);
+
+  useEffect(() => {
+    if (!gameId) setGameSectionVisible(false);
+  }, [gameId]);
+
   return (
     <Box w="100%" minH="100vh" bg="cyan.800">
       <Heading textAlign="center" color="white">
@@ -245,7 +263,9 @@ const Call = (): JSX.Element => {
         </AvatarGroup>
 
         <Flex w="100%" justify="center">
-          <Button onClick={() => setGameSectionVisible(true)}>Games</Button>
+          <Button onClick={() => setGameSectionVisible(!gameSectionVisible)}>
+            Games
+          </Button>
         </Flex>
       </SimpleGrid>
 
@@ -311,6 +331,8 @@ const Call = (): JSX.Element => {
             setGameId={setGameId}
             room={callId}
             socket={socket}
+            usersCount={peers.length}
+            userPeerId={localId ?? ''}
           />
         )}
       </SimpleGrid>
