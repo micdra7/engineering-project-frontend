@@ -8,6 +8,7 @@ import {
   IconButton,
   Icon,
   Flex,
+  Button,
 } from '@chakra-ui/react';
 import { useQuery } from 'react-query';
 import { API } from 'services/api';
@@ -23,6 +24,7 @@ import {
 import { LocalStorageAuthKey } from 'services/Auth/Auth';
 import { io, Socket } from 'socket.io-client';
 import Peer from 'peerjs';
+import GameSection from './GameSection';
 
 const getToken = (): string => {
   if (localStorage.getItem(LocalStorageAuthKey)) {
@@ -36,7 +38,7 @@ const getToken = (): string => {
 
 const Call = (): JSX.Element => {
   const { callId }: { callId: string } = useParams();
-  const [socket] = useState<Socket>(
+  const [socket] = useState<Socket>(() =>
     io(`${process.env.REACT_APP_WS_URL}`, {
       extraHeaders: {
         authorization: `Bearer ${getToken()}`,
@@ -54,6 +56,7 @@ const Call = (): JSX.Element => {
   const [isVideoOff, setVideoOff] = useState(true);
 
   const [gameSectionVisible, setGameSectionVisible] = useState(false);
+  const [gameId, setGameId] = useState(0);
 
   const { data: call } = useQuery(
     `/calls/uuid/${callId}`,
@@ -219,67 +222,88 @@ const Call = (): JSX.Element => {
       <Heading size="md" color="white" p={4}>
         Users:
       </Heading>
-      <AvatarGroup size="sm" max={5} p={4}>
-        {call?.data?.users?.map(user => (
-          <TooltipAvatar
-            key={user.id}
-            size="sm"
-            color="white"
-            name={`${user.firstName} ${user.lastName}`}
-          />
-        ))}
-      </AvatarGroup>
-      <SimpleGrid columns={[1, 1, 2]} gap={2} p={4}>
-        <Flex pos="relative" flexFlow="row wrap" justifyContent="center">
-          <video
-            ref={localRef}
-            autoPlay
-            muted
-            style={{ width: '100%', maxHeight: '40vh' }}
-          />
-          <HStack
-            pos="absolute"
-            bottom="0"
-            justifyContent="center"
-            w="100%"
-            p={4}>
-            <IconButton
-              aria-label="Toggle audio"
-              onClick={toggleAudio}
-              icon={<Icon as={isMuted ? FaMicrophoneSlash : FaMicrophone} />}
-              colorScheme="cyan"
-              rounded="md"
+
+      <SimpleGrid columns={2}>
+        <AvatarGroup size="sm" max={5} p={4}>
+          {call?.data?.users?.map(user => (
+            <TooltipAvatar
+              key={user.id}
+              size="sm"
               color="white"
+              name={`${user.firstName} ${user.lastName}`}
             />
-            <IconButton
-              aria-label="Toggle video"
-              onClick={toggleVideo}
-              icon={<Icon as={isVideoOff ? FaVideoSlash : FaVideo} />}
-              colorScheme="cyan"
-              rounded="md"
-              color="white"
-            />
-            <IconButton
-              aria-label="Toggle fullscreen"
-              onClick={toggleFullScreen}
-              icon={<Icon as={FaExpand} />}
-              colorScheme="cyan"
-              rounded="md"
-              color="white"
-            />
-          </HStack>
+          ))}
+        </AvatarGroup>
+
+        <Flex w="100%" justify="center">
+          <Button onClick={() => setGameSectionVisible(true)}>Games</Button>
         </Flex>
-        {remoteStreams.map(item => (
-          <Flex key={item.id} flexFlow="row wrap" justifyContent="center">
+      </SimpleGrid>
+
+      <SimpleGrid columns={gameSectionVisible ? 2 : 1}>
+        <SimpleGrid columns={[1, 1, 2]} gap={2} p={4}>
+          <Flex pos="relative" flexFlow="row wrap" justifyContent="center">
             <video
-              ref={videoRef => {
-                if (videoRef) videoRef.srcObject = item.stream;
-              }}
+              ref={localRef}
               autoPlay
+              muted
               style={{ width: '100%', maxHeight: '40vh' }}
             />
+
+            <HStack
+              pos="absolute"
+              bottom="0"
+              justifyContent="center"
+              w="100%"
+              p={4}>
+              <IconButton
+                aria-label="Toggle audio"
+                onClick={toggleAudio}
+                icon={<Icon as={isMuted ? FaMicrophoneSlash : FaMicrophone} />}
+                colorScheme="cyan"
+                rounded="md"
+                color="white"
+              />
+              <IconButton
+                aria-label="Toggle video"
+                onClick={toggleVideo}
+                icon={<Icon as={isVideoOff ? FaVideoSlash : FaVideo} />}
+                colorScheme="cyan"
+                rounded="md"
+                color="white"
+              />
+              <IconButton
+                aria-label="Toggle fullscreen"
+                onClick={toggleFullScreen}
+                icon={<Icon as={FaExpand} />}
+                colorScheme="cyan"
+                rounded="md"
+                color="white"
+              />
+            </HStack>
           </Flex>
-        ))}
+
+          {remoteStreams.map(item => (
+            <Flex key={item.id} flexFlow="row wrap" justifyContent="center">
+              <video
+                ref={videoRef => {
+                  if (videoRef) videoRef.srcObject = item.stream;
+                }}
+                autoPlay
+                style={{ width: '100%', maxHeight: '40vh' }}
+              />
+            </Flex>
+          ))}
+        </SimpleGrid>
+
+        {gameSectionVisible && (
+          <GameSection
+            gameId={gameId}
+            setGameId={setGameId}
+            room={callId}
+            socket={socket}
+          />
+        )}
       </SimpleGrid>
     </Box>
   );
