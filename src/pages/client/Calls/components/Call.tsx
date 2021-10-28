@@ -24,6 +24,7 @@ import {
 import { LocalStorageAuthKey } from 'services/Auth/Auth';
 import { io, Socket } from 'socket.io-client';
 import Peer from 'peerjs';
+import { useLogger } from 'services/toast';
 import GameSection from './GameSection';
 
 const getToken = (): string => {
@@ -37,6 +38,7 @@ const getToken = (): string => {
 };
 
 const Call = (): JSX.Element => {
+  const logger = useLogger();
   const { callId }: { callId: string } = useParams();
   const [socket] = useState<Socket>(() =>
     io(`${process.env.REACT_APP_WS_URL}`, {
@@ -94,20 +96,27 @@ const Call = (): JSX.Element => {
   useEffect(() => {
     const createMediaStream = async () => {
       if (!userMediaStream) {
-        const stream = await navigator.mediaDevices.getUserMedia({
-          video: true,
-          audio: true,
-        });
+        try {
+          const stream = await navigator.mediaDevices.getUserMedia({
+            video: true,
+            audio: true,
+          });
 
-        if (localRef?.current) {
-          localRef.current.srcObject = stream;
+          if (localRef?.current) {
+            localRef.current.srcObject = stream;
+          }
+
+          stream.getTracks().forEach(track => {
+            track.enabled = false;
+          });
+
+          setUserMediaStream(stream);
+        } catch (error) {
+          logger.error({
+            title: 'Error',
+            description: 'Could not initialize camera',
+          });
         }
-
-        stream.getTracks().forEach(track => {
-          track.enabled = false;
-        });
-
-        setUserMediaStream(stream);
       }
     };
 
