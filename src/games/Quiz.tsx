@@ -1,4 +1,5 @@
 import React, { useEffect } from 'react';
+import { Button } from '@chakra-ui/react';
 
 type TQuizProps = {
   sendData: (data: string) => void;
@@ -35,6 +36,7 @@ const Quiz = ({
         }}>
         test button
       </button>
+      <Button>test</Button>
     </div>
   );
 };
