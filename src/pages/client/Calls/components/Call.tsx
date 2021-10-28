@@ -8,6 +8,7 @@ import {
   IconButton,
   Icon,
   Flex,
+  Button,
 } from '@chakra-ui/react';
 import { useQuery } from 'react-query';
 import { API } from 'services/api';
@@ -23,6 +24,8 @@ import {
 import { LocalStorageAuthKey } from 'services/Auth/Auth';
 import { io, Socket } from 'socket.io-client';
 import Peer from 'peerjs';
+import { useLogger } from 'services/toast';
+import GameSection from './GameSection';
 
 const getToken = (): string => {
   if (localStorage.getItem(LocalStorageAuthKey)) {
@@ -35,8 +38,9 @@ const getToken = (): string => {
 };
 
 const Call = (): JSX.Element => {
+  const logger = useLogger();
   const { callId }: { callId: string } = useParams();
-  const [socket] = useState<Socket>(
+  const [socket] = useState<Socket>(() =>
     io(`${process.env.REACT_APP_WS_URL}`, {
       extraHeaders: {
         authorization: `Bearer ${getToken()}`,
@@ -44,14 +48,17 @@ const Call = (): JSX.Element => {
     }),
   );
   const [localId, setLocalId] = useState<string>();
-  const [, setPeers] = useState<{ id: string; call: Peer.MediaConnection }[]>(
-    [],
-  );
+  const [peers, setPeers] = useState<
+    { id: string; call: Peer.MediaConnection }[]
+  >([]);
 
   const [userMediaStream, setUserMediaStream] = useState<MediaStream>();
   const [isFullScreen, setFullScreen] = useState(false);
   const [isMuted, setMuted] = useState(true);
   const [isVideoOff, setVideoOff] = useState(true);
+
+  const [gameSectionVisible, setGameSectionVisible] = useState(false);
+  const [gameId, setGameId] = useState(0);
 
   const { data: call } = useQuery(
     `/calls/uuid/${callId}`,
@@ -73,8 +80,18 @@ const Call = (): JSX.Element => {
 
         return [...prevState, { id: userCall.peer, stream: userStream }];
       });
+      setPeers(prevPeers => {
+        if (prevPeers.find(item => item.id === userCall.peer)) return prevPeers;
+
+        return [...prevPeers, { id: userCall.peer, call: userCall }];
+      });
     });
     userCall.on('close', () => {
+      setRemoteStreams(prevState =>
+        prevState.filter(item => item.id !== userCall.peer),
+      );
+    });
+    userCall.on('error', () => {
       setRemoteStreams(prevState =>
         prevState.filter(item => item.id !== userCall.peer),
       );
@@ -84,20 +101,27 @@ const Call = (): JSX.Element => {
   useEffect(() => {
     const createMediaStream = async () => {
       if (!userMediaStream) {
-        const stream = await navigator.mediaDevices.getUserMedia({
-          video: true,
-          audio: true,
-        });
+        try {
+          const stream = await navigator.mediaDevices.getUserMedia({
+            video: true,
+            audio: true,
+          });
 
-        if (localRef?.current) {
-          localRef.current.srcObject = stream;
+          if (localRef?.current) {
+            localRef.current.srcObject = stream;
+          }
+
+          stream.getTracks().forEach(track => {
+            track.enabled = false;
+          });
+
+          setUserMediaStream(stream);
+        } catch (error) {
+          logger.error({
+            title: 'Error',
+            description: 'Could not initialize camera',
+          });
         }
-
-        stream.getTracks().forEach(track => {
-          track.enabled = false;
-        });
-
-        setUserMediaStream(stream);
       }
     };
 
@@ -204,6 +228,19 @@ const Call = (): JSX.Element => {
     setVideoOff(!isVideoOff);
   };
 
+  useEffect(() => {
+    socket.on('gameStart', ({ gameId: newGameId }) => {
+      if (!gameId) {
+        setGameId(+newGameId);
+        setGameSectionVisible(true);
+      }
+    });
+  }, []);
+
+  useEffect(() => {
+    if (!gameId) setGameSectionVisible(false);
+  }, [gameId]);
+
   return (
     <Box w="100%" minH="100vh" bg="cyan.800">
       <Heading textAlign="center" color="white">
@@ -212,68 +249,92 @@ const Call = (): JSX.Element => {
       <Heading size="md" color="white" p={4}>
         Users:
       </Heading>
-      <AvatarGroup size="sm" max={5} p={4}>
-        {call?.data?.users?.map(user => (
-          <TooltipAvatar
-            key={user.id}
-            size="sm"
-            color="white"
-            name={`${user.firstName} ${user.lastName}`}
-          />
-        ))}
-      </AvatarGroup>
-      <SimpleGrid columns={[1, 1, 2]} gap={2} p={4}>
-        <Flex pos="relative" flexFlow="row wrap" justifyContent="center">
-          <video
-            ref={localRef}
-            autoPlay
-            muted
-            style={{ width: '100%', maxHeight: '40vh' }}
-          />
-          <HStack
-            pos="absolute"
-            bottom="0"
-            justifyContent="center"
-            w="100%"
-            p={4}
-          >
-            <IconButton
-              aria-label="Toggle audio"
-              onClick={toggleAudio}
-              icon={<Icon as={isMuted ? FaMicrophoneSlash : FaMicrophone} />}
-              colorScheme="cyan"
-              rounded="md"
+
+      <SimpleGrid columns={2}>
+        <AvatarGroup size="sm" max={5} p={4}>
+          {call?.data?.users?.map(user => (
+            <TooltipAvatar
+              key={user.id}
+              size="sm"
               color="white"
+              name={`${user.firstName} ${user.lastName}`}
             />
-            <IconButton
-              aria-label="Toggle video"
-              onClick={toggleVideo}
-              icon={<Icon as={isVideoOff ? FaVideoSlash : FaVideo} />}
-              colorScheme="cyan"
-              rounded="md"
-              color="white"
-            />
-            <IconButton
-              aria-label="Toggle fullscreen"
-              onClick={toggleFullScreen}
-              icon={<Icon as={FaExpand} />}
-              colorScheme="cyan"
-              rounded="md"
-              color="white"
-            />
-          </HStack>
+          ))}
+        </AvatarGroup>
+
+        <Flex w="100%" justify="center">
+          <Button onClick={() => setGameSectionVisible(!gameSectionVisible)}>
+            Games
+          </Button>
         </Flex>
-        {remoteStreams.map(item => (
-          <Flex key={item.id} flexFlow="row wrap" justifyContent="center">
+      </SimpleGrid>
+
+      <SimpleGrid columns={gameSectionVisible ? 2 : 1}>
+        <SimpleGrid columns={[1, 1, 2]} gap={2} p={4}>
+          <Flex pos="relative" flexFlow="row wrap" justifyContent="center">
             <video
-              ref={videoRef => {
-                if (videoRef) videoRef.srcObject = item.stream;
-              }}
+              ref={localRef}
               autoPlay
+              muted
               style={{ width: '100%', maxHeight: '40vh' }}
             />
+
+            <HStack
+              pos="absolute"
+              bottom="0"
+              justifyContent="center"
+              w="100%"
+              p={4}>
+              <IconButton
+                aria-label="Toggle audio"
+                onClick={toggleAudio}
+                icon={<Icon as={isMuted ? FaMicrophoneSlash : FaMicrophone} />}
+                colorScheme="cyan"
+                rounded="md"
+                color="white"
+              />
+              <IconButton
+                aria-label="Toggle video"
+                onClick={toggleVideo}
+                icon={<Icon as={isVideoOff ? FaVideoSlash : FaVideo} />}
+                colorScheme="cyan"
+                rounded="md"
+                color="white"
+              />
+              <IconButton
+                aria-label="Toggle fullscreen"
+                onClick={toggleFullScreen}
+                icon={<Icon as={FaExpand} />}
+                colorScheme="cyan"
+                rounded="md"
+                color="white"
+              />
+            </HStack>
           </Flex>
-        ))}
+
+          {remoteStreams.map(item => (
+            <Flex key={item.id} flexFlow="row wrap" justifyContent="center">
+              <video
+                ref={videoRef => {
+                  if (videoRef) videoRef.srcObject = item.stream;
+                }}
+                autoPlay
+                style={{ width: '100%', maxHeight: '40vh' }}
+              />
+            </Flex>
+          ))}
+        </SimpleGrid>
+
+        {gameSectionVisible && (
+          <GameSection
+            gameId={gameId}
+            setGameId={setGameId}
+            room={callId}
+            socket={socket}
+            usersCount={peers.length}
+            userPeerId={localId ?? ''}
+          />
+        )}
       </SimpleGrid>
     </Box>
   );
