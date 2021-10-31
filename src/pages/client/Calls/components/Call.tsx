@@ -272,19 +272,16 @@ const Call = (): JSX.Element => {
       </SimpleGrid>
 
       <SimpleGrid columns={gameSectionVisible ? 2 : 1}>
-        <SimpleGrid columns={[1, 1, 2]} gap={2} p={4}>
-          <Video
-            videoRef={localRef}
-            isMuted={isMuted}
-            isVideoOff={isVideoOff}
-            toggleAudio={toggleAudio}
-            toggleVideo={toggleVideo}
-            toggleFullscreen={toggleFullScreen}
-          />
+        <Flex flexFlow="row wrap" gap={2} p={4}>
+          <Video videoRef={localRef} usersCount={peers?.length + 1} />
           {remoteStreams.map(item => (
-            <Video key={item.id} stream={item.stream} />
+            <Video
+              key={item.id}
+              stream={item.stream}
+              usersCount={peers?.length + 1}
+            />
           ))}
-        </SimpleGrid>
+        </Flex>
 
         {gameSectionVisible && (
           <GameSection
@@ -297,6 +294,33 @@ const Call = (): JSX.Element => {
           />
         )}
       </SimpleGrid>
+
+      <HStack pos="absolute" bottom="0" justifyContent="center" w="100%" p={4}>
+        <IconButton
+          aria-label="Toggle audio"
+          onClick={toggleAudio}
+          icon={<Icon as={isMuted ? FaMicrophoneSlash : FaMicrophone} />}
+          colorScheme="cyan"
+          rounded="md"
+          color="white"
+        />
+        <IconButton
+          aria-label="Toggle video"
+          onClick={toggleVideo}
+          icon={<Icon as={isVideoOff ? FaVideoSlash : FaVideo} />}
+          colorScheme="cyan"
+          rounded="md"
+          color="white"
+        />
+        <IconButton
+          aria-label="Toggle fullscreen"
+          onClick={toggleFullScreen}
+          icon={<Icon as={FaExpand} />}
+          colorScheme="cyan"
+          rounded="md"
+          color="white"
+        />
+      </HStack>
     </Box>
   );
 };
