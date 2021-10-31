@@ -13,6 +13,7 @@ import { useMutation, useQuery } from 'react-query';
 import { API } from 'services/api';
 import { TAuthProviderState, TAuthState, useAuth } from 'services/Auth/Auth';
 import { useLogger } from 'services/toast';
+import { useLocation } from 'react-router-dom';
 import AddListModal from './components/AddListModal';
 import AddTaskModal from './components/AddTaskModal';
 import DeletedTasksModal from './components/DeletedTasksModal';
@@ -20,6 +21,9 @@ import EditTaskModal from './components/EditTaskModal';
 import TaskListEntry from './components/TaskListEntry';
 
 const Tasks = (): JSX.Element => {
+  const location = useLocation();
+  const params = new URLSearchParams(location.search);
+
   const logger = useLogger();
   const auth: TAuthProviderState = useAuth();
   const authState: TAuthState = auth.getCurrentState();
@@ -102,6 +106,13 @@ const Tasks = (): JSX.Element => {
     }
   }, [taskListsLoading, taskLists]);
 
+  useEffect(() => {
+    console.log('paramTaskId: ', params.get('taskId'));
+    if (params.get('taskId')) {
+      setCurrentId(+(params.get('taskId') ?? 0));
+    }
+  }, []);
+
   return (
     <WideContentPage title="Tasks">
       <Text mb={6}>View and manage your tasks</Text>
@@ -111,8 +122,7 @@ const Tasks = (): JSX.Element => {
             hasArrow
             placement="bottom"
             label="Add task list"
-            bg="cyan.500"
-          >
+            bg="cyan.500">
             <IconButton
               aria-label="Add task list"
               onClick={onOpen}
@@ -139,8 +149,7 @@ const Tasks = (): JSX.Element => {
           hasArrow
           placement="bottom"
           label="Show closed tasks"
-          bg="cyan.500"
-        >
+          bg="cyan.500">
           <IconButton
             aria-label="Show closed tasks"
             onClick={onDeletedTasksOpen}
