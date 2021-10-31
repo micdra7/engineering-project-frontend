@@ -17,6 +17,7 @@ import moment from 'moment';
 import { DATE_TIME } from 'resources/constants';
 import { Link } from 'react-router-dom';
 import UsersSelector from 'pages/client/Tasks/components/UsersSelector';
+import { TAuthProviderState, TAuthState, useAuth } from 'services/Auth/Auth';
 
 type TEventModalProps = {
   callId: number;
@@ -29,6 +30,9 @@ const EventModal = ({
   isOpen,
   onClose,
 }: TEventModalProps): JSX.Element => {
+  const auth: TAuthProviderState = useAuth();
+  const authState: TAuthState = auth.getCurrentState();
+
   const { data: call } = useQuery(
     `/calls/${callId}`,
     () => API.get(`/calls/${callId}`),
@@ -65,10 +69,12 @@ const EventModal = ({
             />
           </Box>
           <Box mt={2}>
-            <Link to={`/calls/${call?.data?.generatedCode}`}>
-              <Text fontSize="xs">{`${window.location.origin}/calls/${call?.data?.generatedCode}`}</Text>
+            <Link
+              to={`/calls/${call?.data?.generatedCode}?workspaceName=${authState.currentWorkspace.workspaceName}`}>
+              <Text fontSize="xs">{`${window.location.origin}/calls/${call?.data?.generatedCode}?workspaceName=${authState.currentWorkspace.workspaceName}`}</Text>
             </Link>
-            <Link to={`/calls/${call?.data?.generatedCode}`}>
+            <Link
+              to={`/calls/${call?.data?.generatedCode}?workspaceName=${authState.currentWorkspace.workspaceName}`}>
               <Button mt={2} colorScheme="cyan" color="white">
                 Join call
               </Button>

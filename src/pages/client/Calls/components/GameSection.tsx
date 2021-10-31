@@ -6,6 +6,7 @@ import { useQuery } from 'react-query';
 import { API } from 'services/api';
 import { RemoteComponent } from '@paciolan/remote-component';
 import { TAuthProviderState, TAuthState, useAuth } from 'services/Auth/Auth';
+import { useLocation } from 'react-router-dom';
 import AvailableGamesList from './AvailableGamesList';
 
 type TGameSectionProps = {
@@ -25,6 +26,9 @@ const GameSection = ({
   socket,
   usersCount,
 }: TGameSectionProps): JSX.Element => {
+  const location = useLocation();
+  const params = new URLSearchParams(location.search);
+
   const auth: TAuthProviderState = useAuth();
   const authState: TAuthState = auth.getCurrentState();
 
@@ -39,7 +43,12 @@ const GameSection = ({
   );
   const { data: currentGameData, isLoading: gameDataLoading } = useQuery(
     ['/games/data', gameId],
-    () => API.get(`/games/data/entries?page=1&limit=9999&gameId=${gameId}`),
+    () =>
+      API.get(
+        `/games/data/entries/public?page=1&limit=9999&gameId=${gameId}&workspaceName=${params.get(
+          'workspaceName',
+        )}`,
+      ),
     { enabled: !!gameId },
   );
 
@@ -88,7 +97,9 @@ const GameSection = ({
           sendData={game.sendData}
           sendFinish={game.finishGame}
           sendScore={(score: number) => {
-            game.sendScore(gameId, userPeerId, score, authState.id);
+            if (authState.isAuthenticated) {
+              game.sendScore(gameId, userPeerId, score, authState.id);
+            }
             setGameId(0);
           }}
           isFinished={isGameFinished}
