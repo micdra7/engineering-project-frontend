@@ -13,7 +13,7 @@ import {
 import { useQuery } from 'react-query';
 import { API } from 'services/api';
 import { useParams } from 'react-router-dom';
-import { TooltipAvatar } from 'components';
+import { TooltipAvatar, Video } from 'components';
 import {
   FaExpand,
   FaMicrophone,
@@ -273,57 +273,16 @@ const Call = (): JSX.Element => {
 
       <SimpleGrid columns={gameSectionVisible ? 2 : 1}>
         <SimpleGrid columns={[1, 1, 2]} gap={2} p={4}>
-          <Flex pos="relative" flexFlow="row wrap" justifyContent="center">
-            <video
-              ref={localRef}
-              autoPlay
-              muted
-              style={{ width: '100%', maxHeight: '40vh' }}
-            />
-
-            <HStack
-              pos="absolute"
-              bottom="0"
-              justifyContent="center"
-              w="100%"
-              p={4}>
-              <IconButton
-                aria-label="Toggle audio"
-                onClick={toggleAudio}
-                icon={<Icon as={isMuted ? FaMicrophoneSlash : FaMicrophone} />}
-                colorScheme="cyan"
-                rounded="md"
-                color="white"
-              />
-              <IconButton
-                aria-label="Toggle video"
-                onClick={toggleVideo}
-                icon={<Icon as={isVideoOff ? FaVideoSlash : FaVideo} />}
-                colorScheme="cyan"
-                rounded="md"
-                color="white"
-              />
-              <IconButton
-                aria-label="Toggle fullscreen"
-                onClick={toggleFullScreen}
-                icon={<Icon as={FaExpand} />}
-                colorScheme="cyan"
-                rounded="md"
-                color="white"
-              />
-            </HStack>
-          </Flex>
-
+          <Video
+            videoRef={localRef}
+            isMuted={isMuted}
+            isVideoOff={isVideoOff}
+            toggleAudio={toggleAudio}
+            toggleVideo={toggleVideo}
+            toggleFullscreen={toggleFullScreen}
+          />
           {remoteStreams.map(item => (
-            <Flex key={item.id} flexFlow="row wrap" justifyContent="center">
-              <video
-                ref={videoRef => {
-                  if (videoRef) videoRef.srcObject = item.stream;
-                }}
-                autoPlay
-                style={{ width: '100%', maxHeight: '40vh' }}
-              />
-            </Flex>
+            <Video key={item.id} stream={item.stream} />
           ))}
         </SimpleGrid>
 

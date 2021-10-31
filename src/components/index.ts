@@ -7,5 +7,6 @@ export { default as PasswordInput } from './molecules/PasswordInput';
 export { default as TextInput } from './molecules/TextInput';
 export { default as Select } from './molecules/Select';
 export { default as Pagination } from './molecules/Pagination';
+export { default as Video } from './molecules/Video';
 
 export { default as WideContentPage } from './organisms/Layout/WideContentPage';
