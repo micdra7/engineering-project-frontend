@@ -263,9 +263,11 @@ const Call = (): JSX.Element => {
         </AvatarGroup>
 
         <Flex w="100%" justify="center">
-          <Button onClick={() => setGameSectionVisible(!gameSectionVisible)}>
-            Games
-          </Button>
+          {peers?.length > 0 && (
+            <Button onClick={() => setGameSectionVisible(!gameSectionVisible)}>
+              Games
+            </Button>
+          )}
         </Flex>
       </SimpleGrid>
 
