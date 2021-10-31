@@ -48,8 +48,8 @@ const AvailableGamesList = ({
   }
 
   return (
-    <Box w="100%" px={4}>
-      <Table variant="striped" colorScheme="cyan" w="100%">
+    <Box w="100%" p={4} bg="cyan.100">
+      <Table colorScheme="white" w="100%">
         <Thead>
           <Tr>
             <Th>Id</Th>

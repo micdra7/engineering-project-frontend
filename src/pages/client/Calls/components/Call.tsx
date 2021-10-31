@@ -271,7 +271,7 @@ const Call = (): JSX.Element => {
         </Flex>
       </SimpleGrid>
 
-      <SimpleGrid columns={gameSectionVisible ? 2 : 1}>
+      <SimpleGrid columns={[1, 1, gameSectionVisible ? 2 : 1]}>
         <Flex flexFlow="row wrap" gap={2} p={4}>
           <Video videoRef={localRef} usersCount={peers?.length + 1} />
           {remoteStreams.map(item => (
