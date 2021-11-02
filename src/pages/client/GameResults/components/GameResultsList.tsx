@@ -1,7 +1,18 @@
 import React, { useEffect, useState } from 'react';
 import { useQuery } from 'react-query';
 import { API } from 'services/api';
-import { Grid, Box, Table, Thead, Tr, Th, Tbody, Td } from '@chakra-ui/react';
+import {
+  Grid,
+  Box,
+  Table,
+  Thead,
+  Tr,
+  Th,
+  Tbody,
+  Td,
+  Center,
+  Heading,
+} from '@chakra-ui/react';
 import { Loader, Pagination } from 'components';
 import moment from 'moment';
 import { DATE_TIME } from 'resources/constants';
@@ -40,26 +51,36 @@ const GameResultsList = (): JSX.Element => {
       {gameResultsLoading ? (
         <Loader />
       ) : (
-        <Box w="100%" overflowY="unset" overflowX="auto" maxW="100%">
-          <Table variant="striped" colorScheme="cyan" minW="600px">
-            <Thead>
-              <Tr>
-                <Th>Name</Th>
-                <Th>Created At</Th>
-                <Th>Score</Th>
-              </Tr>
-            </Thead>
-            <Tbody>
-              {gameResults?.data?.data?.map(item => (
-                <Tr key={item.id}>
-                  <Td>{item.gameName}</Td>
-                  <Td>{moment(item.createdAt).format(DATE_TIME.DATE_TIME)}</Td>
-                  <Td>{item.result}</Td>
-                </Tr>
-              ))}
-            </Tbody>
-          </Table>
-        </Box>
+        <>
+          {gameResults?.data?.data?.length > 0 ? (
+            <Box w="100%" overflowY="unset" overflowX="auto" maxW="100%">
+              <Table variant="striped" colorScheme="cyan" minW="600px">
+                <Thead>
+                  <Tr>
+                    <Th>Name</Th>
+                    <Th>Created At</Th>
+                    <Th>Score</Th>
+                  </Tr>
+                </Thead>
+                <Tbody>
+                  {gameResults?.data.data.map(item => (
+                    <Tr key={item.id}>
+                      <Td>{item.gameName}</Td>
+                      <Td>
+                        {moment(item.createdAt).format(DATE_TIME.DATE_TIME)}
+                      </Td>
+                      <Td>{item.result}</Td>
+                    </Tr>
+                  ))}
+                </Tbody>
+              </Table>
+            </Box>
+          ) : (
+            <Center>
+              <Heading size="sm">There is no data to show</Heading>
+            </Center>
+          )}
+        </>
       )}
       <Pagination
         currentPage={paginationState.currentPage}

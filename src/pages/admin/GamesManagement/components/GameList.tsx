@@ -14,6 +14,8 @@ import {
   ButtonGroup,
   Button,
   Grid,
+  Center,
+  Heading,
 } from '@chakra-ui/react';
 import { Loader, Pagination } from 'components';
 import React, { useEffect, useState } from 'react';
@@ -80,43 +82,51 @@ const GameList = (): JSX.Element => {
       {gamesLoading ? (
         <Loader />
       ) : (
-        <Box w="100%" overflowY="unset" overflowX="auto" maxW="100%">
-          <Table variant="striped" colorScheme="cyan" minW="600px">
-            <Thead>
-              <Tr>
-                <Th>Id</Th>
-                <Th>Name</Th>
-                <Th>Actions</Th>
-              </Tr>
-            </Thead>
-            <Tbody>
-              {games?.data?.data?.map(item => (
-                <Tr key={item.id}>
-                  <Td>{item.id}</Td>
-                  <Td>{item.name}</Td>
-                  <Td>
-                    <ButtonGroup isAttached colorScheme="cyan">
-                      <Button
-                        mr="-px"
-                        color="white"
-                        onClick={() => setGameId(item.id)}>
-                        Edit
-                      </Button>
-                      <IconButton
-                        color="white"
-                        aria-label="Manage game data"
-                        icon={<Icon as={FaDatabase} />}
-                        onClick={() =>
-                          history.push(`/admin/games/${item.id}/data`)
-                        }
-                      />
-                    </ButtonGroup>
-                  </Td>
-                </Tr>
-              ))}
-            </Tbody>
-          </Table>
-        </Box>
+        <>
+          {games?.data?.data?.length > 0 ? (
+            <Box w="100%" overflowY="unset" overflowX="auto" maxW="100%">
+              <Table variant="striped" colorScheme="cyan" minW="600px">
+                <Thead>
+                  <Tr>
+                    <Th>Id</Th>
+                    <Th>Name</Th>
+                    <Th>Actions</Th>
+                  </Tr>
+                </Thead>
+                <Tbody>
+                  {games?.data?.data?.map(item => (
+                    <Tr key={item.id}>
+                      <Td>{item.id}</Td>
+                      <Td>{item.name}</Td>
+                      <Td>
+                        <ButtonGroup isAttached colorScheme="cyan">
+                          <Button
+                            mr="-px"
+                            color="white"
+                            onClick={() => setGameId(item.id)}>
+                            Edit
+                          </Button>
+                          <IconButton
+                            color="white"
+                            aria-label="Manage game data"
+                            icon={<Icon as={FaDatabase} />}
+                            onClick={() =>
+                              history.push(`/admin/games/${item.id}/data`)
+                            }
+                          />
+                        </ButtonGroup>
+                      </Td>
+                    </Tr>
+                  ))}
+                </Tbody>
+              </Table>
+            </Box>
+          ) : (
+            <Center>
+              <Heading size="sm">There is no data to show</Heading>
+            </Center>
+          )}
+        </>
       )}
       <Pagination
         currentPage={paginationState.currentPage}
