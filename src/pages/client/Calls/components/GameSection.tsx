@@ -84,7 +84,7 @@ const GameSection = ({
   }, [gameId]);
 
   return (
-    <Flex w="100%">
+    <Flex w="100%" order={[1, 1, 2]}>
       {!gameId ||
       (!!gameId &&
         gameLoading &&

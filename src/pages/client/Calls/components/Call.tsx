@@ -26,6 +26,25 @@ import { useLogger } from 'services/toast';
 import GameSection from './GameSection';
 import CallInfoDrawer from './CallInfoDrawer';
 
+const getColumnsCount = (
+  connectedUsers: number,
+  gameSectionOpen: boolean,
+): number[] => {
+  const cols = [1, 1, 1, 1, 1];
+
+  if (gameSectionOpen) {
+    cols[2] = 1;
+    cols[3] = 2;
+    cols[4] = 3;
+  } else {
+    cols[2] = connectedUsers <= 3 ? connectedUsers : 3;
+    cols[3] = connectedUsers <= 3 ? connectedUsers : 3;
+    cols[4] = connectedUsers <= 4 ? connectedUsers : 4;
+  }
+
+  return cols;
+};
+
 const getToken = (): string => {
   if (localStorage.getItem(LocalStorageAuthKey)) {
     return JSON.parse(
@@ -272,8 +291,28 @@ const Call = (): JSX.Element => {
       />
 
       <SimpleGrid columns={[1, 1, gameSectionVisible ? 2 : 1]}>
-        <SimpleGrid columns={[1]} gap={2}>
-          <Video videoRef={localRef} usersCount={peers?.length + 1} />
+        <SimpleGrid
+          pos="relative"
+          columns={getColumnsCount(peers?.length, gameSectionVisible)}
+          placeItems={gameSectionVisible ? 'start' : 'center'}
+          alignContent={gameSectionVisible ? 'start' : 'center'}
+          order={[2, 2, 1]}
+          maxH={['50vh', '50vh', 'initial']}>
+          <Video
+            videoRef={localRef}
+            usersCount={peers?.length + 1}
+            containerStyle={
+              peers.length > 0
+                ? {
+                    pos: ['fixed', 'fixed', 'fixed'],
+                    w: '40vw',
+                    maxW: gameSectionVisible ? '120px' : '300px',
+                    bottom: 2,
+                    right: 2,
+                  }
+                : {}
+            }
+          />
           {remoteStreams.map(item => (
             <Video
               key={item.id}
