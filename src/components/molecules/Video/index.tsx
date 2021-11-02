@@ -8,33 +8,22 @@ type TVideoProps = {
 };
 
 const Video = ({ videoRef, stream, usersCount }: TVideoProps): JSX.Element => {
-  const width = usersCount < 5 ? Math.floor(100 / usersCount) - 1 : 18;
+  const videoStyle: React.CSSProperties = {
+    width: '100%',
+    maxHeight: '100%',
+  };
 
   return (
-    <Flex
-      pos="relative"
-      flexFlow="row wrap"
-      justifyContent="center"
-      w={[
-        usersCount > 1 ? '50%' : '100%',
-        usersCount > 1 ? '33%' : '100%',
-        `${width}%`,
-      ]}
-      maxH="15vh">
+    <Flex maxH="100vh">
       {videoRef ? (
-        <video
-          ref={videoRef}
-          autoPlay
-          muted
-          style={{ height: '100%', maxWidth: '100%' }}
-        />
+        <video ref={videoRef} autoPlay muted style={videoStyle} />
       ) : (
         <video
           ref={element => {
             if (element && stream) element.srcObject = stream;
           }}
           autoPlay
-          style={{ height: '100%', maxWidth: '100%' }}
+          style={videoStyle}
         />
       )}
     </Flex>

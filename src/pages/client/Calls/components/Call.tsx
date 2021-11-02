@@ -2,20 +2,18 @@ import React, { useState, useRef, useEffect } from 'react';
 import {
   Box,
   SimpleGrid,
-  Heading,
-  AvatarGroup,
   HStack,
   IconButton,
   Icon,
-  Flex,
-  Button,
+  useDisclosure,
 } from '@chakra-ui/react';
 import { useQuery } from 'react-query';
 import { API } from 'services/api';
 import { useParams } from 'react-router-dom';
-import { TooltipAvatar, Video } from 'components';
+import { Video } from 'components';
 import {
   FaExpand,
+  FaInfoCircle,
   FaMicrophone,
   FaMicrophoneSlash,
   FaVideo,
@@ -26,6 +24,7 @@ import { io, Socket } from 'socket.io-client';
 import Peer from 'peerjs';
 import { useLogger } from 'services/toast';
 import GameSection from './GameSection';
+import CallInfoDrawer from './CallInfoDrawer';
 
 const getToken = (): string => {
   if (localStorage.getItem(LocalStorageAuthKey)) {
@@ -39,6 +38,7 @@ const getToken = (): string => {
 
 const Call = (): JSX.Element => {
   const logger = useLogger();
+  const { isOpen, onOpen, onClose } = useDisclosure();
   const { callId }: { callId: string } = useParams();
   const [socket] = useState<Socket>(() =>
     io(`${process.env.REACT_APP_WS_URL}`, {
@@ -242,37 +242,37 @@ const Call = (): JSX.Element => {
   }, [gameId]);
 
   return (
-    <Box w="100%" minH="100vh" bg="cyan.800">
-      <Heading textAlign="center" color="white">
-        {call?.data?.name}
-      </Heading>
-      <Heading size="md" color="white" p={4}>
-        Users:
-      </Heading>
+    <Box w="100%" minH="100vh" maxH="100vh" bg="cyan.800">
+      <IconButton
+        pos="fixed"
+        top={4}
+        right={4}
+        zIndex={10}
+        aria-label="Call info"
+        icon={<Icon as={FaInfoCircle} />}
+        onClick={onOpen}
+        colorScheme="cyan"
+        color="white"
+      />
 
-      <SimpleGrid columns={2}>
-        <AvatarGroup size="sm" max={5} p={4}>
-          {call?.data?.users?.map(user => (
-            <TooltipAvatar
-              key={user.id}
-              size="sm"
-              color="white"
-              name={`${user.firstName} ${user.lastName}`}
-            />
-          ))}
-        </AvatarGroup>
-
-        <Flex w="100%" justify="center">
-          {peers?.length > 0 && (
-            <Button onClick={() => setGameSectionVisible(!gameSectionVisible)}>
-              Games
-            </Button>
-          )}
-        </Flex>
-      </SimpleGrid>
+      <CallInfoDrawer
+        isOpen={isOpen}
+        onClose={onClose}
+        name={call?.data?.name ?? ''}
+        userNames={
+          call?.data?.users?.map(user => ({
+            id: user.id,
+            name: `${user.firstName} ${user.lastName}`,
+          })) ?? []
+        }
+        onGamesClick={() => {
+          setGameSectionVisible(!gameSectionVisible);
+          onClose();
+        }}
+      />
 
       <SimpleGrid columns={[1, 1, gameSectionVisible ? 2 : 1]}>
-        <Flex flexFlow="row wrap" gap={2} p={4}>
+        <SimpleGrid columns={[1]} gap={2}>
           <Video videoRef={localRef} usersCount={peers?.length + 1} />
           {remoteStreams.map(item => (
             <Video
@@ -281,7 +281,7 @@ const Call = (): JSX.Element => {
               usersCount={peers?.length + 1}
             />
           ))}
-        </Flex>
+        </SimpleGrid>
 
         {gameSectionVisible && (
           <GameSection
@@ -295,7 +295,7 @@ const Call = (): JSX.Element => {
         )}
       </SimpleGrid>
 
-      <HStack pos="absolute" bottom="0" justifyContent="center" w="100%" p={4}>
+      <HStack pos="fixed" bottom="0" justifyContent="center" w="100%" p={4}>
         <IconButton
           aria-label="Toggle audio"
           onClick={toggleAudio}
