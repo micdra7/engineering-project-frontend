@@ -7,6 +7,7 @@ import {
   useToast,
   Spinner,
   Text,
+  Center,
 } from '@chakra-ui/react';
 
 type TQuestionProps = {
@@ -23,8 +24,10 @@ const Question = ({
   <SimpleGrid columns={1}>
     <Heading size="lg">{question}</Heading>
     {answers.map((answer, index) => (
-      <Flex justify="center" key={answer}>
-        <Button onClick={() => onAnswerClick(index)}>{answer}</Button>
+      <Flex justify="center" key={answer} w="100%" mb={1}>
+        <Button w="100%" onClick={() => onAnswerClick(index)}>
+          {answer}
+        </Button>
       </Flex>
     ))}
   </SimpleGrid>
@@ -81,14 +84,22 @@ const Quiz = ({
   }, [currentData, isClientFinished]);
 
   return (
-    <SimpleGrid columns={1}>
-      <Heading>{name}</Heading>
+    <Center
+      bg="cyan.100"
+      rounded="md"
+      flexFlow="row wrap"
+      minH="350px"
+      p={4}
+      m={2}>
+      <Heading w="100%">{name}</Heading>
       {currentQuestionIndex === gameDataEntries?.length - 1 &&
       isClientFinished ? (
-        <SimpleGrid columns={1}>
+        <Center w="100%">
           <Spinner />
-          <Text>Please wait while other users finish their games</Text>
-        </SimpleGrid>
+          <Text fontWeight="semibold">
+            Please wait while other users finish their games
+          </Text>
+        </Center>
       ) : (
         gameDataEntries
           ?.filter((_, index) => index === currentQuestionIndex)
@@ -115,7 +126,7 @@ const Quiz = ({
             );
           })
       )}
-    </SimpleGrid>
+    </Center>
   );
 };
 

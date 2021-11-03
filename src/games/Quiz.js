@@ -70,10 +70,13 @@ const Question = ({ question, answers, onAnswerClick }) =>
         {
           justify: 'center',
           key: answer,
+          w: '100%',
+          mb: 1,
         },
         /*#__PURE__*/ _react.default.createElement(
           _react2.Button,
           {
+            w: '100%',
             onClick: () => onAnswerClick(index),
           },
           answer,
@@ -125,25 +128,38 @@ const Quiz = ({
     }
   }, [currentData, isClientFinished]);
   return /*#__PURE__*/ _react.default.createElement(
-    _react2.SimpleGrid,
+    _react2.Center,
     {
-      columns: 1,
+      bg: 'cyan.100',
+      rounded: 'md',
+      flexFlow: 'row wrap',
+      minH: '350px',
+      p: 4,
+      m: 2,
     },
-    /*#__PURE__*/ _react.default.createElement(_react2.Heading, null, name),
+    /*#__PURE__*/ _react.default.createElement(
+      _react2.Heading,
+      {
+        w: '100%',
+      },
+      name,
+    ),
     currentQuestionIndex ===
       (gameDataEntries === null || gameDataEntries === void 0
         ? void 0
         : gameDataEntries.length) -
         1 && isClientFinished
       ? /*#__PURE__*/ _react.default.createElement(
-          _react2.SimpleGrid,
+          _react2.Center,
           {
-            columns: 1,
+            w: '100%',
           },
           /*#__PURE__*/ _react.default.createElement(_react2.Spinner, null),
           /*#__PURE__*/ _react.default.createElement(
             _react2.Text,
-            null,
+            {
+              fontWeight: 'semibold',
+            },
             'Please wait while other users finish their games',
           ),
         )
