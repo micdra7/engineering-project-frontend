@@ -145,12 +145,6 @@ const Call = (): JSX.Element => {
     };
 
     createMediaStream();
-
-    return () => {
-      userMediaStream?.getTracks()?.forEach(track => {
-        track?.stop();
-      });
-    };
   }, []);
 
   useEffect(() => {
@@ -211,6 +205,10 @@ const Call = (): JSX.Element => {
       socket.emit('leaveRoom', { room: callId, id: localId });
       peer.destroy();
       socket.disconnect();
+
+      userMediaStream?.getTracks()?.forEach(track => {
+        track?.stop();
+      });
     };
   }, [userMediaStream]);
 
