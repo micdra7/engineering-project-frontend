@@ -198,6 +198,8 @@ const Call = (): JSX.Element => {
         if (remotePeer) {
           remotePeer.call.close();
         }
+
+        setPeers(prevState => prevState.filter(item => item.id !== user));
       }
     });
 
