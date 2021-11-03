@@ -48,12 +48,12 @@ const AvailableGamesList = ({
   }
 
   return (
-    <Box w="100%" p={4} bg="cyan.100">
-      <Table colorScheme="white" w="100%">
+    <Box w="100%" p={4} bg="cyan.800">
+      <Table colorScheme="cyan" w="100%" color="white">
         <Thead>
           <Tr>
-            <Th>Id</Th>
-            <Th>Name</Th>
+            <Th color="white">Id</Th>
+            <Th color="white">Name</Th>
             <Th />
           </Tr>
         </Thead>
@@ -89,6 +89,7 @@ const AvailableGamesList = ({
             currentPage: 1,
           });
         }}
+        color="white"
       />
     </Box>
   );
