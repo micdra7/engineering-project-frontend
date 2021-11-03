@@ -8,6 +8,7 @@ import {
   Tr,
   Td,
   Th,
+  Center,
 } from '@chakra-ui/react';
 import React from 'react';
 import { useQuery } from 'react-query';
@@ -30,30 +31,36 @@ const UpcomingCallsList = (): JSX.Element => {
   return (
     <Box w="100%" py={4}>
       <Heading size="md">Upcoming calls</Heading>
-      <Table variant="striped" colorScheme="cyan" w="100%">
-        <Thead>
-          <Tr>
-            <Th>Name</Th>
-            <Th>Start date</Th>
-            <Th />
-          </Tr>
-        </Thead>
-        <Tbody>
-          {calls?.data?.data?.map(item => (
-            <Tr key={item.id}>
-              <Td>{item.name}</Td>
-              <Td>{moment(item.startDate).format(DATE_TIME.DATE_TIME)}</Td>
-              <Td>
-                <Link to={`/calls/${item.generatedCode}`}>
-                  <Button colorScheme="cyan" color="white">
-                    Join call
-                  </Button>
-                </Link>
-              </Td>
+      {calls?.data?.data?.length > 0 ? (
+        <Table variant="striped" colorScheme="cyan" w="100%">
+          <Thead>
+            <Tr>
+              <Th>Name</Th>
+              <Th>Start date</Th>
+              <Th />
             </Tr>
-          ))}
-        </Tbody>
-      </Table>
+          </Thead>
+          <Tbody>
+            {calls?.data.data.map(item => (
+              <Tr key={item.id}>
+                <Td>{item.name}</Td>
+                <Td>{moment(item.startDate).format(DATE_TIME.DATE_TIME)}</Td>
+                <Td>
+                  <Link to={`/calls/${item.generatedCode}`}>
+                    <Button colorScheme="cyan" color="white">
+                      Join call
+                    </Button>
+                  </Link>
+                </Td>
+              </Tr>
+            ))}
+          </Tbody>
+        </Table>
+      ) : (
+        <Center>
+          <Heading size="sm">There is no data to show</Heading>
+        </Center>
+      )}
     </Box>
   );
 };

@@ -2,20 +2,18 @@ import React, { useState, useRef, useEffect } from 'react';
 import {
   Box,
   SimpleGrid,
-  Heading,
-  AvatarGroup,
   HStack,
   IconButton,
   Icon,
-  Flex,
-  Button,
+  useDisclosure,
 } from '@chakra-ui/react';
 import { useQuery } from 'react-query';
 import { API } from 'services/api';
 import { useParams } from 'react-router-dom';
-import { TooltipAvatar } from 'components';
+import { Video } from 'components';
 import {
   FaExpand,
+  FaInfoCircle,
   FaMicrophone,
   FaMicrophoneSlash,
   FaVideo,
@@ -26,6 +24,26 @@ import { io, Socket } from 'socket.io-client';
 import Peer from 'peerjs';
 import { useLogger } from 'services/toast';
 import GameSection from './GameSection';
+import CallInfoDrawer from './CallInfoDrawer';
+
+const getColumnsCount = (
+  connectedUsers: number,
+  gameSectionOpen: boolean,
+): number[] => {
+  const cols = [1, 1, 1, 1, 1];
+
+  if (gameSectionOpen) {
+    cols[2] = 1;
+    cols[3] = 2;
+    cols[4] = 3;
+  } else {
+    cols[2] = connectedUsers <= 3 ? connectedUsers : 3;
+    cols[3] = connectedUsers <= 3 ? connectedUsers : 3;
+    cols[4] = connectedUsers <= 4 ? connectedUsers : 4;
+  }
+
+  return cols;
+};
 
 const getToken = (): string => {
   if (localStorage.getItem(LocalStorageAuthKey)) {
@@ -39,6 +57,7 @@ const getToken = (): string => {
 
 const Call = (): JSX.Element => {
   const logger = useLogger();
+  const { isOpen, onOpen, onClose } = useDisclosure();
   const { callId }: { callId: string } = useParams();
   const [socket] = useState<Socket>(() =>
     io(`${process.env.REACT_APP_WS_URL}`, {
@@ -242,86 +261,64 @@ const Call = (): JSX.Element => {
   }, [gameId]);
 
   return (
-    <Box w="100%" minH="100vh" bg="cyan.800">
-      <Heading textAlign="center" color="white">
-        {call?.data?.name}
-      </Heading>
-      <Heading size="md" color="white" p={4}>
-        Users:
-      </Heading>
+    <Box w="100%" minH="100vh" maxH="100vh" bg="cyan.800">
+      <IconButton
+        pos="fixed"
+        top={4}
+        right={4}
+        zIndex={10}
+        aria-label="Call info"
+        icon={<Icon as={FaInfoCircle} />}
+        onClick={onOpen}
+        colorScheme="cyan"
+        color="white"
+      />
 
-      <SimpleGrid columns={2}>
-        <AvatarGroup size="sm" max={5} p={4}>
-          {call?.data?.users?.map(user => (
-            <TooltipAvatar
-              key={user.id}
-              size="sm"
-              color="white"
-              name={`${user.firstName} ${user.lastName}`}
-            />
-          ))}
-        </AvatarGroup>
+      <CallInfoDrawer
+        isOpen={isOpen}
+        onClose={onClose}
+        name={call?.data?.name ?? ''}
+        userNames={
+          call?.data?.users?.map(user => ({
+            id: user.id,
+            name: `${user.firstName} ${user.lastName}`,
+          })) ?? []
+        }
+        onGamesClick={() => {
+          setGameSectionVisible(!gameSectionVisible);
+          onClose();
+        }}
+      />
 
-        <Flex w="100%" justify="center">
-          <Button onClick={() => setGameSectionVisible(!gameSectionVisible)}>
-            Games
-          </Button>
-        </Flex>
-      </SimpleGrid>
-
-      <SimpleGrid columns={gameSectionVisible ? 2 : 1}>
-        <SimpleGrid columns={[1, 1, 2]} gap={2} p={4}>
-          <Flex pos="relative" flexFlow="row wrap" justifyContent="center">
-            <video
-              ref={localRef}
-              autoPlay
-              muted
-              style={{ width: '100%', maxHeight: '40vh' }}
-            />
-
-            <HStack
-              pos="absolute"
-              bottom="0"
-              justifyContent="center"
-              w="100%"
-              p={4}>
-              <IconButton
-                aria-label="Toggle audio"
-                onClick={toggleAudio}
-                icon={<Icon as={isMuted ? FaMicrophoneSlash : FaMicrophone} />}
-                colorScheme="cyan"
-                rounded="md"
-                color="white"
-              />
-              <IconButton
-                aria-label="Toggle video"
-                onClick={toggleVideo}
-                icon={<Icon as={isVideoOff ? FaVideoSlash : FaVideo} />}
-                colorScheme="cyan"
-                rounded="md"
-                color="white"
-              />
-              <IconButton
-                aria-label="Toggle fullscreen"
-                onClick={toggleFullScreen}
-                icon={<Icon as={FaExpand} />}
-                colorScheme="cyan"
-                rounded="md"
-                color="white"
-              />
-            </HStack>
-          </Flex>
-
+      <SimpleGrid columns={[1, 1, gameSectionVisible ? 2 : 1]}>
+        <SimpleGrid
+          pos="relative"
+          columns={getColumnsCount(peers?.length, gameSectionVisible)}
+          placeItems={gameSectionVisible ? 'start' : 'center'}
+          alignContent={gameSectionVisible ? 'start' : 'center'}
+          order={[2, 2, 1]}
+          maxH={['50vh', '50vh', 'initial']}>
+          <Video
+            videoRef={localRef}
+            usersCount={peers?.length + 1}
+            containerStyle={
+              peers.length > 0
+                ? {
+                    pos: ['fixed', 'fixed', 'fixed'],
+                    w: '40vw',
+                    maxW: gameSectionVisible ? '120px' : '300px',
+                    bottom: 2,
+                    right: 2,
+                  }
+                : {}
+            }
+          />
           {remoteStreams.map(item => (
-            <Flex key={item.id} flexFlow="row wrap" justifyContent="center">
-              <video
-                ref={videoRef => {
-                  if (videoRef) videoRef.srcObject = item.stream;
-                }}
-                autoPlay
-                style={{ width: '100%', maxHeight: '40vh' }}
-              />
-            </Flex>
+            <Video
+              key={item.id}
+              stream={item.stream}
+              usersCount={peers?.length + 1}
+            />
           ))}
         </SimpleGrid>
 
@@ -336,6 +333,33 @@ const Call = (): JSX.Element => {
           />
         )}
       </SimpleGrid>
+
+      <HStack pos="fixed" bottom="0" justifyContent="center" w="100%" p={4}>
+        <IconButton
+          aria-label="Toggle audio"
+          onClick={toggleAudio}
+          icon={<Icon as={isMuted ? FaMicrophoneSlash : FaMicrophone} />}
+          colorScheme="cyan"
+          rounded="md"
+          color="white"
+        />
+        <IconButton
+          aria-label="Toggle video"
+          onClick={toggleVideo}
+          icon={<Icon as={isVideoOff ? FaVideoSlash : FaVideo} />}
+          colorScheme="cyan"
+          rounded="md"
+          color="white"
+        />
+        <IconButton
+          aria-label="Toggle fullscreen"
+          onClick={toggleFullScreen}
+          icon={<Icon as={FaExpand} />}
+          colorScheme="cyan"
+          rounded="md"
+          color="white"
+        />
+      </HStack>
     </Box>
   );
 };

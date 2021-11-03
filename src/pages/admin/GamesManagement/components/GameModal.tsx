@@ -53,14 +53,16 @@ const GameModal = ({
     try {
       const formData = new FormData();
       formData.append('name', values.name);
-      formData.append('file', files[0].file);
+      if (files?.[0]) formData.append('file', files[0].file);
 
       if (gameId) await editGameMutation.mutateAsync(formData);
       else await addGameMutation.mutateAsync(formData);
 
       logger.success({
         title: 'Success',
-        description: 'Game added successfully',
+        description: gameId
+          ? 'Game updated successfully'
+          : 'Game added successfully',
       });
       onClose();
     } catch (error) {
@@ -115,7 +117,7 @@ const GameModal = ({
                 <FileInput
                   files={files}
                   setFiles={setFiles}
-                  required
+                  required={!gameId}
                   acceptedFileTypes={[
                     'application/javascript',
                     'application/x-javascript',

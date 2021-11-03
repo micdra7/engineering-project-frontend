@@ -14,6 +14,7 @@ import {
   Icon,
 } from '@chakra-ui/react';
 import { FaCheckSquare } from 'react-icons/fa';
+import { useLocation } from 'react-router-dom';
 
 type TAvailableGamesListProps = {
   setGameId: (selectedId: number) => void;
@@ -22,6 +23,9 @@ type TAvailableGamesListProps = {
 const AvailableGamesList = ({
   setGameId,
 }: TAvailableGamesListProps): JSX.Element => {
+  const location = useLocation();
+  const params = new URLSearchParams(location.search);
+
   const [paginationState, setPaginationState] = useState({
     currentPage: 1,
     totalPages: 1,
@@ -33,7 +37,9 @@ const AvailableGamesList = ({
     ['/games', paginationState.currentPage, paginationState.itemCount],
     () =>
       API.get(
-        `/games?page=${paginationState.currentPage}&limit=${paginationState.itemCount}`,
+        `/games/public?page=${paginationState.currentPage}&limit=${
+          paginationState.itemCount
+        }&workspaceName=${params.get('workspaceName')}`,
       ),
   );
 
@@ -42,12 +48,12 @@ const AvailableGamesList = ({
   }
 
   return (
-    <Box w="100%" px={4}>
-      <Table variant="striped" colorScheme="cyan" w="100%">
+    <Box w="100%" p={4} bg="cyan.800">
+      <Table colorScheme="cyan" w="100%" color="white">
         <Thead>
           <Tr>
-            <Th>Id</Th>
-            <Th>Name</Th>
+            <Th color="white">Id</Th>
+            <Th color="white">Name</Th>
             <Th />
           </Tr>
         </Thead>
@@ -83,6 +89,7 @@ const AvailableGamesList = ({
             currentPage: 1,
           });
         }}
+        color="white"
       />
     </Box>
   );

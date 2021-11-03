@@ -79,7 +79,12 @@ const Chats = (): JSX.Element => {
       </Text>
       <Switch>
         <Grid
-          templateColumns={['1fr', '1fr', '1fr', '0.5fr 1fr']}
+          templateColumns={[
+            '1fr',
+            '1fr',
+            '1fr',
+            currentChatroomId ? '0.5fr 1fr' : '1fr',
+          ]}
           columnGap="4">
           <Route exact={exact} path={path}>
             <ChatList currentChatroomId={currentChatroomId} />

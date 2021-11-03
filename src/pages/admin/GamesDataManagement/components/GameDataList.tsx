@@ -14,6 +14,8 @@ import {
   ButtonGroup,
   Button,
   Grid,
+  Center,
+  Heading,
 } from '@chakra-ui/react';
 import { Loader, Pagination } from 'components';
 import React, { useEffect, useState } from 'react';
@@ -114,47 +116,55 @@ const GameDataList = (): JSX.Element => {
       {gameDataLoading ? (
         <Loader />
       ) : (
-        <Box w="100%" overflowY="unset" overflowX="auto" maxW="100%">
-          <Table variant="striped" colorScheme="cyan" minW="600px">
-            <Thead>
-              <Tr>
-                <Th>Id</Th>
-                <Th>Data</Th>
-                <Th>Actions</Th>
-              </Tr>
-            </Thead>
-            <Tbody>
-              {gameData?.data?.data?.map(item => (
-                <Tr key={item.id}>
-                  <Td>{item.id}</Td>
-                  <Td>
-                    {JSON.stringify(item.data)
-                      .substr(0, 200)
-                      .replaceAll('\\', '')}
-                    ...
-                  </Td>
-                  <Td>
-                    <ButtonGroup isAttached colorScheme="cyan">
-                      <Button
-                        mr="-px"
-                        color="white"
-                        onClick={() => setGameDataId(item.id)}>
-                        Preview
-                      </Button>
-                      <IconButton
-                        colorScheme="red"
-                        color="white"
-                        aria-label="Delete game data entry"
-                        icon={<Icon as={FaTrash} />}
-                        onClick={() => onDelete(item.id)}
-                      />
-                    </ButtonGroup>
-                  </Td>
-                </Tr>
-              ))}
-            </Tbody>
-          </Table>
-        </Box>
+        <>
+          {gameData?.data?.data?.length > 0 ? (
+            <Box w="100%" overflowY="unset" overflowX="auto" maxW="100%">
+              <Table variant="striped" colorScheme="cyan" minW="600px">
+                <Thead>
+                  <Tr>
+                    <Th>Id</Th>
+                    <Th>Data</Th>
+                    <Th>Actions</Th>
+                  </Tr>
+                </Thead>
+                <Tbody>
+                  {gameData?.data.data.map(item => (
+                    <Tr key={item.id}>
+                      <Td>{item.id}</Td>
+                      <Td>
+                        {JSON.stringify(item.data)
+                          .substr(0, 200)
+                          .replaceAll('\\', '')}
+                        ...
+                      </Td>
+                      <Td>
+                        <ButtonGroup isAttached colorScheme="cyan">
+                          <Button
+                            mr="-px"
+                            color="white"
+                            onClick={() => setGameDataId(item.id)}>
+                            Preview
+                          </Button>
+                          <IconButton
+                            colorScheme="red"
+                            color="white"
+                            aria-label="Delete game data entry"
+                            icon={<Icon as={FaTrash} />}
+                            onClick={() => onDelete(item.id)}
+                          />
+                        </ButtonGroup>
+                      </Td>
+                    </Tr>
+                  ))}
+                </Tbody>
+              </Table>
+            </Box>
+          ) : (
+            <Center>
+              <Heading size="sm">There is no data to show</Heading>
+            </Center>
+          )}
+        </>
       )}
       <Pagination
         currentPage={paginationState.currentPage}
