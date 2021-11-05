@@ -90,8 +90,7 @@ const Quiz = ({
       flexFlow="row wrap"
       minH="350px"
       p={4}
-      m={2}
-    >
+      m={2}>
       <Heading w="100%">{name}</Heading>
       {currentQuestionIndex === gameDataEntries?.length - 1 &&
       isClientFinished ? (
@@ -105,7 +104,8 @@ const Quiz = ({
         gameDataEntries
           ?.filter((_, index) => index === currentQuestionIndex)
           ?.map(entry => {
-            const object = JSON.parse(entry);
+            const object =
+              typeof entry === 'string' ? JSON.parse(entry) : entry;
 
             return (
               <Question

@@ -170,7 +170,7 @@ const Quiz = ({
         )) === null || _gameDataEntries$filt === void 0
       ? void 0
       : _gameDataEntries$filt.map(entry => {
-          const object = JSON.parse(entry);
+          const object = typeof entry === 'string' ? JSON.parse(entry) : entry;
           return /*#__PURE__*/ _react.default.createElement(Question, {
             question: object.question,
             answers: object.answers,
