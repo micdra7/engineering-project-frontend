@@ -55,7 +55,8 @@ const CallInfoDrawer = ({
           onClick={onGamesClick}
           mt={4}
           colorScheme="cyan"
-          color="white">
+          color="white"
+        >
           Games
         </Button>
       </DrawerBody>

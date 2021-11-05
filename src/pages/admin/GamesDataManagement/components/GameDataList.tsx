@@ -101,7 +101,8 @@ const GameDataList = (): JSX.Element => {
           hasArrow
           placement="bottom"
           label="Create a new game data entry"
-          bg="cyan.500">
+          bg="cyan.500"
+        >
           <IconButton
             aria-label="Create a new game data entry"
             onClick={onOpen}
@@ -142,7 +143,8 @@ const GameDataList = (): JSX.Element => {
                           <Button
                             mr="-px"
                             color="white"
-                            onClick={() => setGameDataId(item.id)}>
+                            onClick={() => setGameDataId(item.id)}
+                          >
                             Preview
                           </Button>
                           <IconButton

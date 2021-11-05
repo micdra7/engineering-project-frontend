@@ -103,7 +103,8 @@ const GameDataModal = ({
                   isLoading={isSubmitting}
                   type="submit"
                   colorScheme="cyan"
-                  color="white">
+                  color="white"
+                >
                   Save
                 </Button>
               )}

@@ -297,7 +297,8 @@ const Call = (): JSX.Element => {
           placeItems={gameSectionVisible ? 'start' : 'center'}
           alignContent={gameSectionVisible ? 'start' : 'center'}
           order={[2, 2, 1]}
-          maxH={['50vh', '50vh', 'initial']}>
+          maxH={['50vh', '50vh', 'initial']}
+        >
           <Video
             videoRef={localRef}
             usersCount={peers?.length + 1}

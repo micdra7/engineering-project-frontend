@@ -129,7 +129,8 @@ const Chatroom = ({
             w="100%"
             overflowY="auto"
             pb="140px"
-            alignContent="start">
+            alignContent="start"
+          >
             {!!messages?.data &&
               limit !== maxLimit &&
               limit !== messages?.data?.meta?.totalItems && (
@@ -144,7 +145,8 @@ const Chatroom = ({
                 wrap="wrap"
                 key={m.id}
                 align="center"
-                justify={userId === m.userId ? 'flex-end' : 'flex-start'}>
+                justify={userId === m.userId ? 'flex-end' : 'flex-start'}
+              >
                 <Flex
                   w="60%"
                   my={1}
@@ -152,14 +154,16 @@ const Chatroom = ({
                   align="center"
                   borderRadius="lg"
                   background={userId === m.userId ? 'cyan.600' : 'cyan.100'}
-                  color={userId === m.userId ? 'white' : 'black'}>
+                  color={userId === m.userId ? 'white' : 'black'}
+                >
                   <TooltipAvatar size="sm" name={m.userFullName} mx={1} />
                   <Text>{m.content}</Text>
                 </Flex>
                 <Text
                   fontSize="xs"
                   w="100%"
-                  textAlign={userId === m.userId ? 'right' : 'left'}>
+                  textAlign={userId === m.userId ? 'right' : 'left'}
+                >
                   {moment(m.sendTime).format(DATE_TIME.DATE_TIME)}
                 </Text>
               </Flex>
@@ -177,7 +181,8 @@ const Chatroom = ({
             h="140px"
             templateColumns="1fr 0.25fr"
             gap="0.5rem"
-            bg="white">
+            bg="white"
+          >
             <form id="send-message-form" onSubmit={onSend}>
               <Textarea
                 value={message}

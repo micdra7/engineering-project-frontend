@@ -88,7 +88,8 @@ const GameModal = ({
           initialValues={{ name: game?.data?.name ?? '' }}
           enableReinitialize
           validationSchema={GameSchema}
-          onSubmit={onSubmit}>
+          onSubmit={onSubmit}
+        >
           {({
             values,
             errors,
@@ -133,7 +134,8 @@ const GameModal = ({
                   isLoading={isSubmitting}
                   type="submit"
                   colorScheme="cyan"
-                  color="white">
+                  color="white"
+                >
                   Save
                 </Button>
               </ModalFooter>

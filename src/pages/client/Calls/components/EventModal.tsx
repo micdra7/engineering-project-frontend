@@ -70,11 +70,13 @@ const EventModal = ({
           </Box>
           <Box mt={2}>
             <Link
-              to={`/calls/${call?.data?.generatedCode}?workspaceName=${authState.currentWorkspace.workspaceName}`}>
+              to={`/calls/${call?.data?.generatedCode}?workspaceName=${authState.currentWorkspace.workspaceName}`}
+            >
               <Text fontSize="xs">{`${window.location.origin}/calls/${call?.data?.generatedCode}?workspaceName=${authState.currentWorkspace.workspaceName}`}</Text>
             </Link>
             <Link
-              to={`/calls/${call?.data?.generatedCode}?workspaceName=${authState.currentWorkspace.workspaceName}`}>
+              to={`/calls/${call?.data?.generatedCode}?workspaceName=${authState.currentWorkspace.workspaceName}`}
+            >
               <Button mt={2} colorScheme="cyan" color="white">
                 Join call
               </Button>

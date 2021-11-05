@@ -90,7 +90,8 @@ const Quiz = ({
       flexFlow="row wrap"
       minH="350px"
       p={4}
-      m={2}>
+      m={2}
+    >
       <Heading w="100%">{name}</Heading>
       {currentQuestionIndex === gameDataEntries?.length - 1 &&
       isClientFinished ? (

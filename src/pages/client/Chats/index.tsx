@@ -85,7 +85,8 @@ const Chats = (): JSX.Element => {
             '1fr',
             currentChatroomId ? '0.5fr 1fr' : '1fr',
           ]}
-          columnGap="4">
+          columnGap="4"
+        >
           <Route exact={exact} path={path}>
             <ChatList currentChatroomId={currentChatroomId} />
           </Route>
