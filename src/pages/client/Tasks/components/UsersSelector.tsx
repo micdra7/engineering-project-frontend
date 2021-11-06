@@ -163,7 +163,8 @@ const UsersSelector = ({
                       },
                     ]);
                     onClose();
-                  }}>
+                  }}
+                >
                   Save
                 </Button>
               </PopoverFooter>

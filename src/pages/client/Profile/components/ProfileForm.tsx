@@ -39,7 +39,8 @@ const ProfileForm = ({
   <Formik
     initialValues={initialFormValues}
     validationSchema={ProfileSchema}
-    onSubmit={onSubmit}>
+    onSubmit={onSubmit}
+  >
     {({
       values,
       errors,
@@ -114,7 +115,8 @@ const ProfileForm = ({
             type="submit"
             colorScheme="cyan"
             color="white"
-            mt="32px">
+            mt="32px"
+          >
             Save
           </Button>
         </Grid>

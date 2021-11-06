@@ -17,6 +17,7 @@ export type TAuthProviderState = {
 
 export type TAuthState = {
   isAuthenticated: boolean;
+  id: number;
   email: string;
   accessToken: string;
   refreshToken: string;
@@ -27,6 +28,7 @@ export type TAuthState = {
 
 const defaultAuthState: TAuthState = {
   isAuthenticated: false,
+  id: 0,
   email: '',
   accessToken: '',
   refreshToken: '',
@@ -83,6 +85,7 @@ const AuthContextProvider = ({
         w => w.isDefault,
       )[0];
       const newState: TAuthState = {
+        id: data.userId,
         accessToken: data.accessToken,
         refreshToken: data.refreshToken,
         isAuthenticated: true,
@@ -231,7 +234,8 @@ const AuthContextProvider = ({
         logout,
         register,
         switchWorkspace,
-      }}>
+      }}
+    >
       {children}
     </AuthContext.Provider>
   );

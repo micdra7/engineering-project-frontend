@@ -40,7 +40,8 @@ const SubtaskEntry = ({
         size="lg"
         colorScheme="cyan"
         isChecked={isDone}
-        onChange={changeStatus}>
+        onChange={changeStatus}
+      >
         {name}
       </Checkbox>
       <Divider my={2} />

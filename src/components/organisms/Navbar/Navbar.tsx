@@ -39,7 +39,8 @@ const Navbar = (): JSX.Element => {
       wrap="wrap"
       justifyContent={['space-between', 'space-between', 'flex-start']}
       alignItems={['center', 'center', 'center', 'flex-start']}
-      alignContent={['initial', 'initial', 'initial', 'flex-start']}>
+      alignContent={['initial', 'initial', 'initial', 'flex-start']}
+    >
       <Icon
         as={FaHeadset}
         boxSize={['2em', '2em', '3em']}
@@ -79,7 +80,8 @@ const Navbar = (): JSX.Element => {
           isOpen ? 'scaleY(1)' : 'scaleY(0)',
           'scaleY(1)',
         ]}
-        transition="transform 0.3s ease-in-out">
+        transition="transform 0.3s ease-in-out"
+      >
         <NavLink
           icon={<Icon as={FaColumns} />}
           isNavbarOpen={isOpen}

@@ -94,7 +94,8 @@ const AddChatroomModal = ({
         <Formik
           initialValues={{ name: '', userIds: [] }}
           validationSchema={AddChatroomSchema}
-          onSubmit={onSubmit}>
+          onSubmit={onSubmit}
+        >
           {({
             values,
             errors,
@@ -139,7 +140,8 @@ const AddChatroomModal = ({
                   isLoading={isSubmitting}
                   type="submit"
                   colorScheme="cyan"
-                  color="white">
+                  color="white"
+                >
                   Create
                 </Button>
               </ModalFooter>

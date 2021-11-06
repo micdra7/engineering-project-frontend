@@ -62,7 +62,8 @@ const AddListModal = ({ isOpen, onClose }: TAddListModalProps): JSX.Element => {
         <Formik
           initialValues={{ name: '' }}
           validationSchema={AddTaskListSchema}
-          onSubmit={onSubmit}>
+          onSubmit={onSubmit}
+        >
           {({
             values,
             errors,
@@ -95,7 +96,8 @@ const AddListModal = ({ isOpen, onClose }: TAddListModalProps): JSX.Element => {
                   isLoading={isSubmitting}
                   type="submit"
                   colorScheme="cyan"
-                  color="white">
+                  color="white"
+                >
                   Create
                 </Button>
               </ModalFooter>

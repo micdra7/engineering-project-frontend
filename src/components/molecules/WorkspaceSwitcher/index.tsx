@@ -71,7 +71,8 @@ const WorkspaceSwitcher = (): JSX.Element => {
                 key={workspace.workspaceName}
                 hasArrow
                 placement="top-end"
-                label={workspace.workspaceName}>
+                label={workspace.workspaceName}
+              >
                 <Avatar
                   border={
                     workspace.workspaceName ===

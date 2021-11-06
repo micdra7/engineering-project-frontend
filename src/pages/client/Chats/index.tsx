@@ -10,7 +10,7 @@ import {
   TAuthState,
   useAuth,
 } from 'services/Auth/Auth';
-import { io } from 'socket.io-client';
+import { io, Socket } from 'socket.io-client';
 import ChatList from './components/ChatList';
 import Chatroom from './components/Chatroom';
 
@@ -24,18 +24,20 @@ const getToken = (): string => {
   return '';
 };
 
-const socket = io(`${process.env.REACT_APP_WS_URL}`, {
-  extraHeaders: {
-    authorization: `Bearer ${getToken()}`,
-  },
-});
-
 const Chats = (): JSX.Element => {
   const auth: TAuthProviderState = useAuth();
   const authState: TAuthState = auth.getCurrentState();
 
   const exact = useBreakpointValue([true, true, true, false]);
   const { path } = useRouteMatch();
+
+  const [socket] = useState<Socket>(
+    io(`${process.env.REACT_APP_WS_URL}`, {
+      extraHeaders: {
+        authorization: `Bearer ${getToken()}`,
+      },
+    }),
+  );
 
   const [userId, setUserId] = useState(0);
   const [currentChatroomId, setCurrentChatroomId] = useState(0);
@@ -77,8 +79,14 @@ const Chats = (): JSX.Element => {
       </Text>
       <Switch>
         <Grid
-          templateColumns={['1fr', '1fr', '1fr', '0.5fr 1fr']}
-          columnGap="4">
+          templateColumns={[
+            '1fr',
+            '1fr',
+            '1fr',
+            currentChatroomId ? '0.5fr 1fr' : '1fr',
+          ]}
+          columnGap="4"
+        >
           <Route exact={exact} path={path}>
             <ChatList currentChatroomId={currentChatroomId} />
           </Route>

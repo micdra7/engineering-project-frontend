@@ -49,7 +49,8 @@ const RegistrationForm = (): JSX.Element => {
     <Formik
       initialValues={formInitialValues}
       validationSchema={RegistrationSchema}
-      onSubmit={onSubmit}>
+      onSubmit={onSubmit}
+    >
       {({
         values,
         errors,
@@ -62,14 +63,16 @@ const RegistrationForm = (): JSX.Element => {
         <form
           style={{ width: '100%' }}
           id="registration-form"
-          onSubmit={handleSubmit}>
+          onSubmit={handleSubmit}
+        >
           <Grid
             w="100%"
             maxW="880px"
             mx="auto"
             templateColumns="1fr"
             rowGap="0.5em"
-            justifyItems="center">
+            justifyItems="center"
+          >
             <Heading>Create an account</Heading>
 
             <TextInput
@@ -148,10 +151,12 @@ const RegistrationForm = (): JSX.Element => {
             />
 
             <Button
+              w={['100%', '100%', '100%', 'auto']}
               isLoading={isSubmitting}
               type="submit"
               colorScheme="cyan"
-              color="white">
+              color="white"
+            >
               Register
             </Button>
           </Grid>

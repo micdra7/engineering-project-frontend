@@ -146,7 +146,8 @@ const EditTaskModal = ({
           enableReinitialize
           initialValues={formInitialValues(task?.data ?? {})}
           validationSchema={EditTaskSchema}
-          onSubmit={onSubmit}>
+          onSubmit={onSubmit}
+        >
           {({
             values,
             errors,
@@ -226,7 +227,8 @@ const EditTaskModal = ({
                     touched.startDate &&
                     errors.startDate !== undefined &&
                     errors.startDate !== ''
-                  }>
+                  }
+                >
                   <FormLabel>Start date</FormLabel>
                   <Flatpickr
                     value={values.startDate}
@@ -249,7 +251,8 @@ const EditTaskModal = ({
                     touched.startDate &&
                     errors.startDate !== undefined &&
                     errors.startDate !== ''
-                  }>
+                  }
+                >
                   <FormLabel>Finish date</FormLabel>
                   <Flatpickr
                     value={values.finishDate}
@@ -275,7 +278,8 @@ const EditTaskModal = ({
                     hasArrow
                     placement="left"
                     label="Add subtask"
-                    bg="cyan.500">
+                    bg="cyan.500"
+                  >
                     <IconButton
                       onClick={onSubtaskModalOpen}
                       aria-label="Add subtask"
@@ -317,7 +321,8 @@ const EditTaskModal = ({
                   isLoading={isSubmitting}
                   type="submit"
                   colorScheme="cyan"
-                  color="white">
+                  color="white"
+                >
                   Save
                 </Button>
               </ModalFooter>

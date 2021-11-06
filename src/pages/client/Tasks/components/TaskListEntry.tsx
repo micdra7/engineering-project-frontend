@@ -39,7 +39,8 @@ const TaskListEntry = ({
     color="white"
     alignItems="center"
     p={4}
-    mb={6}>
+    mb={6}
+  >
     <Text
       px={2}
       py={1}
@@ -51,7 +52,8 @@ const TaskListEntry = ({
       borderRadius="md"
       fontWeight="semibold"
       textAlign="center"
-      textTransform="uppercase">
+      textTransform="uppercase"
+    >
       {name}
     </Text>
     <Divider />
