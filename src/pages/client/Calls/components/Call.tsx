@@ -186,6 +186,22 @@ const Call = (): JSX.Element => {
     });
 
     socket.on('user-disconnected', ({ user }) => {
+      let localGameSectionVisible = false;
+      setGameSectionVisible(prevState => {
+        localGameSectionVisible = prevState;
+        return prevState;
+      });
+
+      if (localGameSectionVisible) {
+        setGameSectionVisible(false);
+        setGameId(0);
+        logger.info({
+          title: 'Game closed',
+          description:
+            'Game was closed because one of participants left before finishing',
+        });
+      }
+
       let currentPeers: { id: string; call: Peer.MediaConnection }[] = [];
 
       setPeers(prevState => {
@@ -297,8 +313,7 @@ const Call = (): JSX.Element => {
           placeItems={gameSectionVisible ? 'start' : 'center'}
           alignContent={gameSectionVisible ? 'start' : 'center'}
           order={[2, 2, 1]}
-          maxH={['50vh', '50vh', 'initial']}
-        >
+          maxH={['50vh', '50vh', 'initial']}>
           <Video
             videoRef={localRef}
             usersCount={peers?.length + 1}
