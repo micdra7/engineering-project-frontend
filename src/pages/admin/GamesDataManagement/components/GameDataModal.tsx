@@ -41,6 +41,8 @@ const GameDataModal = ({
     { enabled: !!gameDataId },
   );
 
+  console.log(gameData);
+
   const onSubmit = async event => {
     event.preventDefault();
     setSubmitting(true);
@@ -92,7 +94,7 @@ const GameDataModal = ({
               height="400px"
               width="100%"
               placeholder={
-                gameDataId
+                gameDataId && gameData?.data
                   ? JSON.parse(
                       typeof gameData?.data?.data === 'string'
                         ? gameData?.data?.data
