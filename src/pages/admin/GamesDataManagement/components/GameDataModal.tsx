@@ -41,8 +41,6 @@ const GameDataModal = ({
     { enabled: !!gameDataId },
   );
 
-  console.log(gameData);
-
   const onSubmit = async event => {
     event.preventDefault();
     setSubmitting(true);

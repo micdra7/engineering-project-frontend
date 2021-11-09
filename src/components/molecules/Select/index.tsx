@@ -39,10 +39,9 @@ const Select = ({
       value={value}
       onChange={onChange}
       onBlur={onBlur}
-      colorScheme="cyan"
-    >
+      colorScheme="cyan">
       <option value="-1">Choose an option</option>
-      {options.map(opt => (
+      {options?.map(opt => (
         <option key={opt.value} value={opt.value}>
           {opt.label}
         </option>
