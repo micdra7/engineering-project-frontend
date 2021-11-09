@@ -92,7 +92,13 @@ const GameDataModal = ({
               height="400px"
               width="100%"
               placeholder={
-                gameDataId ? JSON.parse(gameData?.data?.data ?? '{}') : null
+                gameDataId
+                  ? JSON.parse(
+                      typeof gameData?.data?.data === 'string'
+                        ? gameData?.data?.data
+                        : JSON.stringify(gameData?.data?.data),
+                    )
+                  : null
               }
               viewOnly={!!gameDataId}
             />
@@ -103,8 +109,7 @@ const GameDataModal = ({
                   isLoading={isSubmitting}
                   type="submit"
                   colorScheme="cyan"
-                  color="white"
-                >
+                  color="white">
                   Save
                 </Button>
               )}
