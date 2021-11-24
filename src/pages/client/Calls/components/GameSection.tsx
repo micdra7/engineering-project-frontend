@@ -90,7 +90,7 @@ const GameSection = ({
         gameLoading &&
         gameDataLoading &&
         !currentGame?.data?.filepath) ? (
-        <AvailableGamesList setGameId={onGameSelect} />
+        <AvailableGamesList setGameId={onGameSelect} usersCount={usersCount} />
       ) : (
         <RemoteComponent
           url={game.getUrl(currentGame?.data?.filepath)}
