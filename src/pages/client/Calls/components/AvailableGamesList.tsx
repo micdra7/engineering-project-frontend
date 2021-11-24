@@ -18,10 +18,12 @@ import { useLocation } from 'react-router-dom';
 
 type TAvailableGamesListProps = {
   setGameId: (selectedId: number) => void;
+  usersCount: number;
 };
 
 const AvailableGamesList = ({
   setGameId,
+  usersCount,
 }: TAvailableGamesListProps): JSX.Element => {
   const location = useLocation();
   const params = new URLSearchParams(location.search);
@@ -64,6 +66,7 @@ const AvailableGamesList = ({
               <Td>{item.name}</Td>
               <Td>
                 <IconButton
+                  disabled={usersCount === 0}
                   colorScheme="cyan"
                   color="white"
                   aria-label="Choose game"
