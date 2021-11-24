@@ -20,8 +20,15 @@ import EventModal from './EventModal';
 const localizer = momentLocalizer(moment);
 
 const CallList = (): JSX.Element => {
-  const view = useBreakpointValue(['day', 'day', 'day', 'week']);
+  const availableViews = useBreakpointValue([
+    ['day'],
+    null,
+    null,
+    ['day', 'week'],
+  ]);
+  const defaultView = useBreakpointValue(['day', 'day', 'day', 'week']);
   const [selectedCallId, setSelectedCallId] = useState(0);
+  const [currentView, setCurrentView] = useState(defaultView ?? 'week');
 
   const { isOpen, onOpen, onClose } = useDisclosure();
   const {
@@ -38,6 +45,10 @@ const CallList = (): JSX.Element => {
   useEffect(() => {
     if (selectedCallId) onEventOpen();
   }, [selectedCallId]);
+
+  useEffect(() => {
+    if (defaultView) setCurrentView(defaultView);
+  }, [defaultView]);
 
   return (
     <div>
@@ -89,8 +100,9 @@ const CallList = (): JSX.Element => {
             start={moment().toDate()}
             end={moment().add(7, 'day').toDate()}
             style={{ height: '100%', width: '100%' }}
-            view={view ?? 'week'}
-            views={['week', 'day']}
+            view={currentView}
+            views={availableViews}
+            onView={view => setCurrentView(view)}
             onSelectEvent={obj => {
               setSelectedCallId(obj.id);
             }}
