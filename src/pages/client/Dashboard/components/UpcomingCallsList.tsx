@@ -17,8 +17,12 @@ import { Link } from 'react-router-dom';
 import moment from 'moment';
 import { DATE_TIME } from 'resources/constants';
 import { Loader } from 'components';
+import { TAuthProviderState, TAuthState, useAuth } from 'services/Auth/Auth';
 
 const UpcomingCallsList = (): JSX.Element => {
+  const auth: TAuthProviderState = useAuth();
+  const authState: TAuthState = auth.getCurrentState();
+
   const { data: calls, isLoading: callsLoading } = useQuery(
     '/dashboard/calls',
     () => API.get('/dashboard/calls'),
@@ -46,7 +50,8 @@ const UpcomingCallsList = (): JSX.Element => {
                 <Td>{item.name}</Td>
                 <Td>{moment(item.startDate).format(DATE_TIME.DATE_TIME)}</Td>
                 <Td>
-                  <Link to={`/calls/${item.generatedCode}`}>
+                  <Link
+                    to={`/calls/${item.generatedCode}?workspaceName=${authState.currentWorkspace.workspaceName}`}>
                     <Button colorScheme="cyan" color="white">
                       Join call
                     </Button>
