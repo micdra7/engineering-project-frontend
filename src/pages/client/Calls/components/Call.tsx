@@ -155,11 +155,6 @@ const Call = (): JSX.Element => {
     }
 
     const peer = new Peer();
-    // const peer = new Peer(undefined, {
-    //   port: +`${process.env.REACT_APP_PEER_PORT}`,
-    //   host: process.env.REACT_APP_HOST,
-    //   path: '/peer',
-    // });
 
     peer.on('open', id => {
       setLocalId(id);
